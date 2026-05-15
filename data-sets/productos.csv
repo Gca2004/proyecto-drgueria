@@ -1,0 +1,49 @@
+id_producto,nombre_producto,categoria,precio,stock_actual,stock_minimo
+1,Acetaminofén 500mg x10,Analgésico,2500,100,25
+2,Ibuprofeno 400mg x10,Analgésico,3200,100,25
+3,Naproxeno 500mg x10,Analgésico,4800,100,25
+4,Aspirina 100mg x10,Analgésico,1800,100,25
+5,Diclofenaco 50mg x10,Analgésico,3600,100,25
+6,Meloxicam 15mg x10,Analgésico,5200,100,25
+7,Tramadol 50mg x10,Analgésico,7800,100,25
+8,Ketorolaco 10mg x10,Analgésico,6500,100,25
+9,Amoxicilina 500mg x21,Antibiótico,18500,100,25
+10,Azitromicina 500mg x3,Antibiótico,22000,100,25
+11,Ciprofloxacino 500mg x10,Antibiótico,15800,100,25
+12,Metronidazol 500mg x14,Antibiótico,12000,100,25
+13,Clindamicina 300mg x16,Antibiótico,28000,100,25
+14,Claritromicina 500mg x14,Antibiótico,35000,100,25
+15,Cefalexina 500mg x20,Antibiótico,19500,100,25
+16,Doxiciclina 100mg x10,Antibiótico,14000,100,25
+17,Vitamina C 1000mg x30,Vitaminas y suplementos,18000,100,25
+18,Vitamina D3 2000UI x30,Vitaminas y suplementos,22000,100,25
+19,Complejo B x30,Vitaminas y suplementos,16500,100,25
+20,Omega 3 1000mg x30,Vitaminas y suplementos,28000,100,25
+21,Calcio + Vitamina D x60,Vitaminas y suplementos,24000,100,25
+22,Zinc 50mg x30,Vitaminas y suplementos,15000,100,25
+23,Hierro + Ácido Fólico x30,Vitaminas y suplementos,19000,100,25
+24,Magnesio 400mg x60,Vitaminas y suplementos,32000,100,25
+25,Protector solar SPF 50 50ml,Cuidado personal,35000,100,25
+26,Shampoo anticaspa 400ml,Cuidado personal,22000,100,25
+27,Crema hidratante facial 50ml,Cuidado personal,42000,100,25
+28,Jabón antibacterial 250ml,Cuidado personal,12000,100,25
+29,Hilo dental 50m,Cuidado personal,8500,100,25
+30,Crema dental blanqueadora 75ml,Cuidado personal,14000,100,25
+31,Desodorante roll-on 50ml,Cuidado personal,18000,100,25
+32,Gel antibacterial 500ml,Cuidado personal,16000,100,25
+33,Condón Durex Natural x3,Condones,12000,100,25
+34,Condón Durex Extra Fino x3,Condones,13500,100,25
+35,Condón Condomi Ultra x12,Condones,38000,100,25
+36,Condón Prudence Fresa x3,Condones,11000,100,25
+37,Condón Control Retard x3,Condones,14500,100,25
+38,Condón Lifestyles Ultra x12,Condones,35000,100,25
+39,Condón Vive Placer Real x3,Condones,10500,100,25
+40,Condón Protex x12,Condones,32000,100,25
+41,Lubricante Durex Play 50ml,Lubricantes,28000,100,25
+42,Lubricante Íntimo KY 75ml,Lubricantes,32000,100,25
+43,Lubricante Pjur Original 30ml,Lubricantes,45000,100,25
+44,Lubricante Nuei Delay 100ml,Lubricantes,38000,100,25
+45,Lubricante Yes OB Natural 80ml,Lubricantes,52000,100,25
+46,Lubricante Vive Sensitivo 50ml,Lubricantes,25000,100,25
+47,Lubricante Prudence Aqua 60ml,Lubricantes,22000,100,25
+48,Lubricante Control Aqua 75ml,Lubricantes,29000,100,25

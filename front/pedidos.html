@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DRGUERIA · Pedidos</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --verde-oscuro:  #0a5c45;
+      --verde-medio:   #1a8a68;
+      --verde-claro:   #2cbf8e;
+      --verde-suave:   #d6f5ec;
+      --verde-bg:      #f2faf7;
+      --gris-texto:    #3d4a44;
+      --gris-borde:    #c4ddd5;
+      --rojo:          #e05252;
+      --amarillo:      #f59e0b;
+      --azul:          #3b82f6;
+      --sidebar-w:     240px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--verde-bg); color: var(--gris-texto); display: flex; min-height: 100vh; }
+
+    /* ══ Sidebar ══ */
+    .sidebar { width: var(--sidebar-w); background: var(--verde-oscuro); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; overflow-y: auto; }
+    .sidebar-logo { padding: 1.6rem 1.4rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo a { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: #fff; text-decoration: none; }
+    .sidebar-logo a span { color: #a8e8d0; }
+    .sidebar-logo .rol-badge { display: inline-block; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 4px; padding: 0.15rem 0.5rem; margin-top: 0.3rem; }
+    .sidebar-nav { flex: 1; padding: 1rem 0; }
+    .nav-section-title { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 0.8rem 1.4rem 0.3rem; }
+    .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.4rem; color: rgba(255,255,255,0.72); text-decoration: none; font-size: 0.9rem; transition: all 0.18s; border-left: 3px solid transparent; }
+    .sidebar-link i { font-size: 1rem; width: 18px; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .sidebar-link.activo { background: rgba(255,255,255,0.1); color: #fff; border-left-color: var(--verde-claro); }
+    .sidebar-footer { padding: 1rem 1.4rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-usuario { font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-bottom: 0.6rem; }
+    .sidebar-usuario strong { color: #fff; display: block; }
+    .btn-logout-sidebar { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.8); border-radius: 8px; padding: 0.45rem; font-size: 0.82rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.18s; }
+    .btn-logout-sidebar:hover { background: rgba(255,255,255,0.18); }
+
+    /* ══ Main ══ */
+    .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+    .topbar { background: #fff; border-bottom: 1px solid var(--gris-borde); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; }
+    .topbar h1 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--verde-oscuro); margin: 0; }
+    .topbar .sub { font-size: 0.82rem; color: #9db8ad; }
+    .topbar-acciones { display: flex; gap: 0.7rem; align-items: center; }
+
+    .btn-nuevo { background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio)); border: none; border-radius: 9px; color: #fff; padding: 0.55rem 1.2rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 4px 14px rgba(10,92,69,0.22); transition: transform 0.15s, opacity 0.18s; }
+    .btn-nuevo:hover { transform: translateY(-1px); opacity: 0.92; }
+    .btn-refresh { background: var(--verde-suave); border: none; border-radius: 8px; color: var(--verde-oscuro); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; transition: background 0.18s; display: flex; align-items: center; gap: 0.4rem; }
+    .btn-refresh:hover { background: #b8edd8; }
+    .btn-refresh.girando i { animation: spin 0.8s linear infinite; }
+
+    .pagina { padding: 1.8rem 2rem; }
+
+    /* ══ KPIs compactos ══ */
+    .kpi-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
+    .kpi-mini { background: #fff; border-radius: 12px; border: 1.5px solid var(--gris-borde); padding: 0.9rem 1.2rem; display: flex; align-items: center; gap: 0.8rem; flex: 1; min-width: 140px; animation: fadeUp 0.3s ease both; }
+    .kpi-mini-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .kpi-mini-num  { font-family: 'DM Serif Display', serif; font-size: 1.6rem; line-height: 1; }
+    .kpi-mini-lbl  { font-size: 0.75rem; color: #9db8ad; }
+    .bg-amarillo { background: #fef3c7; } .bg-azul { background: #dbeafe; } .bg-verde { background: var(--verde-suave); } .bg-gris { background: #f1f5f9; }
+    .c-amarillo { color: var(--amarillo); } .c-azul { color: var(--azul); } .c-verde { color: var(--verde-medio); } .c-gris { color: #64748b; }
+
+    /* ══ Toolbar ══ */
+    .toolbar { background: #fff; border-radius: 12px; border: 1.5px solid var(--gris-borde); padding: 1rem 1.2rem; margin-bottom: 1.2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .busqueda-wrap { flex: 1; min-width: 180px; position: relative; }
+    .busqueda-wrap i { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9db8ad; }
+    .busqueda-wrap input { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.5rem 1rem 0.5rem 2.4rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .busqueda-wrap input:focus { border-color: var(--verde-medio); }
+    .select-filtro { border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.5rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--gris-texto); outline: none; background: #fff; cursor: pointer; }
+    .select-filtro:focus { border-color: var(--verde-medio); }
+
+    /* ══ Tabla ══ */
+    .tabla-wrap { background: #fff; border-radius: 14px; border: 1.5px solid var(--gris-borde); overflow: hidden; }
+    .tabla-wrap table { width: 100%; border-collapse: collapse; }
+    .tabla-wrap thead { background: var(--verde-oscuro); color: #fff; }
+    .tabla-wrap thead th { padding: 0.85rem 1.1rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+    .tabla-wrap tbody tr { border-bottom: 1px solid var(--gris-borde); transition: background 0.15s; }
+    .tabla-wrap tbody tr:last-child { border-bottom: none; }
+    .tabla-wrap tbody tr:hover { background: var(--verde-bg); }
+    .tabla-wrap tbody td { padding: 0.9rem 1.1rem; font-size: 0.88rem; vertical-align: middle; }
+    .tabla-footer { padding: 0.7rem 1.2rem; border-top: 1px solid var(--gris-borde); font-size: 0.8rem; color: #9db8ad; }
+
+    /* ══ Timeline de estado ══ */
+    .timeline-estado {
+      display: flex; align-items: center; gap: 0;
+    }
+    .tl-paso {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      position: relative;
+    }
+    .tl-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      border: 2px solid var(--gris-borde);
+      background: #fff;
+      transition: all 0.2s;
+    }
+    .tl-dot.activo  { background: var(--amarillo);    border-color: var(--amarillo); }
+    .tl-dot.proceso { background: var(--azul);        border-color: var(--azul); }
+    .tl-dot.done    { background: var(--verde-medio); border-color: var(--verde-medio); }
+    .tl-lbl { font-size: 0.62rem; color: #9db8ad; white-space: nowrap; }
+    .tl-lbl.activo  { color: var(--amarillo); font-weight: 600; }
+    .tl-lbl.proceso { color: var(--azul);     font-weight: 600; }
+    .tl-lbl.done    { color: var(--verde-medio); font-weight: 600; }
+    .tl-linea {
+      height: 2px; width: 28px;
+      background: var(--gris-borde);
+      margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+    .tl-linea.done    { background: var(--verde-medio); }
+    .tl-linea.proceso { background: var(--azul); }
+
+    /* Badges */
+    .badge-estado { border-radius: 20px; padding: 0.22rem 0.7rem; font-size: 0.73rem; font-weight: 600; white-space: nowrap; }
+    .badge-aceptado  { background: #fef3c7; color: #92400e; }
+    .badge-proceso   { background: #dbeafe; color: #1e40af; }
+    .badge-entregado { background: var(--verde-suave); color: var(--verde-oscuro); }
+
+    /* Botones acción */
+    .acciones { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .btn-accion { border: none; border-radius: 7px; padding: 0.35rem 0.75rem; font-size: 0.78rem; cursor: pointer; transition: opacity 0.18s; display: flex; align-items: center; gap: 0.3rem; font-family: 'DM Sans', sans-serif; font-weight: 500; white-space: nowrap; }
+    .btn-accion:hover { opacity: 0.8; }
+    .btn-accion:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-proceso   { background: #dbeafe; color: #1e40af; }
+    .btn-entregado { background: var(--verde-suave); color: var(--verde-oscuro); }
+    .btn-ver       { background: #f1f5f9; color: #475569; }
+    .btn-eliminar  { background: #ffe4e4; color: var(--rojo); }
+
+    /* Vacío */
+    .estado-vacio { text-align: center; padding: 3rem 2rem; color: #9db8ad; }
+    .estado-vacio i { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+    /* Fecha */
+    .fecha-cell { font-size: 0.8rem; color: #9db8ad; white-space: nowrap; }
+
+    /* Número factura */
+    .factura-cell { font-family: 'DM Serif Display', serif; font-size: 0.88rem; color: var(--gris-texto); }
+
+    /* ══ Skeleton ══ */
+    .sk { height: 13px; border-radius: 6px; background: linear-gradient(90deg,#e8f5f1 25%,#d6f5ec 50%,#e8f5f1 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; }
+
+    /* ══ Modales ══ */
+    .modal-header-verde { background: var(--verde-oscuro); color: #fff; border-radius: 12px 12px 0 0; }
+    .modal-header-verde .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+    .modal-header-verde .btn-close { filter: invert(1); }
+    .form-label-custom { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gris-texto); margin-bottom: 0.35rem; display: block; }
+    .input-custom { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.6rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; color: var(--gris-texto); outline: none; transition: border-color 0.2s; }
+    .input-custom:focus { border-color: var(--verde-medio); box-shadow: 0 0 0 3px rgba(26,138,104,0.1); }
+    .select-custom { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.6rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; color: var(--gris-texto); outline: none; background: #fff; transition: border-color 0.2s; cursor: pointer; }
+    .select-custom:focus { border-color: var(--verde-medio); }
+    .btn-guardar-modal { background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio)); border: none; border-radius: 9px; color: #fff; padding: 0.65rem 1.8rem; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity 0.18s; }
+    .btn-guardar-modal:hover { opacity: 0.9; }
+    .btn-guardar-modal:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Modal detalle */
+    .detalle-fila { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid var(--gris-borde); font-size: 0.9rem; }
+    .detalle-fila:last-child { border-bottom: none; }
+    .detalle-fila .lbl { color: #9db8ad; }
+    .detalle-fila .val { font-weight: 600; color: var(--gris-texto); text-align: right; }
+
+    /* Modal eliminar */
+    .modal-eliminar .modal-header { background: var(--rojo); border-radius: 12px 12px 0 0; }
+    .modal-eliminar .modal-title  { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: #fff; }
+    .modal-eliminar .btn-close    { filter: invert(1); }
+    .btn-confirmar-eliminar { background: var(--rojo); border: none; border-radius: 9px; color: #fff; padding: 0.6rem 1.6rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+    /* ══ Toast ══ */
+    .toast-drg { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(10,92,69,0.18); border-left: 4px solid var(--verde-claro); padding: 1rem 1.3rem; min-width: 260px; display: none; animation: slideIn 0.3s ease; }
+    .toast-drg.error { border-left-color: var(--rojo); }
+    .toast-titulo { font-weight: 600; font-size: 0.9rem; }
+    .toast-msg    { font-size: 0.82rem; color: #7a9c8e; margin-top: 0.15rem; }
+
+    @keyframes spin    { to { transform: rotate(360deg); } }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+    @keyframes slideIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main { margin-left: 0; }
+      .pagina { padding: 1rem; }
+      .tabla-wrap { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Sidebar ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a href="dashboard.html">DR<span>GUERIA</span></a>
+      <div class="rol-badge">Administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Principal</div>
+      <a class="sidebar-link" href="dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a>
+      <div class="nav-section-title">Inventario</div>
+      <a class="sidebar-link" href="productos.html"><i class="bi bi-box-seam"></i>Productos</a>
+      <a class="sidebar-link activo" href="pedidos.html"><i class="bi bi-truck"></i>Pedidos</a>
+      <div class="nav-section-title">Gestión</div>
+      <a class="sidebar-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
+      <a class="sidebar-link" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-usuario">Sesión iniciada como<strong id="sidebarNombre">…</strong></div>
+      <button class="btn-logout-sidebar" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ══ Main ══ -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1>Pedidos</h1>
+        <div class="sub">Seguimiento y gestión de pedidos a proveedores</div>
+      </div>
+      <div class="topbar-acciones">
+        <button class="btn-refresh" id="btnRefresh" onclick="cargarTodo()">
+          <i class="bi bi-arrow-clockwise"></i> Actualizar
+        </button>
+        <button class="btn-nuevo" onclick="abrirModalNuevo()">
+          <i class="bi bi-plus-lg"></i> Nuevo pedido
+        </button>
+      </div>
+    </div>
+
+    <div class="pagina">
+
+      <!-- KPIs -->
+      <div class="kpi-row">
+        <div class="kpi-mini" style="animation-delay:.05s">
+          <div class="kpi-mini-icon bg-amarillo"><i class="bi bi-hourglass-split c-amarillo"></i></div>
+          <div><div class="kpi-mini-num c-amarillo" id="kpiAceptado">—</div><div class="kpi-mini-lbl">Aceptados</div></div>
+        </div>
+        <div class="kpi-mini" style="animation-delay:.1s">
+          <div class="kpi-mini-icon bg-azul"><i class="bi bi-arrow-repeat c-azul"></i></div>
+          <div><div class="kpi-mini-num c-azul" id="kpiProceso">—</div><div class="kpi-mini-lbl">En proceso</div></div>
+        </div>
+        <div class="kpi-mini" style="animation-delay:.15s">
+          <div class="kpi-mini-icon bg-verde"><i class="bi bi-check-circle-fill c-verde"></i></div>
+          <div><div class="kpi-mini-num c-verde" id="kpiEntregado">—</div><div class="kpi-mini-lbl">Entregados</div></div>
+        </div>
+        <div class="kpi-mini" style="animation-delay:.2s">
+          <div class="kpi-mini-icon bg-gris"><i class="bi bi-list-ul c-gris"></i></div>
+          <div><div class="kpi-mini-num c-gris" id="kpiTotal">—</div><div class="kpi-mini-lbl">Total pedidos</div></div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="busqueda-wrap">
+          <i class="bi bi-search"></i>
+          <input type="text" id="inputBusqueda" placeholder="Buscar por # pedido o proveedor…"/>
+        </div>
+        <select class="select-filtro" id="filtroEstado">
+          <option value="">Todos los estados</option>
+          <option value="aceptado">Aceptado</option>
+          <option value="en proceso">En proceso</option>
+          <option value="entregado">Entregado</option>
+        </select>
+      </div>
+
+      <!-- Tabla -->
+      <div class="tabla-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Producto</th>
+              <th>Proveedor</th>
+              <th>Cantidad</th>
+              <th>Progreso</th>
+              <th>Estado</th>
+              <th>Fecha pedido</th>
+              <th>Factura</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="bodyPedidos">
+            <tr><td colspan="9"><div class="sk w-100 my-2"></div></td></tr>
+            <tr><td colspan="9"><div class="sk w-100 my-2"></div></td></tr>
+            <tr><td colspan="9"><div class="sk w-100 my-2"></div></td></tr>
+          </tbody>
+        </table>
+        <div class="tabla-footer" id="tablaFooter">Cargando…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Nuevo pedido ══ -->
+  <div class="modal fade" id="modalNuevo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header modal-header-verde">
+          <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Nuevo pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="alertaNuevo" class="alert d-none small mb-3" style="border-radius:9px;"></div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label-custom">Producto</label>
+              <select class="select-custom" id="nProducto"><option value="">Cargando productos…</option></select>
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Proveedor</label>
+              <select class="select-custom" id="nProveedor"><option value="">Cargando proveedores…</option></select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Cantidad solicitada</label>
+              <input type="number" class="input-custom" id="nCantidad" placeholder="0" min="1"/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Estado inicial</label>
+              <select class="select-custom" id="nEstado">
+                <option value="aceptado">Aceptado</option>
+                <option value="en proceso">En proceso</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Fecha de entrega</label>
+              <input type="date" class="input-custom" id="nFechaEntrega"/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Número de factura</label>
+              <input type="text" class="input-custom" id="nFactura" placeholder="Ej: FAC-001"/>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-guardar-modal" id="btnGuardarNuevo" onclick="crearPedido()">
+            <span id="spinnerNuevo" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Crear pedido
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Detalle del pedido ══ -->
+  <div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header modal-header-verde">
+          <h5 class="modal-title" id="detalleTitulo"><i class="bi bi-file-text me-2"></i>Detalle del pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4" id="detalleBody">
+          <!-- se llena dinámicamente -->
+        </div>
+        <div class="modal-footer border-0 pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Editar estado ══ -->
+  <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header modal-header-verde">
+          <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Actualizar pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="alertaEditar" class="alert d-none small mb-3" style="border-radius:9px;"></div>
+          <p class="small text-muted mb-3">Pedido <strong id="editarId"></strong></p>
+          <label class="form-label-custom">Nuevo estado</label>
+          <select class="select-custom" id="editarEstado">
+            <option value="aceptado">Aceptado</option>
+            <option value="en proceso">En proceso</option>
+            <option value="entregado">Entregado</option>
+          </select>
+          <label class="form-label-custom mt-3">Número de factura (opcional)</label>
+          <input type="text" class="input-custom" id="editarFactura" placeholder="FAC-001"/>
+          <label class="form-label-custom mt-3">Fecha de entrega (opcional)</label>
+          <input type="date" class="input-custom" id="editarFechaEntrega"/>
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-guardar-modal" id="btnGuardarEditar" onclick="guardarEdicion()">
+            <span id="spinnerEditar" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Eliminar ══ -->
+  <div class="modal fade modal-eliminar" id="modalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-trash me-2"></i>Eliminar pedido</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <i class="bi bi-exclamation-triangle-fill" style="font-size:2.5rem;color:var(--rojo)"></i>
+          <p class="mt-2 mb-0">¿Eliminar el pedido <strong id="eliminarId"></strong>? Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-confirmar-eliminar" id="btnConfEliminar" onclick="confirmarEliminar()">
+            <span id="spinnerEliminar" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Sí, eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-drg" id="toast">
+    <div class="toast-titulo" id="toastTitulo"></div>
+    <div class="toast-msg"    id="toastMsg"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API = 'http://192.168.100.2:4000';
+
+    /* ── Auth ── */
+    const token   = localStorage.getItem('token');
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    const rol     = localStorage.getItem('rol');
+    if (!token)                  window.location.href = 'index.html';
+    if (rol !== 'administrador') window.location.href = 'catalogo.html';
+    document.getElementById('sidebarNombre').textContent = usuario.nombre || 'Admin';
+
+    /* ── Estado ── */
+    let pedidos     = [];
+    let productos   = [];
+    let proveedores = [];
+    let idEditando  = null;
+    let idEliminar  = null;
+
+    const modalNuevoBS   = new bootstrap.Modal(document.getElementById('modalNuevo'));
+    const modalDetalleBS = new bootstrap.Modal(document.getElementById('modalDetalle'));
+    const modalEditarBS  = new bootstrap.Modal(document.getElementById('modalEditar'));
+    const modalElimBS    = new bootstrap.Modal(document.getElementById('modalEliminar'));
+
+    /* ── Helpers ── */
+    const fmtFecha = f => f ? new Date(f).toLocaleDateString('es-CO', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+
+    function estadoTimeline(estado) {
+      const pasos = ['aceptado','en proceso','entregado'];
+      const idx   = pasos.indexOf(estado);
+      return `
+        <div class="timeline-estado">
+          <div class="tl-paso">
+            <div class="tl-dot ${idx >= 0 ? 'activo' : ''}"></div>
+            <div class="tl-lbl ${idx >= 0 ? 'activo' : ''}">Aceptado</div>
+          </div>
+          <div class="tl-linea ${idx >= 1 ? 'proceso' : ''}"></div>
+          <div class="tl-paso">
+            <div class="tl-dot ${idx >= 1 ? 'proceso' : ''}"></div>
+            <div class="tl-lbl ${idx >= 1 ? 'proceso' : ''}">En proceso</div>
+          </div>
+          <div class="tl-linea ${idx >= 2 ? 'done' : ''}"></div>
+          <div class="tl-paso">
+            <div class="tl-dot ${idx >= 2 ? 'done' : ''}"></div>
+            <div class="tl-lbl ${idx >= 2 ? 'done' : ''}">Entregado</div>
+          </div>
+        </div>`;
+    }
+
+    /* ── Cargar todo ── */
+    async function cargarTodo() {
+      const btn = document.getElementById('btnRefresh');
+      btn.classList.add('girando');
+      try {
+        const [resPed, resProd, resProv] = await Promise.all([
+          fetch(`${API}/pedidos`),
+          fetch(`${API}/productos`),
+          fetch(`${API}/proveedores`)
+        ]);
+        pedidos     = await resPed.json();
+        productos   = await resProd.json();
+        proveedores = await resProv.json();
+        if (!Array.isArray(pedidos))     pedidos     = pedidos.pedidos     || [];
+        if (!Array.isArray(productos))   productos   = productos.productos || [];
+        if (!Array.isArray(proveedores)) proveedores = proveedores.proveedores || [];
+
+        actualizarKPIs();
+        renderTabla();
+        poblarSelects();
+      } catch {
+        mostrarToast('Error', 'No se pudo cargar la información.', true);
+      } finally {
+        btn.classList.remove('girando');
+      }
+    }
+
+    /* ── KPIs ── */
+    function actualizarKPIs() {
+      const aceptado  = pedidos.filter(p => p.estado_pedido === 'aceptado').length;
+      const proceso   = pedidos.filter(p => p.estado_pedido === 'en proceso').length;
+      const entregado = pedidos.filter(p => p.estado_pedido === 'entregado').length;
+      document.getElementById('kpiAceptado').textContent  = aceptado;
+      document.getElementById('kpiProceso').textContent   = proceso;
+      document.getElementById('kpiEntregado').textContent = entregado;
+      document.getElementById('kpiTotal').textContent     = pedidos.length;
+    }
+
+    /* ── Render tabla ── */
+    function renderTabla() {
+      const q      = document.getElementById('inputBusqueda').value.toLowerCase().trim();
+      const estado = document.getElementById('filtroEstado').value;
+      const body   = document.getElementById('bodyPedidos');
+      const footer = document.getElementById('tablaFooter');
+
+      let lista = pedidos;
+      if (estado) lista = lista.filter(p => p.estado_pedido === estado);
+      if (q)      lista = lista.filter(p =>
+        String(p.id_pedido).includes(q) ||
+        (p.nombre_proveedor || '').toLowerCase().includes(q)
+      );
+
+      if (lista.length === 0) {
+        body.innerHTML = `<tr><td colspan="9" class="estado-vacio"><i class="bi bi-truck"></i>No hay pedidos que coincidan</td></tr>`;
+        footer.textContent = '0 pedidos';
+        return;
+      }
+
+      const badgeClass = e => e === 'aceptado' ? 'badge-aceptado' : e === 'en proceso' ? 'badge-proceso' : 'badge-entregado';
+
+      body.innerHTML = lista.map((p, i) => {
+        const puedeAvanzar = p.estado_pedido !== 'entregado';
+        const siguiente    = p.estado_pedido === 'aceptado' ? 'en proceso' : 'entregado';
+        const btnAvanzar   = puedeAvanzar
+          ? `<button class="btn-accion ${siguiente === 'en proceso' ? 'btn-proceso' : 'btn-entregado'}"
+               onclick="avanzarEstado(${p.id_pedido}, '${siguiente}', this)">
+               <i class="bi bi-arrow-right-circle"></i>
+               ${siguiente === 'en proceso' ? 'En proceso' : 'Entregado'}
+             </button>` : '';
+
+        return `
+        <tr style="animation:fadeUp .22s ease ${i*0.03}s both">
+          <td class="text-muted small">#${p.id_pedido}</td>
+          <td><strong>Producto #${p.id_producto}</strong></td>
+          <td class="small">${p.nombre_proveedor || `Prov. #${p.id_proveedor}`}</td>
+          <td><strong>${p.cantidad_solicitada}</strong> uds.</td>
+          <td>${estadoTimeline(p.estado_pedido)}</td>
+          <td><span class="badge-estado ${badgeClass(p.estado_pedido)}">${p.estado_pedido}</span></td>
+          <td class="fecha-cell">${fmtFecha(p.fecha_pedido)}</td>
+          <td class="factura-cell">${p.numero_factura || '—'}</td>
+          <td>
+            <div class="acciones">
+              <button class="btn-accion btn-ver" onclick="verDetalle(${p.id_pedido})"><i class="bi bi-eye"></i></button>
+              <button class="btn-accion btn-ver" onclick="abrirModalEditar(${p.id_pedido})" title="Editar"><i class="bi bi-pencil"></i></button>
+              ${btnAvanzar}
+              <button class="btn-accion btn-eliminar" onclick="abrirModalEliminar(${p.id_pedido})"><i class="bi bi-trash"></i></button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+
+      footer.textContent = `${lista.length} pedido${lista.length !== 1 ? 's' : ''}`;
+    }
+
+    /* Filtros */
+    document.getElementById('inputBusqueda').addEventListener('input', renderTabla);
+    document.getElementById('filtroEstado').addEventListener('change', renderTabla);
+
+    /* ── Avanzar estado rápido ── */
+    async function avanzarEstado(id, nuevoEstado, btn) {
+      btn.disabled = true;
+      try {
+        const res = await fetch(`${API}/pedidos/${id}`, {
+          method: 'PUT', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ estado_pedido: nuevoEstado })
+        });
+        if (!res.ok) throw new Error();
+        const msg = nuevoEstado === 'entregado' ? '¡Stock recargado automáticamente!' : 'Pedido en proceso';
+        mostrarToast('Estado actualizado', msg);
+        await cargarTodo();
+      } catch {
+        mostrarToast('Error', 'No se pudo cambiar el estado.', true);
+        btn.disabled = false;
+      }
+    }
+
+    /* ── Ver detalle ── */
+    async function verDetalle(id) {
+      const p = pedidos.find(x => x.id_pedido === id);
+      if (!p) return;
+      document.getElementById('detalleTitulo').innerHTML = `<i class="bi bi-file-text me-2"></i>Pedido #${p.id_pedido}`;
+      document.getElementById('detalleBody').innerHTML = `
+        <div class="detalle-fila"><span class="lbl">Producto</span><span class="val">Producto #${p.id_producto}</span></div>
+        <div class="detalle-fila"><span class="lbl">Proveedor</span><span class="val">${p.nombre_proveedor || `#${p.id_proveedor}`}</span></div>
+        <div class="detalle-fila"><span class="lbl">Cantidad solicitada</span><span class="val">${p.cantidad_solicitada} unidades</span></div>
+        <div class="detalle-fila"><span class="lbl">Estado</span><span class="val"><span class="badge-estado ${p.estado_pedido === 'aceptado' ? 'badge-aceptado' : p.estado_pedido === 'en proceso' ? 'badge-proceso' : 'badge-entregado'}">${p.estado_pedido}</span></span></div>
+        <div class="detalle-fila"><span class="lbl">Fecha de pedido</span><span class="val">${fmtFecha(p.fecha_pedido)}</span></div>
+        <div class="detalle-fila"><span class="lbl">Fecha de entrega</span><span class="val">${fmtFecha(p.fecha_entrega)}</span></div>
+        <div class="detalle-fila"><span class="lbl">Número de factura</span><span class="val">${p.numero_factura || '—'}</span></div>
+        <div class="mt-3">${estadoTimeline(p.estado_pedido)}</div>`;
+      modalDetalleBS.show();
+    }
+
+    /* ── Modal Nuevo ── */
+    function poblarSelects() {
+      const selProd = document.getElementById('nProducto');
+      const selProv = document.getElementById('nProveedor');
+      selProd.innerHTML = '<option value="">Seleccionar producto…</option>' +
+        productos.map(p => `<option value="${p.id_producto}">${p.nombre_producto}</option>`).join('');
+      selProv.innerHTML = '<option value="">Seleccionar proveedor…</option>' +
+        proveedores.map(p => `<option value="${p.id_proveedor}">${p.nombre}</option>`).join('');
+    }
+
+    function abrirModalNuevo() {
+      document.getElementById('alertaNuevo').className = 'alert d-none small mb-3';
+      ['nProducto','nProveedor','nCantidad','nFactura','nFechaEntrega'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('nEstado').value = 'aceptado';
+      modalNuevoBS.show();
+    }
+
+    async function crearPedido() {
+      const id_producto  = document.getElementById('nProducto').value;
+      const id_proveedor = document.getElementById('nProveedor').value;
+      const cantidad     = parseInt(document.getElementById('nCantidad').value);
+      const estado       = document.getElementById('nEstado').value;
+      const factura      = document.getElementById('nFactura').value.trim();
+      const fechaEntrega = document.getElementById('nFechaEntrega').value;
+      const alerta       = document.getElementById('alertaNuevo');
+      const btn          = document.getElementById('btnGuardarNuevo');
+      const spinner      = document.getElementById('spinnerNuevo');
+
+      if (!id_producto || !id_proveedor || !cantidad || cantidad < 1) {
+        alerta.className = 'alert alert-warning small mb-3';
+        alerta.textContent = 'Producto, proveedor y cantidad son obligatorios.';
+        return;
+      }
+      btn.disabled = true; spinner.classList.remove('d-none');
+
+      const body = { id_producto: +id_producto, id_proveedor: +id_proveedor, cantidad_solicitada: cantidad, estado_pedido: estado };
+      if (factura)      body.numero_factura = factura;
+      if (fechaEntrega) body.fecha_entrega  = fechaEntrega;
+
+      try {
+        const res  = await fetch(`${API}/pedidos`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.mensaje || data.error || 'Error al crear el pedido.');
+        modalNuevoBS.hide();
+        mostrarToast('Pedido creado', `Pedido #${data.id_pedido || ''} registrado correctamente.`);
+        await cargarTodo();
+      } catch (e) {
+        alerta.className = 'alert alert-danger small mb-3';
+        alerta.textContent = e.message;
+      } finally {
+        btn.disabled = false; spinner.classList.add('d-none');
+      }
+    }
+
+    /* ── Modal Editar ── */
+    function abrirModalEditar(id) {
+      const p = pedidos.find(x => x.id_pedido === id);
+      if (!p) return;
+      idEditando = id;
+      document.getElementById('editarId').textContent     = `#${id}`;
+      document.getElementById('editarEstado').value       = p.estado_pedido;
+      document.getElementById('editarFactura').value      = p.numero_factura || '';
+      document.getElementById('editarFechaEntrega').value = p.fecha_entrega ? p.fecha_entrega.slice(0,10) : '';
+      document.getElementById('alertaEditar').className   = 'alert d-none small mb-3';
+      modalEditarBS.show();
+    }
+
+    async function guardarEdicion() {
+      const estado       = document.getElementById('editarEstado').value;
+      const factura      = document.getElementById('editarFactura').value.trim();
+      const fechaEntrega = document.getElementById('editarFechaEntrega').value;
+      const alerta       = document.getElementById('alertaEditar');
+      const btn          = document.getElementById('btnGuardarEditar');
+      const spinner      = document.getElementById('spinnerEditar');
+
+      btn.disabled = true; spinner.classList.remove('d-none');
+      const body = { estado_pedido: estado };
+      if (factura)      body.numero_factura = factura;
+      if (fechaEntrega) body.fecha_entrega  = fechaEntrega;
+
+      try {
+        const res  = await fetch(`${API}/pedidos/${idEditando}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.mensaje || data.error || 'Error al actualizar.');
+        modalEditarBS.hide();
+        const msg = estado === 'entregado' ? '¡Stock recargado automáticamente!' : `Estado: ${estado}`;
+        mostrarToast('Pedido actualizado', msg);
+        await cargarTodo();
+      } catch (e) {
+        alerta.className = 'alert alert-danger small mb-3';
+        alerta.textContent = e.message;
+      } finally {
+        btn.disabled = false; spinner.classList.add('d-none');
+      }
+    }
+
+    /* ── Eliminar ── */
+    function abrirModalEliminar(id) {
+      idEliminar = id;
+      document.getElementById('eliminarId').textContent = `#${id}`;
+      modalElimBS.show();
+    }
+
+    async function confirmarEliminar() {
+      const btn     = document.getElementById('btnConfEliminar');
+      const spinner = document.getElementById('spinnerEliminar');
+      btn.disabled = true; spinner.classList.remove('d-none');
+      try {
+        const res = await fetch(`${API}/pedidos/${idEliminar}`, { method:'DELETE' });
+        if (!res.ok) throw new Error();
+        modalElimBS.hide();
+        mostrarToast('Pedido eliminado', 'El pedido fue eliminado correctamente.');
+        await cargarTodo();
+      } catch {
+        mostrarToast('Error', 'No se pudo eliminar el pedido.', true);
+      } finally {
+        btn.disabled = false; spinner.classList.add('d-none');
+      }
+    }
+
+    /* ── Toast ── */
+    let toastT;
+    function mostrarToast(titulo, msg, error = false) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastTitulo').textContent = titulo;
+      document.getElementById('toastMsg').textContent    = msg;
+      t.className = 'toast-drg' + (error ? ' error' : '');
+      t.style.display = 'block';
+      clearTimeout(toastT);
+      toastT = setTimeout(() => t.style.display = 'none', 4500);
+    }
+
+    /* ── Logout ── */
+    function cerrarSesion() { localStorage.clear(); window.location.href = 'index.html'; }
+
+    cargarTodo();
+  </script>
+</body>
+</html>

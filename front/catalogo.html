@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DRGUERIA · Catálogo</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --verde-oscuro:  #0a5c45;
+      --verde-medio:   #1a8a68;
+      --verde-claro:   #2cbf8e;
+      --verde-suave:   #d6f5ec;
+      --verde-bg:      #f2faf7;
+      --blanco:        #f8fdfb;
+      --gris-texto:    #3d4a44;
+      --gris-borde:    #c4ddd5;
+      --rojo:          #e05252;
+      --amarillo:      #f59e0b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--verde-bg);
+      color: var(--gris-texto);
+      min-height: 100vh;
+    }
+
+    /* ── Navbar ── */
+    .navbar-drg {
+      background: var(--verde-oscuro);
+      padding: 0.85rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(10,92,69,0.18);
+    }
+    .navbar-brand-drg {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .navbar-brand-drg span { color: #a8e8d0; }
+    .nav-usuario {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .nav-nombre {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.88rem;
+    }
+    .nav-nombre strong { color: #fff; }
+    .btn-logout {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #fff;
+      border-radius: 8px;
+      padding: 0.38rem 0.9rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.22); }
+
+    /* ── Hero / Encabezado ── */
+    .hero {
+      background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 100%);
+      padding: 2.5rem 2rem 2rem;
+      color: #fff;
+    }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      margin-bottom: 0.3rem;
+    }
+    .hero p { color: rgba(255,255,255,0.72); font-size: 0.93rem; margin: 0; }
+
+    /* ── Barra de filtros ── */
+    .filtros-bar {
+      background: #fff;
+      border-bottom: 1px solid var(--gris-borde);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .filtros-bar .busqueda {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    .filtros-bar .busqueda i {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9db8ad;
+    }
+    .filtros-bar .busqueda input {
+      width: 100%;
+      border: 1.5px solid var(--gris-borde);
+      border-radius: 9px;
+      padding: 0.55rem 1rem 0.55rem 2.4rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .filtros-bar .busqueda input:focus { border-color: var(--verde-medio); }
+    .chip-categoria {
+      border: 1.5px solid var(--gris-borde);
+      background: #fff;
+      border-radius: 20px;
+      padding: 0.38rem 1rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: 'DM Sans', sans-serif;
+      white-space: nowrap;
+    }
+    .chip-categoria:hover,
+    .chip-categoria.activo {
+      background: var(--verde-oscuro);
+      border-color: var(--verde-oscuro);
+      color: #fff;
+    }
+    .badge-stock-bajo {
+      background: #fff3cd;
+      color: #92400e;
+      border-radius: 6px;
+      padding: 0.25rem 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    /* ── Grilla de productos ── */
+    .contenedor-catalogo {
+      padding: 1.8rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .grid-productos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1.2rem;
+    }
+
+    /* ── Tarjeta de producto ── */
+    .tarjeta {
+      background: #fff;
+      border-radius: 14px;
+      border: 1.5px solid var(--gris-borde);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.18s, box-shadow 0.18s;
+      animation: fadeUp 0.35s ease both;
+    }
+    .tarjeta:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(10,92,69,0.12);
+    }
+    .tarjeta-icono {
+      background: var(--verde-suave);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      min-height: 100px;
+    }
+    .tarjeta-body {
+      padding: 1rem 1.1rem 1.2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .tarjeta-categoria {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--verde-medio);
+      margin-bottom: 0.3rem;
+    }
+    .tarjeta-nombre {
+      font-size: 0.97rem;
+      font-weight: 600;
+      color: var(--gris-texto);
+      margin-bottom: 0.6rem;
+      line-height: 1.3;
+    }
+    .tarjeta-precio {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem;
+      color: var(--verde-oscuro);
+      margin-bottom: 0.5rem;
+    }
+    .tarjeta-stock {
+      font-size: 0.8rem;
+      color: #7a9c8e;
+      margin-bottom: 1rem;
+    }
+    .tarjeta-stock.bajo { color: var(--amarillo); }
+    .tarjeta-stock.agotado { color: var(--rojo); }
+
+    .btn-comprar {
+      margin-top: auto;
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      border: none;
+      border-radius: 9px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 0.55rem;
+      cursor: pointer;
+      transition: opacity 0.18s, transform 0.15s;
+      width: 100%;
+    }
+    .btn-comprar:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-comprar:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Skeleton loader ── */
+    .skeleton {
+      background: linear-gradient(90deg, #e8f5f1 25%, #d6f5ec 50%, #e8f5f1 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.3s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+    .tarjeta-skeleton .tarjeta-icono { background: #e8f5f1; }
+    .sk-line { height: 12px; margin-bottom: 8px; }
+
+    /* ── Modal compra ── */
+    .modal-compra .modal-header {
+      background: var(--verde-oscuro);
+      color: #fff;
+      border-radius: 12px 12px 0 0;
+    }
+    .modal-compra .modal-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+    }
+    .modal-compra .btn-close { filter: invert(1); }
+    .info-producto-modal {
+      background: var(--verde-suave);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+    .info-producto-modal .nombre { font-weight: 600; font-size: 1.05rem; color: var(--verde-oscuro); }
+    .info-producto-modal .precio { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--verde-oscuro); }
+    .cantidad-control {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .btn-cantidad {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--verde-medio);
+      background: #fff;
+      color: var(--verde-medio);
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .btn-cantidad:hover { background: var(--verde-medio); color: #fff; }
+    .input-cantidad {
+      width: 70px;
+      text-align: center;
+      border: 1.5px solid var(--gris-borde);
+      border-radius: 8px;
+      padding: 0.45rem;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: var(--verde-oscuro);
+      outline: none;
+    }
+    .total-compra {
+      background: #fff;
+      border: 1.5px solid var(--gris-borde);
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .total-compra .label { font-size: 0.85rem; color: #7a9c8e; }
+    .total-compra .valor {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem;
+      color: var(--verde-oscuro);
+    }
+    .btn-confirmar-compra {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      width: 100%;
+      margin-top: 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: opacity 0.18s;
+    }
+    .btn-confirmar-compra:hover { opacity: 0.9; }
+
+    /* ── Toast de confirmación ── */
+    .toast-drg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 9999;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(10,92,69,0.18);
+      border-left: 4px solid var(--verde-claro);
+      padding: 1rem 1.3rem;
+      min-width: 280px;
+      max-width: 360px;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+    .toast-drg.alerta-stock { border-left-color: var(--amarillo); }
+    .toast-drg.error-toast { border-left-color: var(--rojo); }
+    .toast-drg .toast-titulo { font-weight: 600; font-size: 0.92rem; margin-bottom: 0.2rem; }
+    .toast-drg .toast-msg { font-size: 0.83rem; color: #7a9c8e; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Sin resultados */
+    .sin-resultados {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #9db8ad;
+      display: none;
+    }
+    .sin-resultados i { font-size: 3rem; margin-bottom: 1rem; }
+
+    /* Spinner inline */
+    .spinner-sm {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .filtros-bar { padding: 0.8rem 1rem; }
+      .contenedor-catalogo { padding: 1rem; }
+      .hero { padding: 1.8rem 1rem 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Navbar ══ -->
+  <nav class="navbar-drg d-flex justify-content-between align-items-center">
+    <a class="navbar-brand-drg" href="catalogo.html">DR<span>GUERIA</span></a>
+    <div class="nav-usuario">
+      <span class="nav-nombre">Hola, <strong id="navNombre">…</strong></span>
+      <button class="btn-logout" onclick="cerrarSesion()">
+        <i class="bi bi-box-arrow-right me-1"></i>Salir
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══ Hero ══ -->
+  <div class="hero">
+    <h1>Catálogo de productos</h1>
+    <p>Encuentra los medicamentos y productos que necesitas</p>
+  </div>
+
+  <!-- ══ Filtros ══ -->
+  <div class="filtros-bar" id="filtrosBar">
+    <div class="busqueda">
+      <i class="bi bi-search"></i>
+      <input type="text" id="inputBusqueda" placeholder="Buscar producto…"/>
+    </div>
+    <div id="chips" class="d-flex gap-2 flex-wrap">
+      <button class="chip-categoria activo" data-cat="Todos">Todos</button>
+      <button class="chip-categoria" data-cat="Analgésico">Analgésicos</button>
+      <button class="chip-categoria" data-cat="Antibiótico">Antibióticos</button>
+      <button class="chip-categoria" data-cat="Vitaminas y suplementos">Vitaminas</button>
+      <button class="chip-categoria" data-cat="Cuidado personal">Cuidado personal</button>
+      <button class="chip-categoria" data-cat="Condones">Condones</button>
+      <button class="chip-categoria" data-cat="Lubricantes">Lubricantes</button>
+    </div>
+  </div>
+
+  <!-- ══ Grilla ══ -->
+  <div class="contenedor-catalogo">
+    <div class="grid-productos" id="gridProductos">
+      <!-- Skeletons iniciales -->
+      <div class="tarjeta tarjeta-skeleton" id="sk1">
+        <div class="tarjeta-icono"></div>
+        <div class="tarjeta-body">
+          <div class="skeleton sk-line w-50"></div>
+          <div class="skeleton sk-line w-75"></div>
+          <div class="skeleton sk-line w-40"></div>
+          <div class="skeleton sk-line w-100 mt-2" style="height:36px;border-radius:9px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="sin-resultados" id="sinResultados">
+      <i class="bi bi-search"></i>
+      <p class="mb-0">No se encontraron productos</p>
+    </div>
+  </div>
+
+  <!-- ══ Modal: comprar ══ -->
+  <div class="modal fade modal-compra" id="modalComprar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-cart-plus me-2"></i>Realizar compra</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+
+          <div class="info-producto-modal">
+            <div class="tarjeta-categoria mb-1" id="mCategoria"></div>
+            <div class="nombre" id="mNombre"></div>
+            <div class="precio" id="mPrecio"></div>
+            <div class="text-muted small mt-1">Stock disponible: <strong id="mStock"></strong> unidades</div>
+          </div>
+
+          <label class="form-label fw-semibold small" style="color:var(--gris-texto);letter-spacing:.06em;text-transform:uppercase;">Cantidad</label>
+          <div class="cantidad-control">
+            <button class="btn-cantidad" id="btnMenos">−</button>
+            <input class="input-cantidad" type="number" id="inputCantidad" value="1" min="1"/>
+            <button class="btn-cantidad" id="btnMas">+</button>
+          </div>
+
+          <div class="total-compra">
+            <span class="label">Total a pagar</span>
+            <span class="valor" id="mTotal">$0</span>
+          </div>
+
+          <div id="alertaCompra" class="alert mt-3 d-none small" style="border-radius:9px;"></div>
+
+          <button class="btn-confirmar-compra" id="btnConfirmarCompra">
+            Confirmar compra
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Toast ══ -->
+  <div class="toast-drg" id="toast">
+    <div class="d-flex align-items-start gap-2">
+      <i class="bi bi-check-circle-fill mt-1" id="toastIcono" style="color:var(--verde-claro);font-size:1.1rem;"></i>
+      <div>
+        <div class="toast-titulo" id="toastTitulo"></div>
+        <div class="toast-msg" id="toastMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API = 'http://192.168.100.2:4000';
+
+    /* ── Auth guard ── */
+    const token   = localStorage.getItem('token');
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    const rol     = localStorage.getItem('rol');
+    if (!token) window.location.href = 'index.html';
+    document.getElementById('navNombre').textContent = usuario.nombre || 'Usuario';
+
+    /* ── Estado ── */
+    let productos    = [];
+    let filtroActual = 'Todos';
+    let productoSel  = null;
+    const modalBS    = new bootstrap.Modal(document.getElementById('modalComprar'));
+
+    /* ── Iconos por categoría ── */
+    const iconos = {
+      'Analgésico':             '💊',
+      'Antibiótico':            '🧬',
+      'Vitaminas y suplementos':'🍊',
+      'Cuidado personal':       '🧴',
+      'Condones':               '🛡️',
+      'Lubricantes':            '💧',
+    };
+
+    /* ── Formatear precio ── */
+    const fmt = v => '$' + Number(v).toLocaleString('es-CO');
+
+    /* ── Cargar productos ── */
+    async function cargarProductos() {
+      try {
+        const res  = await fetch(`${API}/productos`);
+        const data = await res.json();
+        productos = Array.isArray(data) ? data : (data.productos || []);
+        renderProductos();
+      } catch {
+        mostrarToast('Error', 'No se pudo conectar con el servidor.', 'error');
+      }
+    }
+
+    /* ── Render ── */
+    function renderProductos() {
+      const q    = document.getElementById('inputBusqueda').value.toLowerCase().trim();
+      const grid = document.getElementById('gridProductos');
+      const vacío = document.getElementById('sinResultados');
+
+      let lista = productos;
+      if (filtroActual !== 'Todos') lista = lista.filter(p => p.categoria === filtroActual);
+      if (q) lista = lista.filter(p => p.nombre_producto.toLowerCase().includes(q));
+
+      grid.innerHTML = '';
+      if (lista.length === 0) {
+        vacío.style.display = 'block';
+        return;
+      }
+      vacío.style.display = 'none';
+
+      lista.forEach((p, i) => {
+        const agotado = p.stock_actual === 0;
+        const stockBajo = !agotado && p.stock_actual <= p.stock_minimo;
+        const icono = iconos[p.categoria] || '💊';
+
+        let stockLabel, stockClass;
+        if (agotado)        { stockLabel = 'Sin stock'; stockClass = 'agotado'; }
+        else if (stockBajo) { stockLabel = `⚠️ Stock bajo (${p.stock_actual} uds.)`; stockClass = 'bajo'; }
+        else                { stockLabel = `${p.stock_actual} unidades disponibles`; stockClass = ''; }
+
+        const card = document.createElement('div');
+        card.className = 'tarjeta';
+        card.style.animationDelay = `${i * 0.04}s`;
+        card.innerHTML = `
+          <div class="tarjeta-icono">${icono}</div>
+          <div class="tarjeta-body">
+            <div class="tarjeta-categoria">${p.categoria}</div>
+            <div class="tarjeta-nombre">${p.nombre_producto}</div>
+            <div class="tarjeta-precio">${fmt(p.precio)}</div>
+            <div class="tarjeta-stock ${stockClass}">${stockLabel}</div>
+            <button class="btn-comprar" ${agotado ? 'disabled' : ''} onclick="abrirModal(${p.id_producto})">
+              ${agotado ? 'Sin stock' : '<i class="bi bi-cart-plus me-1"></i>Comprar'}
+            </button>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    /* ── Filtros chips ── */
+    document.querySelectorAll('.chip-categoria').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.chip-categoria').forEach(b => b.classList.remove('activo'));
+        btn.classList.add('activo');
+        filtroActual = btn.dataset.cat;
+        renderProductos();
+      });
+    });
+
+    /* ── Búsqueda ── */
+    document.getElementById('inputBusqueda').addEventListener('input', renderProductos);
+
+    /* ── Modal compra ── */
+    function abrirModal(id) {
+      productoSel = productos.find(p => p.id_producto === id);
+      if (!productoSel) return;
+
+      document.getElementById('mCategoria').textContent = productoSel.categoria;
+      document.getElementById('mNombre').textContent    = productoSel.nombre_producto;
+      document.getElementById('mPrecio').textContent    = fmt(productoSel.precio);
+      document.getElementById('mStock').textContent     = productoSel.stock_actual;
+      document.getElementById('inputCantidad').value   = 1;
+      document.getElementById('inputCantidad').max     = productoSel.stock_actual;
+      document.getElementById('alertaCompra').className = 'alert mt-3 d-none small';
+      actualizarTotal();
+      modalBS.show();
+    }
+
+    function actualizarTotal() {
+      const cant = parseInt(document.getElementById('inputCantidad').value) || 1;
+      document.getElementById('mTotal').textContent = fmt(cant * productoSel.precio);
+    }
+
+    document.getElementById('btnMenos').addEventListener('click', () => {
+      const inp = document.getElementById('inputCantidad');
+      if (parseInt(inp.value) > 1) { inp.value--; actualizarTotal(); }
+    });
+    document.getElementById('btnMas').addEventListener('click', () => {
+      const inp = document.getElementById('inputCantidad');
+      const max = productoSel ? productoSel.stock_actual : 999;
+      if (parseInt(inp.value) < max) { inp.value++; actualizarTotal(); }
+    });
+    document.getElementById('inputCantidad').addEventListener('input', actualizarTotal);
+
+    /* ── Confirmar compra ── */
+    document.getElementById('btnConfirmarCompra').addEventListener('click', async () => {
+      if (!productoSel) return;
+      const cantidad = parseInt(document.getElementById('inputCantidad').value);
+      const alerta   = document.getElementById('alertaCompra');
+      const btn      = document.getElementById('btnConfirmarCompra');
+
+      if (!cantidad || cantidad < 1) {
+        alerta.className = 'alert alert-warning mt-3 small';
+        alerta.textContent = 'Ingresa una cantidad válida.';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-sm"></span> Procesando…';
+
+      try {
+        const res  = await fetch(`${API}/productos/${productoSel.id_producto}/comprar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cantidad })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          alerta.className = 'alert alert-danger mt-3 small';
+          alerta.textContent = data.mensaje || data.error || 'Error al procesar la compra.';
+          return;
+        }
+
+        modalBS.hide();
+
+        if (data.alerta) {
+          mostrarToast('¡Compra realizada! ⚠️', data.alerta, 'alerta');
+        } else {
+          mostrarToast('¡Compra realizada!', `Stock restante: ${data.stock_restante} unidades.`, 'ok');
+        }
+
+        await cargarProductos(); // refrescar stock
+
+      } catch {
+        alerta.className = 'alert alert-danger mt-3 small';
+        alerta.textContent = 'No se pudo conectar con el servidor.';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Confirmar compra';
+      }
+    });
+
+    /* ── Toast ── */
+    let toastTimer;
+    function mostrarToast(titulo, msg, tipo = 'ok') {
+      const t     = document.getElementById('toast');
+      const icono = document.getElementById('toastIcono');
+      document.getElementById('toastTitulo').textContent = titulo;
+      document.getElementById('toastMsg').textContent    = msg;
+      t.className = 'toast-drg';
+      if (tipo === 'alerta') { t.classList.add('alerta-stock'); icono.className = 'bi bi-exclamation-triangle-fill mt-1'; icono.style.color = 'var(--amarillo)'; }
+      else if (tipo === 'error') { t.classList.add('error-toast'); icono.className = 'bi bi-x-circle-fill mt-1'; icono.style.color = 'var(--rojo)'; }
+      else { icono.className = 'bi bi-check-circle-fill mt-1'; icono.style.color = 'var(--verde-claro)'; }
+      t.style.display = 'block';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { t.style.display = 'none'; }, 5000);
+    }
+
+    /* ── Logout ── */
+    function cerrarSesion() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
+      localStorage.removeItem('rol');
+      window.location.href = 'index.html';
+    }
+
+    /* ── Init ── */
+    cargarProductos();
+  </script>
+</body>
+</html>

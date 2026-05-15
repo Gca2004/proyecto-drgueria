@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DRGUERIA · Productos</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --verde-oscuro:  #0a5c45;
+      --verde-medio:   #1a8a68;
+      --verde-claro:   #2cbf8e;
+      --verde-suave:   #d6f5ec;
+      --verde-bg:      #f2faf7;
+      --blanco:        #f8fdfb;
+      --gris-texto:    #3d4a44;
+      --gris-borde:    #c4ddd5;
+      --rojo:          #e05252;
+      --amarillo:      #f59e0b;
+      --azul:          #3b82f6;
+      --sidebar-w:     240px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--verde-bg);
+      color: var(--gris-texto);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ══ Sidebar (igual en todas las páginas admin) ══ */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--verde-oscuro);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0;
+      height: 100vh; z-index: 200; overflow-y: auto;
+    }
+    .sidebar-logo { padding: 1.6rem 1.4rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo a { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: #fff; text-decoration: none; }
+    .sidebar-logo a span { color: #a8e8d0; }
+    .sidebar-logo .rol-badge { display: inline-block; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 4px; padding: 0.15rem 0.5rem; margin-top: 0.3rem; }
+    .sidebar-nav { flex: 1; padding: 1rem 0; }
+    .nav-section-title { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 0.8rem 1.4rem 0.3rem; }
+    .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.4rem; color: rgba(255,255,255,0.72); text-decoration: none; font-size: 0.9rem; transition: all 0.18s; border-left: 3px solid transparent; }
+    .sidebar-link i { font-size: 1rem; width: 18px; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .sidebar-link.activo { background: rgba(255,255,255,0.1); color: #fff; border-left-color: var(--verde-claro); }
+    .sidebar-footer { padding: 1rem 1.4rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-usuario { font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-bottom: 0.6rem; }
+    .sidebar-usuario strong { color: #fff; display: block; }
+    .btn-logout-sidebar { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.8); border-radius: 8px; padding: 0.45rem; font-size: 0.82rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.18s; }
+    .btn-logout-sidebar:hover { background: rgba(255,255,255,0.18); }
+
+    /* ══ Main ══ */
+    .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+
+    .topbar { background: #fff; border-bottom: 1px solid var(--gris-borde); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .topbar h1 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--verde-oscuro); margin: 0; }
+    .topbar .sub { font-size: 0.82rem; color: #9db8ad; }
+
+    .btn-nuevo {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      border: none; border-radius: 9px; color: #fff;
+      padding: 0.55rem 1.2rem; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      display: flex; align-items: center; gap: 0.4rem;
+      box-shadow: 0 4px 14px rgba(10,92,69,0.22);
+      transition: transform 0.15s, opacity 0.18s;
+    }
+    .btn-nuevo:hover { transform: translateY(-1px); opacity: 0.92; }
+
+    .pagina { padding: 1.8rem 2rem; }
+
+    /* ══ Barra de herramientas ══ */
+    .toolbar {
+      background: #fff;
+      border-radius: 12px;
+      border: 1.5px solid var(--gris-borde);
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.2rem;
+      display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+    }
+    .busqueda-wrap { flex: 1; min-width: 200px; position: relative; }
+    .busqueda-wrap i { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9db8ad; }
+    .busqueda-wrap input { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.5rem 1rem 0.5rem 2.4rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .busqueda-wrap input:focus { border-color: var(--verde-medio); }
+    .select-filtro { border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.5rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--gris-texto); outline: none; background: #fff; cursor: pointer; }
+    .select-filtro:focus { border-color: var(--verde-medio); }
+
+    /* ══ Tabla ══ */
+    .tabla-wrap {
+      background: #fff;
+      border-radius: 14px;
+      border: 1.5px solid var(--gris-borde);
+      overflow: hidden;
+    }
+    .tabla-wrap table { width: 100%; border-collapse: collapse; }
+    .tabla-wrap thead { background: var(--verde-oscuro); color: #fff; }
+    .tabla-wrap thead th { padding: 0.85rem 1.1rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+    .tabla-wrap tbody tr { border-bottom: 1px solid var(--gris-borde); transition: background 0.15s; }
+    .tabla-wrap tbody tr:last-child { border-bottom: none; }
+    .tabla-wrap tbody tr:hover { background: var(--verde-bg); }
+    .tabla-wrap tbody td { padding: 0.85rem 1.1rem; font-size: 0.88rem; vertical-align: middle; }
+
+    .chip-cat {
+      display: inline-block;
+      background: var(--verde-suave);
+      color: var(--verde-oscuro);
+      border-radius: 20px;
+      padding: 0.18rem 0.65rem;
+      font-size: 0.73rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .stock-ok    { color: var(--verde-medio); font-weight: 600; }
+    .stock-bajo  { color: var(--amarillo);    font-weight: 600; }
+    .stock-agotado { color: var(--rojo);      font-weight: 600; }
+
+    .precio-cell { font-family: 'DM Serif Display', serif; font-size: 1.05rem; color: var(--verde-oscuro); }
+
+    /* Botones acción */
+    .acciones { display: flex; gap: 0.4rem; }
+    .btn-accion {
+      border: none; border-radius: 7px; padding: 0.38rem 0.65rem;
+      font-size: 0.8rem; cursor: pointer; transition: opacity 0.18s;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+    .btn-accion:hover { opacity: 0.8; }
+    .btn-editar  { background: #dbeafe; color: #1e40af; }
+    .btn-stock   { background: var(--verde-suave); color: var(--verde-oscuro); }
+    .btn-eliminar{ background: #ffe4e4; color: var(--rojo); }
+
+    /* Paginación info */
+    .tabla-footer {
+      padding: 0.7rem 1.2rem;
+      border-top: 1px solid var(--gris-borde);
+      font-size: 0.8rem;
+      color: #9db8ad;
+    }
+
+    /* ══ Estado vacío ══ */
+    .estado-vacio { text-align: center; padding: 3rem 2rem; color: #9db8ad; }
+    .estado-vacio i { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+    /* ══ Modales ══ */
+    .modal-header-verde {
+      background: var(--verde-oscuro);
+      color: #fff;
+      border-radius: 12px 12px 0 0;
+    }
+    .modal-header-verde .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+    .modal-header-verde .btn-close { filter: invert(1); }
+
+    .form-label-custom {
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--gris-texto); margin-bottom: 0.35rem;
+    }
+    .input-custom {
+      width: 100%; border: 1.5px solid var(--gris-borde);
+      border-radius: 9px; padding: 0.6rem 0.9rem;
+      font-family: 'DM Sans', sans-serif; font-size: 0.92rem;
+      color: var(--gris-texto); outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-custom:focus { border-color: var(--verde-medio); box-shadow: 0 0 0 3px rgba(26,138,104,0.1); }
+    .select-custom {
+      width: 100%; border: 1.5px solid var(--gris-borde);
+      border-radius: 9px; padding: 0.6rem 0.9rem;
+      font-family: 'DM Sans', sans-serif; font-size: 0.92rem;
+      color: var(--gris-texto); outline: none; background: #fff;
+      transition: border-color 0.2s; cursor: pointer;
+    }
+    .select-custom:focus { border-color: var(--verde-medio); }
+
+    .btn-guardar-modal {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      border: none; border-radius: 9px; color: #fff;
+      padding: 0.65rem 1.8rem; font-family: 'DM Sans', sans-serif;
+      font-weight: 600; font-size: 0.95rem; cursor: pointer;
+      transition: opacity 0.18s;
+    }
+    .btn-guardar-modal:hover { opacity: 0.9; }
+    .btn-guardar-modal:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Modal eliminar */
+    .modal-eliminar .modal-header { background: var(--rojo); border-radius: 12px 12px 0 0; }
+    .modal-eliminar .modal-title  { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: #fff; }
+    .modal-eliminar .btn-close    { filter: invert(1); }
+    .btn-confirmar-eliminar {
+      background: var(--rojo); border: none; border-radius: 9px;
+      color: #fff; padding: 0.6rem 1.6rem; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: opacity 0.18s;
+    }
+    .btn-confirmar-eliminar:hover { opacity: 0.88; }
+
+    /* ══ Toast ══ */
+    .toast-drg { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(10,92,69,0.18); border-left: 4px solid var(--verde-claro); padding: 1rem 1.3rem; min-width: 260px; display: none; animation: slideIn 0.3s ease; }
+    .toast-drg.error { border-left-color: var(--rojo); }
+    .toast-titulo { font-weight: 600; font-size: 0.9rem; }
+    .toast-msg    { font-size: 0.82rem; color: #7a9c8e; margin-top: 0.15rem; }
+
+    /* ══ Skeleton ══ */
+    .skeleton-row td { padding: 1rem 1.1rem !important; }
+    .sk { height: 14px; border-radius: 6px; background: linear-gradient(90deg,#e8f5f1 25%,#d6f5ec 50%,#e8f5f1 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; }
+
+    @keyframes shimmer { to { background-position: -200% 0; } }
+    @keyframes slideIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main { margin-left: 0; }
+      .pagina { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Sidebar ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a href="dashboard.html">DR<span>GUERIA</span></a>
+      <div class="rol-badge">Administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Principal</div>
+      <a class="sidebar-link" href="dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a>
+      <div class="nav-section-title">Inventario</div>
+      <a class="sidebar-link activo" href="productos.html"><i class="bi bi-box-seam"></i>Productos</a>
+      <a class="sidebar-link" href="pedidos.html"><i class="bi bi-truck"></i>Pedidos</a>
+      <div class="nav-section-title">Gestión</div>
+      <a class="sidebar-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
+      <a class="sidebar-link" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-usuario">Sesión iniciada como<strong id="sidebarNombre">…</strong></div>
+      <button class="btn-logout-sidebar" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ══ Main ══ -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1>Productos</h1>
+        <div class="sub">Gestión completa del catálogo</div>
+      </div>
+      <button class="btn-nuevo" onclick="abrirModalNuevo()">
+        <i class="bi bi-plus-lg"></i> Nuevo producto
+      </button>
+    </div>
+
+    <div class="pagina">
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="busqueda-wrap">
+          <i class="bi bi-search"></i>
+          <input type="text" id="inputBusqueda" placeholder="Buscar por nombre…"/>
+        </div>
+        <select class="select-filtro" id="filtroCat">
+          <option value="">Todas las categorías</option>
+          <option>Analgésico</option>
+          <option>Antibiótico</option>
+          <option>Vitaminas y suplementos</option>
+          <option>Cuidado personal</option>
+          <option>Condones</option>
+          <option>Lubricantes</option>
+        </select>
+        <select class="select-filtro" id="filtroStock">
+          <option value="">Todo el stock</option>
+          <option value="bajo">Stock bajo</option>
+          <option value="agotado">Agotado</option>
+          <option value="ok">Stock OK</option>
+        </select>
+      </div>
+
+      <!-- Tabla -->
+      <div class="tabla-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Stock actual</th>
+              <th>Stock mínimo</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="bodyProductos">
+            <tr class="skeleton-row"><td><div class="sk w-25"></div></td><td><div class="sk w-75"></div></td><td><div class="sk w-50"></div></td><td><div class="sk w-50"></div></td><td><div class="sk w-25"></div></td><td><div class="sk w-25"></div></td><td><div class="sk w-50"></div></td><td><div class="sk w-75"></div></td></tr>
+            <tr class="skeleton-row"><td><div class="sk w-25"></div></td><td><div class="sk w-75"></div></td><td><div class="sk w-50"></div></td><td><div class="sk w-50"></div></td><td><div class="sk w-25"></div></td><td><div class="sk w-25"></div></td><td><div class="sk w-50"></div></td><td><div class="sk w-75"></div></td></tr>
+            <tr class="skeleton-row"><td><div class="sk w-25"></div></td><td><div class="sk w-75"></div></td><td><div class="sk w-50"></div></td><td><div class="sk w-50"></div></td><td><div class="sk w-25"></div></td><td><div class="sk w-25"></div></td><td><div class="sk w-50"></div></td><td><div class="sk w-75"></div></td></tr>
+          </tbody>
+        </table>
+        <div class="tabla-footer" id="tablaFooter">Cargando…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Crear / Editar ══ -->
+  <div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header modal-header-verde">
+          <h5 class="modal-title" id="modalTitulo"><i class="bi bi-box-seam me-2"></i>Nuevo producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="alertaModal" class="alert d-none small mb-3" style="border-radius:9px;"></div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label-custom">Nombre del producto</label>
+              <input type="text" class="input-custom" id="fNombre" placeholder="Ej: Acetaminofén 500mg"/>
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Categoría</label>
+              <select class="select-custom" id="fCategoria">
+                <option value="">Seleccionar…</option>
+                <option>Analgésico</option>
+                <option>Antibiótico</option>
+                <option>Vitaminas y suplementos</option>
+                <option>Cuidado personal</option>
+                <option>Condones</option>
+                <option>Lubricantes</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Precio (COP)</label>
+              <input type="number" class="input-custom" id="fPrecio" placeholder="0" min="0"/>
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Stock actual</label>
+              <input type="number" class="input-custom" id="fStock" placeholder="0" min="0"/>
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Stock mínimo</label>
+              <input type="number" class="input-custom" id="fStockMin" placeholder="25" min="0"/>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-guardar-modal" id="btnGuardar" onclick="guardarProducto()">
+            <span id="spinnerGuardar" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Recargar stock ══ -->
+  <div class="modal fade" id="modalStock" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header modal-header-verde">
+          <h5 class="modal-title"><i class="bi bi-arrow-up-circle me-2"></i>Recargar stock</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="alertaStock" class="alert d-none small mb-3" style="border-radius:9px;"></div>
+          <p class="small text-muted mb-3">Producto: <strong id="stockNombre"></strong></p>
+          <label class="form-label-custom">Nueva cantidad de stock</label>
+          <input type="number" class="input-custom" id="fNuevoStock" placeholder="0" min="0"/>
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-guardar-modal" id="btnGuardarStock" onclick="guardarStock()">
+            <span id="spinnerStock" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Actualizar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Eliminar ══ -->
+  <div class="modal fade modal-eliminar" id="modalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-trash me-2"></i>Eliminar producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <i class="bi bi-exclamation-triangle-fill" style="font-size:2.5rem;color:var(--rojo)"></i>
+          <p class="mt-2 mb-0">¿Eliminar <strong id="eliminarNombre"></strong>? Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-confirmar-eliminar" id="btnConfirmarEliminar" onclick="confirmarEliminar()">
+            <span id="spinnerEliminar" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Sí, eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-drg" id="toast">
+    <div class="toast-titulo" id="toastTitulo"></div>
+    <div class="toast-msg"    id="toastMsg"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API = 'http://192.168.100.2:4000';
+
+    /* ── Auth ── */
+    const token   = localStorage.getItem('token');
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    const rol     = localStorage.getItem('rol');
+    if (!token)                  window.location.href = 'index.html';
+    if (rol !== 'administrador') window.location.href = 'catalogo.html';
+    document.getElementById('sidebarNombre').textContent = usuario.nombre || 'Admin';
+
+    /* ── Estado ── */
+    let productos    = [];
+    let modoEdicion  = false;
+    let idEditando   = null;
+    let idEliminar   = null;
+    let idStock      = null;
+
+    const modalProductoBS = new bootstrap.Modal(document.getElementById('modalProducto'));
+    const modalStockBS    = new bootstrap.Modal(document.getElementById('modalStock'));
+    const modalEliminarBS = new bootstrap.Modal(document.getElementById('modalEliminar'));
+
+    const fmt = v => '$' + Number(v).toLocaleString('es-CO');
+
+    /* ── Cargar productos ── */
+    async function cargarProductos() {
+      try {
+        const res  = await fetch(`${API}/productos`);
+        productos  = await res.json();
+        if (!Array.isArray(productos)) productos = productos.productos || [];
+        renderTabla();
+      } catch {
+        mostrarToast('Error', 'No se pudo cargar el listado.', true);
+      }
+    }
+
+    /* ── Filtrar y renderizar ── */
+    function renderTabla() {
+      const q         = document.getElementById('inputBusqueda').value.toLowerCase().trim();
+      const cat       = document.getElementById('filtroCat').value;
+      const stockF    = document.getElementById('filtroStock').value;
+      const body      = document.getElementById('bodyProductos');
+      const footer    = document.getElementById('tablaFooter');
+
+      let lista = productos;
+      if (q)       lista = lista.filter(p => p.nombre_producto.toLowerCase().includes(q));
+      if (cat)     lista = lista.filter(p => p.categoria === cat);
+      if (stockF === 'agotado') lista = lista.filter(p => p.stock_actual === 0);
+      else if (stockF === 'bajo') lista = lista.filter(p => p.stock_actual > 0 && p.stock_actual <= p.stock_minimo);
+      else if (stockF === 'ok')   lista = lista.filter(p => p.stock_actual > p.stock_minimo);
+
+      if (lista.length === 0) {
+        body.innerHTML = `<tr><td colspan="8" class="estado-vacio"><i class="bi bi-box-seam"></i>No hay productos que coincidan</td></tr>`;
+        footer.textContent = '0 productos';
+        return;
+      }
+
+      body.innerHTML = lista.map((p, i) => {
+        const agotado  = p.stock_actual === 0;
+        const stockBajo = !agotado && p.stock_actual <= p.stock_minimo;
+        const estadoLabel = agotado  ? '<span class="badge-estado-cell rojo">Agotado</span>'
+                          : stockBajo ? '<span class="badge-estado-cell amarillo">Stock bajo</span>'
+                          : '<span class="badge-estado-cell verde">OK</span>';
+        const stockClass  = agotado ? 'stock-agotado' : stockBajo ? 'stock-bajo' : 'stock-ok';
+        return `
+        <tr style="animation:fadeUp .25s ease ${i*0.03}s both">
+          <td class="text-muted small">${p.id_producto}</td>
+          <td><strong>${p.nombre_producto}</strong></td>
+          <td><span class="chip-cat">${p.categoria}</span></td>
+          <td class="precio-cell">${fmt(p.precio)}</td>
+          <td class="${stockClass}">${p.stock_actual}</td>
+          <td class="text-muted">${p.stock_minimo}</td>
+          <td>${estadoLabel}</td>
+          <td>
+            <div class="acciones">
+              <button class="btn-accion btn-editar"  onclick="abrirModalEditar(${p.id_producto})"><i class="bi bi-pencil"></i> Editar</button>
+              <button class="btn-accion btn-stock"   onclick="abrirModalStock(${p.id_producto})"><i class="bi bi-arrow-up-circle"></i> Stock</button>
+              <button class="btn-accion btn-eliminar" onclick="abrirModalEliminar(${p.id_producto})"><i class="bi bi-trash"></i></button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+
+      footer.textContent = `${lista.length} producto${lista.length !== 1 ? 's' : ''}`;
+    }
+
+    /* Estilos inline para los badges de estado */
+    document.head.insertAdjacentHTML('beforeend', `<style>
+      .badge-estado-cell { border-radius:20px; padding:.2rem .65rem; font-size:.73rem; font-weight:600; }
+      .badge-estado-cell.verde    { background:var(--verde-suave); color:var(--verde-oscuro); }
+      .badge-estado-cell.amarillo { background:#fef3c7; color:#92400e; }
+      .badge-estado-cell.rojo     { background:#ffe4e4; color:var(--rojo); }
+    </style>`);
+
+    /* ── Filtros ── */
+    document.getElementById('inputBusqueda').addEventListener('input', renderTabla);
+    document.getElementById('filtroCat').addEventListener('change', renderTabla);
+    document.getElementById('filtroStock').addEventListener('change', renderTabla);
+
+    /* ══ MODAL CREAR ══ */
+    function abrirModalNuevo() {
+      modoEdicion = false; idEditando = null;
+      document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-box-seam me-2"></i>Nuevo producto';
+      limpiarFormulario();
+      modalProductoBS.show();
+    }
+
+    /* ══ MODAL EDITAR ══ */
+    function abrirModalEditar(id) {
+      const p = productos.find(x => x.id_producto === id);
+      if (!p) return;
+      modoEdicion = true; idEditando = id;
+      document.getElementById('modalTitulo').innerHTML = '<i class="bi bi-pencil me-2"></i>Editar producto';
+      document.getElementById('fNombre').value   = p.nombre_producto;
+      document.getElementById('fCategoria').value= p.categoria;
+      document.getElementById('fPrecio').value   = p.precio;
+      document.getElementById('fStock').value    = p.stock_actual;
+      document.getElementById('fStockMin').value = p.stock_minimo;
+      document.getElementById('alertaModal').className = 'alert d-none small mb-3';
+      modalProductoBS.show();
+    }
+
+    function limpiarFormulario() {
+      ['fNombre','fCategoria','fPrecio','fStock','fStockMin'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('alertaModal').className = 'alert d-none small mb-3';
+    }
+
+    /* ══ GUARDAR (crear o editar) ══ */
+    async function guardarProducto() {
+      const nombre   = document.getElementById('fNombre').value.trim();
+      const categoria= document.getElementById('fCategoria').value;
+      const precio   = parseFloat(document.getElementById('fPrecio').value);
+      const stock    = parseInt(document.getElementById('fStock').value);
+      const stockMin = parseInt(document.getElementById('fStockMin').value);
+      const alerta   = document.getElementById('alertaModal');
+      const btn      = document.getElementById('btnGuardar');
+      const spinner  = document.getElementById('spinnerGuardar');
+
+      if (!nombre || !categoria || isNaN(precio) || isNaN(stock) || isNaN(stockMin)) {
+        alerta.className = 'alert alert-warning small mb-3';
+        alerta.textContent = 'Completa todos los campos correctamente.';
+        return;
+      }
+
+      btn.disabled = true;
+      spinner.classList.remove('d-none');
+
+      const body = { nombre_producto: nombre, categoria, precio, stock_actual: stock, stock_minimo: stockMin };
+      const url  = modoEdicion ? `${API}/productos/${idEditando}` : `${API}/productos`;
+      const method = modoEdicion ? 'PUT' : 'POST';
+
+      try {
+        const res  = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.mensaje || data.error || 'Error al guardar.');
+        modalProductoBS.hide();
+        mostrarToast(modoEdicion ? 'Producto actualizado' : 'Producto creado', data.nombre_producto || nombre);
+        await cargarProductos();
+      } catch (e) {
+        alerta.className = 'alert alert-danger small mb-3';
+        alerta.textContent = e.message;
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('d-none');
+      }
+    }
+
+    /* ══ MODAL STOCK ══ */
+    function abrirModalStock(id) {
+      const p = productos.find(x => x.id_producto === id);
+      if (!p) return;
+      idStock = id;
+      document.getElementById('stockNombre').textContent = p.nombre_producto;
+      document.getElementById('fNuevoStock').value       = p.stock_actual;
+      document.getElementById('alertaStock').className   = 'alert d-none small mb-3';
+      modalStockBS.show();
+    }
+
+    async function guardarStock() {
+      const cantidad = parseInt(document.getElementById('fNuevoStock').value);
+      const alerta   = document.getElementById('alertaStock');
+      const btn      = document.getElementById('btnGuardarStock');
+      const spinner  = document.getElementById('spinnerStock');
+
+      if (isNaN(cantidad) || cantidad < 0) {
+        alerta.className = 'alert alert-warning small mb-3';
+        alerta.textContent = 'Ingresa una cantidad válida.';
+        return;
+      }
+      btn.disabled = true; spinner.classList.remove('d-none');
+      try {
+        const res  = await fetch(`${API}/productos/${idStock}/stock`, {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ stock_actual: cantidad })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.mensaje || 'Error al actualizar.');
+        modalStockBS.hide();
+        mostrarToast('Stock actualizado', `Nuevo stock: ${cantidad} unidades`);
+        await cargarProductos();
+      } catch (e) {
+        alerta.className = 'alert alert-danger small mb-3';
+        alerta.textContent = e.message;
+      } finally {
+        btn.disabled = false; spinner.classList.add('d-none');
+      }
+    }
+
+    /* ══ MODAL ELIMINAR ══ */
+    function abrirModalEliminar(id) {
+      const p = productos.find(x => x.id_producto === id);
+      if (!p) return;
+      idEliminar = id;
+      document.getElementById('eliminarNombre').textContent = p.nombre_producto;
+      modalEliminarBS.show();
+    }
+
+    async function confirmarEliminar() {
+      const btn     = document.getElementById('btnConfirmarEliminar');
+      const spinner = document.getElementById('spinnerEliminar');
+      btn.disabled = true; spinner.classList.remove('d-none');
+      try {
+        const res = await fetch(`${API}/productos/${idEliminar}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error();
+        modalEliminarBS.hide();
+        mostrarToast('Producto eliminado', 'El producto fue eliminado del catálogo.');
+        await cargarProductos();
+      } catch {
+        mostrarToast('Error', 'No se pudo eliminar el producto.', true);
+      } finally {
+        btn.disabled = false; spinner.classList.add('d-none');
+      }
+    }
+
+    /* ══ Toast ══ */
+    let toastT;
+    function mostrarToast(titulo, msg, error = false) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastTitulo').textContent = titulo;
+      document.getElementById('toastMsg').textContent    = msg;
+      t.className = 'toast-drg' + (error ? ' error' : '');
+      t.style.display = 'block';
+      clearTimeout(toastT);
+      toastT = setTimeout(() => t.style.display = 'none', 4000);
+    }
+
+    /* ══ Logout ══ */
+    function cerrarSesion() { localStorage.clear(); window.location.href = 'index.html'; }
+
+    cargarProductos();
+  </script>
+</body>
+</html>

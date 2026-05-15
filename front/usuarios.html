@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DRGUERIA · Usuarios</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --verde-oscuro:  #0a5c45;
+      --verde-medio:   #1a8a68;
+      --verde-claro:   #2cbf8e;
+      --verde-suave:   #d6f5ec;
+      --verde-bg:      #f2faf7;
+      --gris-texto:    #3d4a44;
+      --gris-borde:    #c4ddd5;
+      --rojo:          #e05252;
+      --amarillo:      #f59e0b;
+      --azul:          #3b82f6;
+      --morado:        #7c3aed;
+      --sidebar-w:     240px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--verde-bg); color: var(--gris-texto); display: flex; min-height: 100vh; }
+
+    /* ══ Sidebar ══ */
+    .sidebar { width: var(--sidebar-w); background: var(--verde-oscuro); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; overflow-y: auto; }
+    .sidebar-logo { padding: 1.6rem 1.4rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo a { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: #fff; text-decoration: none; }
+    .sidebar-logo a span { color: #a8e8d0; }
+    .sidebar-logo .rol-badge { display: inline-block; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 4px; padding: 0.15rem 0.5rem; margin-top: 0.3rem; }
+    .sidebar-nav { flex: 1; padding: 1rem 0; }
+    .nav-section-title { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 0.8rem 1.4rem 0.3rem; }
+    .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.4rem; color: rgba(255,255,255,0.72); text-decoration: none; font-size: 0.9rem; transition: all 0.18s; border-left: 3px solid transparent; }
+    .sidebar-link i { font-size: 1rem; width: 18px; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .sidebar-link.activo { background: rgba(255,255,255,0.1); color: #fff; border-left-color: var(--verde-claro); }
+    .sidebar-footer { padding: 1rem 1.4rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-usuario { font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-bottom: 0.6rem; }
+    .sidebar-usuario strong { color: #fff; display: block; }
+    .btn-logout-sidebar { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.8); border-radius: 8px; padding: 0.45rem; font-size: 0.82rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.18s; }
+    .btn-logout-sidebar:hover { background: rgba(255,255,255,0.18); }
+
+    /* ══ Main ══ */
+    .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+    .topbar { background: #fff; border-bottom: 1px solid var(--gris-borde); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; }
+    .topbar h1 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--verde-oscuro); margin: 0; }
+    .topbar .sub { font-size: 0.82rem; color: #9db8ad; }
+    .btn-nuevo { background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio)); border: none; border-radius: 9px; color: #fff; padding: 0.55rem 1.2rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 4px 14px rgba(10,92,69,0.22); transition: transform 0.15s, opacity 0.18s; }
+    .btn-nuevo:hover { transform: translateY(-1px); opacity: 0.92; }
+
+    .pagina { padding: 1.8rem 2rem; }
+
+    /* ══ KPIs ══ */
+    .kpi-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
+    .kpi-mini { background: #fff; border-radius: 12px; border: 1.5px solid var(--gris-borde); padding: 0.9rem 1.2rem; display: flex; align-items: center; gap: 0.8rem; flex: 1; min-width: 140px; animation: fadeUp 0.3s ease both; }
+    .kpi-mini-icon { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .kpi-mini-num  { font-family: 'DM Serif Display', serif; font-size: 1.6rem; line-height: 1; }
+    .kpi-mini-lbl  { font-size: 0.75rem; color: #9db8ad; }
+
+    /* ══ Toolbar ══ */
+    .toolbar { background: #fff; border-radius: 12px; border: 1.5px solid var(--gris-borde); padding: 1rem 1.2rem; margin-bottom: 1.2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .busqueda-wrap { flex: 1; min-width: 200px; position: relative; }
+    .busqueda-wrap i { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9db8ad; }
+    .busqueda-wrap input { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.5rem 1rem 0.5rem 2.4rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .busqueda-wrap input:focus { border-color: var(--verde-medio); }
+    .select-filtro { border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.5rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--gris-texto); outline: none; background: #fff; cursor: pointer; }
+
+    /* ══ Grid de cards ══ */
+    .grid-usuarios { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.2rem; }
+
+    .card-usuario {
+      background: #fff;
+      border-radius: 14px;
+      border: 1.5px solid var(--gris-borde);
+      overflow: hidden;
+      transition: transform 0.18s, box-shadow 0.18s;
+      animation: fadeUp 0.3s ease both;
+    }
+    .card-usuario:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(10,92,69,0.1); }
+
+    .card-top {
+      padding: 1.4rem 1.3rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: #fff;
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+    .avatar.admin  { background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio)); }
+    .avatar.cliente { background: linear-gradient(135deg, #3b82f6, #60a5fa); }
+
+    .card-top-info { flex: 1; min-width: 0; }
+    .card-nombre { font-weight: 600; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-correo { font-size: 0.78rem; color: #9db8ad; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .badge-rol {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      border-radius: 20px; padding: 0.2rem 0.7rem;
+      font-size: 0.72rem; font-weight: 600;
+    }
+    .badge-rol.admin   { background: var(--verde-suave); color: var(--verde-oscuro); }
+    .badge-rol.cliente { background: #dbeafe; color: #1e40af; }
+
+    .card-divider { height: 1px; background: var(--gris-borde); margin: 0 1.3rem; }
+
+    .card-actions { padding: 0.85rem 1.3rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn-accion { border: none; border-radius: 7px; padding: 0.38rem 0.8rem; font-size: 0.8rem; cursor: pointer; transition: opacity 0.18s; display: flex; align-items: center; gap: 0.3rem; font-family: 'DM Sans', sans-serif; font-weight: 500; }
+    .btn-accion:hover { opacity: 0.8; }
+    .btn-editar    { background: #dbeafe; color: #1e40af; }
+    .btn-password  { background: #f3e8ff; color: var(--morado); }
+    .btn-eliminar  { background: #ffe4e4; color: var(--rojo); margin-left: auto; }
+
+    /* Yo mismo */
+    .card-usuario.yo { border-color: var(--verde-medio); }
+    .card-usuario.yo .card-top { background: var(--verde-suave); }
+    .yo-badge { font-size: 0.68rem; background: var(--verde-oscuro); color: #fff; border-radius: 4px; padding: 0.1rem 0.4rem; margin-left: 0.3rem; }
+
+    /* Vacío */
+    .estado-vacio { text-align: center; padding: 3rem 2rem; color: #9db8ad; grid-column: 1/-1; }
+    .estado-vacio i { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+    /* Count */
+    .count-bar { font-size: 0.82rem; color: #9db8ad; margin-bottom: 0.8rem; }
+
+    /* ══ Skeleton ══ */
+    .sk-card { background: #fff; border-radius: 14px; border: 1.5px solid var(--gris-borde); overflow: hidden; }
+    .sk-top  { height: 90px; background: linear-gradient(90deg,#e8f5f1 25%,#d6f5ec 50%,#e8f5f1 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; }
+    .sk-body { padding: 0.85rem 1.3rem; }
+    .sk { height: 12px; border-radius: 6px; background: linear-gradient(90deg,#e8f5f1 25%,#d6f5ec 50%,#e8f5f1 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; margin-bottom: 0.6rem; }
+
+    /* ══ Modales ══ */
+    .modal-header-verde { background: var(--verde-oscuro); color: #fff; border-radius: 12px 12px 0 0; }
+    .modal-header-verde .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+    .modal-header-verde .btn-close { filter: invert(1); }
+    .modal-header-morado { background: var(--morado); color: #fff; border-radius: 12px 12px 0 0; }
+    .modal-header-morado .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+    .modal-header-morado .btn-close { filter: invert(1); }
+
+    .form-label-custom { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gris-texto); margin-bottom: 0.35rem; display: block; }
+    .input-wrap { position: relative; }
+    .input-wrap .input-custom { padding-right: 2.8rem; }
+    .input-custom { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.6rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; color: var(--gris-texto); outline: none; transition: border-color 0.2s; }
+    .input-custom:focus { border-color: var(--verde-medio); box-shadow: 0 0 0 3px rgba(26,138,104,0.1); }
+    .select-custom { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.6rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; color: var(--gris-texto); outline: none; background: #fff; cursor: pointer; transition: border-color 0.2s; }
+    .select-custom:focus { border-color: var(--verde-medio); }
+    .btn-ojo { position: absolute; right: 0.8rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: #9db8ad; cursor: pointer; padding: 0; font-size: 1rem; }
+    .btn-ojo:hover { color: var(--verde-medio); }
+
+    .btn-guardar-modal { background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio)); border: none; border-radius: 9px; color: #fff; padding: 0.65rem 1.8rem; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity 0.18s; }
+    .btn-guardar-modal:hover { opacity: 0.9; }
+    .btn-guardar-modal:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-guardar-morado { background: var(--morado); border: none; border-radius: 9px; color: #fff; padding: 0.65rem 1.8rem; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity 0.18s; }
+    .btn-guardar-morado:hover { opacity: 0.9; }
+    .btn-guardar-morado:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .modal-eliminar .modal-header { background: var(--rojo); border-radius: 12px 12px 0 0; }
+    .modal-eliminar .modal-title  { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: #fff; }
+    .modal-eliminar .btn-close    { filter: invert(1); }
+    .btn-confirmar-eliminar { background: var(--rojo); border: none; border-radius: 9px; color: #fff; padding: 0.6rem 1.6rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+    /* ══ Toast ══ */
+    .toast-drg { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(10,92,69,0.18); border-left: 4px solid var(--verde-claro); padding: 1rem 1.3rem; min-width: 260px; display: none; animation: slideIn 0.3s ease; }
+    .toast-drg.error { border-left-color: var(--rojo); }
+    .toast-titulo { font-weight: 600; font-size: 0.9rem; }
+    .toast-msg    { font-size: 0.82rem; color: #7a9c8e; margin-top: 0.15rem; }
+
+    @keyframes shimmer { to { background-position: -200% 0; } }
+    @keyframes slideIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes fadeUp  { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .main { margin-left: 0; }
+      .pagina { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Sidebar ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <a href="dashboard.html">DR<span>GUERIA</span></a>
+      <div class="rol-badge">Administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Principal</div>
+      <a class="sidebar-link" href="dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a>
+      <div class="nav-section-title">Inventario</div>
+      <a class="sidebar-link" href="productos.html"><i class="bi bi-box-seam"></i>Productos</a>
+      <a class="sidebar-link" href="pedidos.html"><i class="bi bi-truck"></i>Pedidos</a>
+      <div class="nav-section-title">Gestión</div>
+      <a class="sidebar-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
+      <a class="sidebar-link activo" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-usuario">Sesión iniciada como<strong id="sidebarNombre">…</strong></div>
+      <button class="btn-logout-sidebar" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ══ Main ══ -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1>Usuarios</h1>
+        <div class="sub">Gestión de cuentas y roles</div>
+      </div>
+      <button class="btn-nuevo" onclick="abrirModalNuevo()">
+        <i class="bi bi-person-plus"></i> Nuevo usuario
+      </button>
+    </div>
+
+    <div class="pagina">
+
+      <!-- KPIs -->
+      <div class="kpi-row">
+        <div class="kpi-mini" style="animation-delay:.05s">
+          <div class="kpi-mini-icon" style="background:var(--verde-suave)"><i class="bi bi-people-fill" style="color:var(--verde-medio)"></i></div>
+          <div><div class="kpi-mini-num" style="color:var(--verde-medio)" id="kpiTotal">—</div><div class="kpi-mini-lbl">Total usuarios</div></div>
+        </div>
+        <div class="kpi-mini" style="animation-delay:.1s">
+          <div class="kpi-mini-icon" style="background:var(--verde-suave)"><i class="bi bi-shield-lock-fill" style="color:var(--verde-oscuro)"></i></div>
+          <div><div class="kpi-mini-num" style="color:var(--verde-oscuro)" id="kpiAdmin">—</div><div class="kpi-mini-lbl">Administradores</div></div>
+        </div>
+        <div class="kpi-mini" style="animation-delay:.15s">
+          <div class="kpi-mini-icon" style="background:#dbeafe"><i class="bi bi-person-fill" style="color:var(--azul)"></i></div>
+          <div><div class="kpi-mini-num" style="color:var(--azul)" id="kpiCliente">—</div><div class="kpi-mini-lbl">Clientes</div></div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="busqueda-wrap">
+          <i class="bi bi-search"></i>
+          <input type="text" id="inputBusqueda" placeholder="Buscar por nombre o correo…"/>
+        </div>
+        <select class="select-filtro" id="filtroRol">
+          <option value="">Todos los roles</option>
+          <option value="administrador">Administrador</option>
+          <option value="cliente">Cliente</option>
+        </select>
+      </div>
+
+      <div class="count-bar" id="countBar">Cargando…</div>
+
+      <!-- Grid -->
+      <div class="grid-usuarios" id="gridUsuarios">
+        <div class="sk-card"><div class="sk-top"></div><div class="sk-body"><div class="sk w-75"></div><div class="sk w-50"></div></div></div>
+        <div class="sk-card"><div class="sk-top"></div><div class="sk-body"><div class="sk w-75"></div><div class="sk w-50"></div></div></div>
+        <div class="sk-card"><div class="sk-top"></div><div class="sk-body"><div class="sk w-75"></div><div class="sk w-50"></div></div></div>
+        <div class="sk-card"><div class="sk-top"></div><div class="sk-body"><div class="sk w-75"></div><div class="sk w-50"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Crear usuario ══ -->
+  <div class="modal fade" id="modalNuevo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header modal-header-verde">
+          <h5 class="modal-title" id="modalTitulo"><i class="bi bi-person-plus me-2"></i>Nuevo usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="alertaModal" class="alert d-none small mb-3" style="border-radius:9px;"></div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label-custom">Nombre completo</label>
+              <input type="text" class="input-custom" id="fNombre" placeholder="Ej: Juan Pérez"/>
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Correo electrónico</label>
+              <input type="email" class="input-custom" id="fCorreo" placeholder="juan@drgueria.com"/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Contraseña</label>
+              <div class="input-wrap">
+                <input type="password" class="input-custom" id="fPassword" placeholder="Mínimo 6 caracteres"/>
+                <button class="btn-ojo" type="button" onclick="toggleOjo('fPassword', 'ojoPass')"><i class="bi bi-eye" id="ojoPass"></i></button>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Rol</label>
+              <select class="select-custom" id="fRol">
+                <option value="cliente">Cliente</option>
+                <option value="administrador">Administrador</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-guardar-modal" id="btnGuardar" onclick="crearUsuario()">
+            <span id="spinnerGuardar" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Crear usuario
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Editar usuario ══ -->
+  <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header modal-header-verde">
+          <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Editar usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="alertaEditar" class="alert d-none small mb-3" style="border-radius:9px;"></div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label-custom">Nombre completo</label>
+              <input type="text" class="input-custom" id="eNombre" placeholder="Nombre"/>
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Correo electrónico</label>
+              <input type="email" class="input-custom" id="eCorreo" placeholder="correo@drgueria.com"/>
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Rol</label>
+              <select class="select-custom" id="eRol">
+                <option value="cliente">Cliente</option>
+                <option value="administrador">Administrador</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-guardar-modal" id="btnGuardarEditar" onclick="guardarEdicion()">
+            <span id="spinnerEditar" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Guardar cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Cambiar contraseña (admin resetea) ══ -->
+  <div class="modal fade" id="modalPassword" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header modal-header-morado">
+          <h5 class="modal-title"><i class="bi bi-key me-2"></i>Resetear contraseña</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div id="alertaPassword" class="alert d-none small mb-3" style="border-radius:9px;"></div>
+          <p class="small text-muted mb-3">Usuario: <strong id="passNombre"></strong></p>
+          <label class="form-label-custom">Nueva contraseña</label>
+          <div class="input-wrap">
+            <input type="password" class="input-custom" id="pNueva" placeholder="Mínimo 6 caracteres"/>
+            <button class="btn-ojo" type="button" onclick="toggleOjo('pNueva', 'ojoNueva')"><i class="bi bi-eye" id="ojoNueva"></i></button>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 px-4 pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-guardar-morado" id="btnGuardarPass" onclick="guardarPassword()">
+            <span id="spinnerPass" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Resetear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Eliminar ══ -->
+  <div class="modal fade modal-eliminar" id="modalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-trash me-2"></i>Eliminar usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <i class="bi bi-exclamation-triangle-fill" style="font-size:2.5rem;color:var(--rojo)"></i>
+          <p class="mt-2 mb-0">¿Eliminar a <strong id="eliminarNombre"></strong>? Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center pb-4">
+          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn-confirmar-eliminar" id="btnConfEliminar" onclick="confirmarEliminar()">
+            <span id="spinnerEliminar" class="spinner-border spinner-border-sm me-1 d-none"></span>
+            Sí, eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-drg" id="toast">
+    <div class="toast-titulo" id="toastTitulo"></div>
+    <div class="toast-msg"    id="toastMsg"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const API = 'http://192.168.100.2:4000';
+
+    /* ── Auth ── */
+    const token   = localStorage.getItem('token');
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    const rol     = localStorage.getItem('rol');
+    if (!token)                  window.location.href = 'index.html';
+    if (rol !== 'administrador') window.location.href = 'catalogo.html';
+    document.getElementById('sidebarNombre').textContent = usuario.nombre || 'Admin';
+
+    /* ── Estado ── */
+    let usuarios   = [];
+    let idEditando = null;
+    let idEliminar = null;
+    let correoPass = null;
+
+    const modalNuevoBS   = new bootstrap.Modal(document.getElementById('modalNuevo'));
+    const modalEditarBS  = new bootstrap.Modal(document.getElementById('modalEditar'));
+    const modalPassBS    = new bootstrap.Modal(document.getElementById('modalPassword'));
+    const modalElimBS    = new bootstrap.Modal(document.getElementById('modalEliminar'));
+
+    /* ── Iniciales del avatar ── */
+    function iniciales(nombre) {
+      return nombre.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    }
+
+    /* ── Cargar usuarios ── */
+    async function cargarUsuarios() {
+      try {
+        const res = await fetch(`${API}/usuarios`);
+        usuarios  = await res.json();
+        if (!Array.isArray(usuarios)) usuarios = usuarios.usuarios || [];
+        actualizarKPIs();
+        renderGrid();
+      } catch {
+        mostrarToast('Error', 'No se pudo cargar la lista de usuarios.', true);
+      }
+    }
+
+    /* ── KPIs ── */
+    function actualizarKPIs() {
+      const admins  = usuarios.filter(u => u.rol === 'administrador').length;
+      const clientes = usuarios.filter(u => u.rol === 'cliente').length;
+      document.getElementById('kpiTotal').textContent   = usuarios.length;
+      document.getElementById('kpiAdmin').textContent   = admins;
+      document.getElementById('kpiCliente').textContent = clientes;
+    }
+
+    /* ── Render grid ── */
+    function renderGrid() {
+      const q    = document.getElementById('inputBusqueda').value.toLowerCase().trim();
+      const frol = document.getElementById('filtroRol').value;
+      const grid = document.getElementById('gridUsuarios');
+      const count= document.getElementById('countBar');
+
+      let lista = usuarios;
+      if (q)    lista = lista.filter(u => u.nombre.toLowerCase().includes(q) || u.correo.toLowerCase().includes(q));
+      if (frol) lista = lista.filter(u => u.rol === frol);
+
+      count.textContent = `${lista.length} usuario${lista.length !== 1 ? 's' : ''}`;
+
+      if (lista.length === 0) {
+        grid.innerHTML = `<div class="estado-vacio"><i class="bi bi-people"></i><p class="mb-0">No hay usuarios que coincidan</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = lista.map((u, i) => {
+        const esYo      = u.id_usuario === usuario.id_usuario;
+        const esAdmin   = u.rol === 'administrador';
+        const avatarCls = esAdmin ? 'admin' : 'cliente';
+
+        return `
+        <div class="card-usuario ${esYo ? 'yo' : ''}" style="animation-delay:${i*0.05}s">
+          <div class="card-top">
+            <div class="avatar ${avatarCls}">${iniciales(u.nombre)}</div>
+            <div class="card-top-info">
+              <div class="card-nombre">
+                ${u.nombre}
+                ${esYo ? '<span class="yo-badge">Tú</span>' : ''}
+              </div>
+              <div class="card-correo">${u.correo}</div>
+              <div class="mt-1">
+                <span class="badge-rol ${esAdmin ? 'admin' : 'cliente'}">
+                  <i class="bi ${esAdmin ? 'bi-shield-lock-fill' : 'bi-person-fill'}"></i>
+                  ${esAdmin ? 'Administrador' : 'Cliente'}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="card-divider"></div>
+          <div class="card-actions">
+            <button class="btn-accion btn-editar" onclick="abrirModalEditar(${u.id_usuario})">
+              <i class="bi bi-pencil"></i> Editar
+            </button>
+            <button class="btn-accion btn-password" onclick="abrirModalPassword(${u.id_usuario})">
+              <i class="bi bi-key"></i> Contraseña
+            </button>
+            ${!esYo ? `<button class="btn-accion btn-eliminar" onclick="abrirModalEliminar(${u.id_usuario})"><i class="bi bi-trash"></i></button>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    /* Filtros */
+    document.getElementById('inputBusqueda').addEventListener('input', renderGrid);
+    document.getElementById('filtroRol').addEventListener('change', renderGrid);
+
+    /* ── Ojo contraseña ── */
+    function toggleOjo(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon  = document.getElementById(iconId);
+      const esPass = input.type === 'password';
+      input.type   = esPass ? 'text' : 'password';
+      icon.className = esPass ? 'bi bi-eye-slash' : 'bi bi-eye';
+    }
+
+    /* ══ CREAR USUARIO ══ */
+    function abrirModalNuevo() {
+      ['fNombre','fCorreo','fPassword'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('fRol').value = 'cliente';
+      document.getElementById('alertaModal').className = 'alert d-none small mb-3';
+      modalNuevoBS.show();
+    }
+
+    async function crearUsuario() {
+      const nombre    = document.getElementById('fNombre').value.trim();
+      const correo    = document.getElementById('fCorreo').value.trim();
+      const contrasena= document.getElementById('fPassword').value;
+      const rol_nuevo = document.getElementById('fRol').value;
+      const alerta    = document.getElementById('alertaModal');
+      const btn       = document.getElementById('btnGuardar');
+      const spinner   = document.getElementById('spinnerGuardar');
+
+      if (!nombre || !correo || !contrasena) {
+        alerta.className = 'alert alert-warning small mb-3';
+        alerta.textContent = 'Todos los campos son obligatorios.';
+        return;
+      }
+      if (contrasena.length < 6) {
+        alerta.className = 'alert alert-warning small mb-3';
+        alerta.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+        return;
+      }
+
+      btn.disabled = true; spinner.classList.remove('d-none');
+      try {
+        const res  = await fetch(`${API}/usuarios`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ nombre, correo, contrasena: contrasena, rol: rol_nuevo })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.mensaje || data.error || 'Error al crear el usuario.');
+        modalNuevoBS.hide();
+        mostrarToast('Usuario creado', `${nombre} fue registrado como ${rol_nuevo}.`);
+        await cargarUsuarios();
+      } catch (e) {
+        alerta.className = 'alert alert-danger small mb-3';
+        alerta.textContent = e.message;
+      } finally {
+        btn.disabled = false; spinner.classList.add('d-none');
+      }
+    }
+
+    /* ══ EDITAR USUARIO ══ */
+    function abrirModalEditar(id) {
+      const u = usuarios.find(x => x.id_usuario === id);
+      if (!u) return;
+      idEditando = id;
+      document.getElementById('eNombre').value = u.nombre;
+      document.getElementById('eCorreo').value = u.correo;
+      document.getElementById('eRol').value    = u.rol;
+      document.getElementById('alertaEditar').className = 'alert d-none small mb-3';
+      modalEditarBS.show();
+    }
+
+    async function guardarEdicion() {
+      const nombre = document.getElementById('eNombre').value.trim();
+      const correo = document.getElementById('eCorreo').value.trim();
+      const rol_e  = document.getElementById('eRol').value;
+      const alerta = document.getElementById('alertaEditar');
+      const btn    = document.getElementById('btnGuardarEditar');
+      const spinner= document.getElementById('spinnerEditar');
+
+      if (!nombre || !correo) {
+        alerta.className = 'alert alert-warning small mb-3';
+        alerta.textContent = 'Nombre y correo son obligatorios.';
+        return;
+      }
+      btn.disabled = true; spinner.classList.remove('d-none');
+      try {
+        const res  = await fetch(`${API}/usuarios/${idEditando}`, {
+          method: 'PUT', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ nombre, correo, rol: rol_e })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.mensaje || data.error || 'Error al actualizar.');
+        modalEditarBS.hide();
+        mostrarToast('Usuario actualizado', nombre);
+        await cargarUsuarios();
+      } catch (e) {
+        alerta.className = 'alert alert-danger small mb-3';
+        alerta.textContent = e.message;
+      } finally {
+        btn.disabled = false; spinner.classList.add('d-none');
+      }
+    }
+
+    /* ══ CAMBIAR CONTRASEÑA ══ */
+    function abrirModalPassword(id) {
+      const u = usuarios.find(x => x.id_usuario === id);
+      if (!u) return;
+      correoPass = u.correo;
+      document.getElementById('passNombre').textContent = u.nombre;
+      document.getElementById('pNueva').value = '';
+      document.getElementById('alertaPassword').className = 'alert d-none small mb-3';
+      modalPassBS.show();
+    }
+
+    async function guardarPassword() {
+      const nueva   = document.getElementById('pNueva').value;
+      const alerta  = document.getElementById('alertaPassword');
+      const btn     = document.getElementById('btnGuardarPass');
+      const spinner = document.getElementById('spinnerPass');
+
+      if (!nueva || nueva.length < 6) {
+        alerta.className = 'alert alert-warning small mb-3';
+        alerta.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+        return;
+      }
+      btn.disabled = true; spinner.classList.remove('d-none');
+      try {
+        const res  = await fetch(`${API}/usuarios/resetear-contrasena`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ correo: correoPass, contrasena_nueva: nueva })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.mensaje || data.error || 'Error al resetear.');
+        modalPassBS.hide();
+        mostrarToast('Contraseña actualizada', 'La contraseña fue restablecida correctamente.');
+      } catch (e) {
+        alerta.className = 'alert alert-danger small mb-3';
+        alerta.textContent = e.message;
+      } finally {
+        btn.disabled = false; spinner.classList.add('d-none');
+      }
+    }
+
+    /* ══ ELIMINAR ══ */
+    function abrirModalEliminar(id) {
+      const u = usuarios.find(x => x.id_usuario === id);
+      if (!u) return;
+      idEliminar = id;
+      document.getElementById('eliminarNombre').textContent = u.nombre;
+      modalElimBS.show();
+    }
+
+    async function confirmarEliminar() {
+      const btn     = document.getElementById('btnConfEliminar');
+      const spinner = document.getElementById('spinnerEliminar');
+      btn.disabled = true; spinner.classList.remove('d-none');
+      try {
+        const res = await fetch(`${API}/usuarios/${idEliminar}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error();
+        modalElimBS.hide();
+        mostrarToast('Usuario eliminado', 'La cuenta fue eliminada correctamente.');
+        await cargarUsuarios();
+      } catch {
+        mostrarToast('Error', 'No se pudo eliminar el usuario.', true);
+      } finally {
+        btn.disabled = false; spinner.classList.add('d-none');
+      }
+    }
+
+    /* ══ Toast ══ */
+    let toastT;
+    function mostrarToast(titulo, msg, error = false) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastTitulo').textContent = titulo;
+      document.getElementById('toastMsg').textContent    = msg;
+      t.className = 'toast-drg' + (error ? ' error' : '');
+      t.style.display = 'block';
+      clearTimeout(toastT);
+      toastT = setTimeout(() => t.style.display = 'none', 4000);
+    }
+
+    /* ══ Logout ══ */
+    function cerrarSesion() { localStorage.clear(); window.location.href = 'index.html'; }
+
+    cargarUsuarios();
+  </script>
+</body>
+</html>
