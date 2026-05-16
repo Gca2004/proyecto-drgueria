@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DRGUERIA · Iniciar sesión</title>
 
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 
   <style>
@@ -34,7 +31,7 @@
       overflow: hidden;
     }
 
-    /* ── Panel izquierdo (ilustrativo) ───────────────────────── */
+    /* ── Panel lateral ── */
     .panel-lateral {
       width: 48%;
       background: linear-gradient(145deg, var(--verde-oscuro) 0%, var(--verde-medio) 60%, var(--verde-claro) 100%);
@@ -46,8 +43,6 @@
       position: relative;
       overflow: hidden;
     }
-
-    /* Círculos decorativos de fondo */
     .panel-lateral::before,
     .panel-lateral::after {
       content: '';
@@ -58,7 +53,6 @@
     }
     .panel-lateral::before { width: 380px; height: 380px; top: -80px; right: -120px; }
     .panel-lateral::after  { width: 260px; height: 260px; bottom: -60px; left: -60px; }
-
     .panel-lateral .circulo-extra {
       position: absolute;
       width: 180px; height: 180px;
@@ -66,7 +60,6 @@
       border: 2px solid rgba(255,255,255,0.18);
       bottom: 120px; right: -50px;
     }
-
     .logo-marca {
       font-family: 'DM Serif Display', serif;
       font-size: 3rem;
@@ -77,10 +70,7 @@
       position: relative;
       z-index: 1;
     }
-    .logo-marca span {
-      color: var(--verde-suave);
-    }
-
+    .logo-marca span { color: var(--verde-suave); }
     .logo-subtitulo {
       font-size: 0.85rem;
       color: rgba(255,255,255,0.7);
@@ -90,12 +80,7 @@
       position: relative;
       z-index: 1;
     }
-
-    .features-list {
-      list-style: none;
-      position: relative;
-      z-index: 1;
-    }
+    .features-list { list-style: none; position: relative; z-index: 1; }
     .features-list li {
       display: flex;
       align-items: center;
@@ -105,14 +90,9 @@
       margin-bottom: 1.1rem;
       font-weight: 300;
     }
-    .features-list li i {
-      font-size: 1.1rem;
-      color: var(--verde-suave);
-      flex-shrink: 0;
-    }
+    .features-list li i { font-size: 1.1rem; color: var(--verde-suave); flex-shrink: 0; }
 
-
-    /* ── Panel derecho (formulario) ──────────────────────────── */
+    /* ── Panel formulario ── */
     .panel-form {
       width: 52%;
       display: flex;
@@ -120,31 +100,18 @@
       justify-content: center;
       padding: 2rem 3rem;
       background: var(--blanco);
-      position: relative;
     }
-
-    .form-card {
-      width: 100%;
-      max-width: 420px;
-    }
-
+    .form-card { width: 100%; max-width: 420px; animation: fadeUp 0.45s ease both; }
     .form-titulo {
       font-family: 'DM Serif Display', serif;
       font-size: 2rem;
       color: var(--verde-oscuro);
       margin-bottom: 0.3rem;
     }
-    .form-subtitulo {
-      color: #7a9c8e;
-      font-size: 0.9rem;
-      margin-bottom: 2.4rem;
-    }
+    .form-subtitulo { color: #7a9c8e; font-size: 0.9rem; margin-bottom: 2.4rem; }
 
     /* Inputs */
-    .input-group-custom {
-      position: relative;
-      margin-bottom: 1.3rem;
-    }
+    .input-group-custom { position: relative; margin-bottom: 1.3rem; }
     .input-group-custom label {
       display: block;
       font-size: 0.8rem;
@@ -154,9 +121,7 @@
       text-transform: uppercase;
       margin-bottom: 0.45rem;
     }
-    .input-icono {
-      position: relative;
-    }
+    .input-icono { position: relative; }
     .input-icono i {
       position: absolute;
       left: 1rem;
@@ -182,55 +147,54 @@
       border-color: var(--verde-medio);
       box-shadow: 0 0 0 3px rgba(26,138,104,0.12);
     }
-    .input-icono input:focus + i,
-    .input-icono:focus-within i {
-      color: var(--verde-medio);
-    }
-    /* Ícono de ojo para contraseña */
+    .input-icono:focus-within i { color: var(--verde-medio); }
     .btn-ojo {
       position: absolute;
-      right: 0.9rem;
-      top: 50%;
+      right: 0.9rem; top: 50%;
       transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #9db8ad;
-      cursor: pointer;
-      padding: 0;
-      font-size: 1rem;
+      background: none; border: none;
+      color: #9db8ad; cursor: pointer;
+      padding: 0; font-size: 1rem;
       transition: color 0.2s;
     }
     .btn-ojo:hover { color: var(--verde-medio); }
 
-    /* Botón principal */
+    /* Botón login */
     .btn-login {
       width: 100%;
       padding: 0.82rem;
       background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
-      border: none;
-      border-radius: 10px;
+      border: none; border-radius: 10px;
       color: #fff;
       font-family: 'DM Sans', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: 1rem; font-weight: 600;
       letter-spacing: 0.03em;
       cursor: pointer;
       transition: transform 0.15s, box-shadow 0.2s;
       box-shadow: 0 4px 16px rgba(10,92,69,0.28);
       margin-top: 0.4rem;
     }
-    .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(10,92,69,0.32);
-    }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,92,69,0.32); }
     .btn-login:active { transform: translateY(0); }
-    .btn-login:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .btn-login:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
-    /* Alerta de error */
+    /* Link de registro */
+    .link-registro {
+      display: block;
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 0.85rem;
+      color: #7a9c8e;
+    }
+    .link-registro a {
+      color: var(--verde-medio);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .link-registro a:hover { color: var(--verde-oscuro); }
+
+    /* Alerta error */
     .alerta-error {
       background: #fff5f5;
       border: 1.5px solid #f5c6c6;
@@ -245,7 +209,6 @@
     }
     .alerta-error.visible { display: flex; }
 
-    /* Link de recuperación */
     .link-recuperar {
       display: block;
       text-align: right;
@@ -270,26 +233,159 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Modal recuperar */
-    .modal-recuperar .modal-header { border-bottom: 1px solid var(--gris-borde); }
-    .modal-recuperar .modal-title {
-      font-family: 'DM Serif Display', serif;
-      color: var(--verde-oscuro);
-    }
-    .modal-recuperar .btn-guardar {
-      background: var(--verde-medio);
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-weight: 600;
-      padding: 0.55rem 1.4rem;
-    }
-    .modal-recuperar .btn-guardar:hover { background: var(--verde-oscuro); }
-
+    /* Modales base */
     .alerta-modal {
       font-size: 0.85rem;
       border-radius: 8px;
       padding: 0.6rem 0.9rem;
+    }
+
+    /* ── Modal recuperar ── */
+    .modal-recuperar .modal-header { border-bottom: 1px solid var(--gris-borde); }
+    .modal-recuperar .modal-title { font-family: 'DM Serif Display', serif; color: var(--verde-oscuro); }
+    .modal-recuperar .btn-guardar {
+      background: var(--verde-medio); border: none; border-radius: 8px;
+      color: #fff; font-weight: 600; padding: 0.55rem 1.4rem;
+    }
+    .modal-recuperar .btn-guardar:hover { background: var(--verde-oscuro); }
+
+    /* ── Modal registro ── */
+    .modal-registro .modal-content {
+      border: none !important;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .modal-registro .modal-header-registro {
+      background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 100%);
+      padding: 1.6rem 1.8rem 1.2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .modal-registro .modal-header-registro::before {
+      content: '';
+      position: absolute;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      top: -60px; right: -40px;
+    }
+    .modal-registro .modal-header-registro::after {
+      content: '';
+      position: absolute;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      bottom: -30px; left: 30px;
+    }
+    .modal-registro .icono-header {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 0.9rem;
+      position: relative; z-index: 1;
+    }
+    .modal-registro .icono-header i { font-size: 1.4rem; color: #fff; }
+    .modal-registro .titulo-header {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem;
+      color: #fff;
+      margin: 0 0 0.2rem;
+      position: relative; z-index: 1;
+    }
+    .modal-registro .subtitulo-header {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.7);
+      margin: 0;
+      position: relative; z-index: 1;
+    }
+    .modal-registro .btn-close-custom {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: #fff;
+      font-size: 1rem;
+      z-index: 2;
+      transition: background 0.2s;
+    }
+    .modal-registro .btn-close-custom:hover { background: rgba(255,255,255,0.28); }
+
+    .modal-registro .modal-body { padding: 1.5rem 1.8rem 0.5rem; }
+    .modal-registro .modal-footer { padding: 1rem 1.8rem 1.4rem; border: none; }
+
+    /* Labels del registro */
+    .reg-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--gris-texto);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .reg-input-wrap { position: relative; }
+    .reg-input-wrap i {
+      position: absolute;
+      left: 0.9rem; top: 50%;
+      transform: translateY(-50%);
+      color: #9db8ad; font-size: 0.95rem;
+    }
+    .reg-input-wrap input {
+      width: 100%;
+      border: 1.5px solid var(--gris-borde);
+      border-radius: 9px;
+      padding: 0.68rem 0.9rem 0.68rem 2.6rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--gris-texto);
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .reg-input-wrap input:focus {
+      border-color: var(--verde-medio);
+      box-shadow: 0 0 0 3px rgba(26,138,104,0.12);
+    }
+    .reg-input-wrap:focus-within i { color: var(--verde-medio); }
+
+    /* Botón crear cuenta */
+    .btn-crear {
+      width: 100%;
+      padding: 0.8rem;
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      border: none; border-radius: 10px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 18px rgba(10,92,69,0.3);
+    }
+    .btn-crear:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,92,69,0.35); }
+    .btn-crear:active { transform: translateY(0); }
+    .btn-crear:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+    /* Divisor */
+    .divisor-reg {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin: 0.5rem 0 1rem;
+      color: #9db8ad;
+      font-size: 0.78rem;
+    }
+    .divisor-reg::before,
+    .divisor-reg::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gris-borde);
     }
 
     /* Responsive */
@@ -301,8 +397,6 @@
       .panel-form { width: 100%; padding: 2rem 1.5rem; }
     }
 
-    /* Entrada animada */
-    .form-card { animation: fadeUp 0.45s ease both; }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(22px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -311,13 +405,11 @@
 </head>
 <body>
 
-  <!-- ══ Panel lateral izquierdo ══ -->
+  <!-- ══ Panel lateral ══ -->
   <div class="panel-lateral">
     <div class="circulo-extra"></div>
-
     <div class="logo-marca">DR<span>GUERIA</span></div>
     <p class="logo-subtitulo">Sistema de gestión farmacéutica</p>
-
     <ul class="features-list">
       <li><i class="bi bi-bag-heart-fill"></i> Catálogo de productos actualizado</li>
       <li><i class="bi bi-bell-fill"></i> Alertas automáticas de stock bajo</li>
@@ -325,24 +417,20 @@
       <li><i class="bi bi-shield-lock-fill"></i> Acceso seguro con roles de usuario</li>
       <li><i class="bi bi-graph-up-arrow"></i> Control total del inventario</li>
     </ul>
-
-
   </div>
 
-  <!-- ══ Panel derecho: formulario ══ -->
+  <!-- ══ Panel formulario ══ -->
   <div class="panel-form">
     <div class="form-card">
 
       <p class="form-titulo">Bienvenido</p>
       <p class="form-subtitulo">Inicia sesión para acceder al sistema</p>
 
-      <!-- Alerta de error -->
       <div class="alerta-error" id="alertaError">
         <i class="bi bi-exclamation-circle-fill"></i>
         <span id="mensajeError">Correo o contraseña incorrectos.</span>
       </div>
 
-      <!-- Formulario -->
       <div class="input-group-custom">
         <label for="correo">Correo electrónico</label>
         <div class="input-icono">
@@ -370,8 +458,14 @@
         Iniciar sesión
       </button>
 
+      <p class="link-registro">
+        ¿No tienes cuenta?
+        <a href="#" data-bs-toggle="modal" data-bs-target="#modalRegistro">Regístrate aquí</a>
+      </p>
+
     </div>
   </div>
+
 
   <!-- ══ Modal: resetear contraseña ══ -->
   <div class="modal fade modal-recuperar" id="modalRecuperar" tabindex="-1" aria-labelledby="modalRecuperarLabel" aria-hidden="true">
@@ -385,9 +479,7 @@
         </div>
         <div class="modal-body px-4 py-3">
           <p class="text-muted small mb-3">Ingresa tu correo y la nueva contraseña. No necesitas la contraseña actual.</p>
-
           <div id="alertaModal" class="alert alerta-modal d-none"></div>
-
           <div class="mb-3">
             <label class="form-label fw-semibold small" style="color:var(--gris-texto)">Correo electrónico</label>
             <input type="email" class="form-control" id="resetCorreo" placeholder="usuario@drgueria.com"/>
@@ -408,13 +500,90 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
+
+  <!-- ══ Modal: registro ══ -->
+  <div class="modal fade modal-registro" id="modalRegistro" tabindex="-1" aria-labelledby="modalRegistroLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg">
+
+        <!-- Header verde con diseño -->
+        <div class="modal-header-registro">
+          <button class="btn-close-custom" type="button" data-bs-dismiss="modal" aria-label="Cerrar">
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <div class="icono-header">
+            <i class="bi bi-person-plus-fill"></i>
+          </div>
+          <h5 class="titulo-header" id="modalRegistroLabel">Crear cuenta</h5>
+          <p class="subtitulo-header">Regístrate para acceder al sistema</p>
+        </div>
+
+        <!-- Cuerpo -->
+        <div class="modal-body">
+          <div id="alertaRegistro" class="alert alerta-modal d-none mb-3"></div>
+
+          <div class="mb-3">
+            <label class="reg-label" for="regNombre">Nombre completo</label>
+            <div class="reg-input-wrap">
+              <i class="bi bi-person"></i>
+              <input type="text" id="regNombre" placeholder="Tu nombre completo"/>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="reg-label" for="regCorreo">Correo electrónico</label>
+            <div class="reg-input-wrap">
+              <i class="bi bi-envelope"></i>
+              <input type="email" id="regCorreo" placeholder="usuario@drgueria.com"/>
+            </div>
+          </div>
+
+          <div class="divisor-reg">contraseña</div>
+
+          <div class="row g-2 mb-1">
+            <div class="col-6">
+              <label class="reg-label" for="regClave">Contraseña</label>
+              <div class="reg-input-wrap">
+                <i class="bi bi-lock"></i>
+                <input type="password" id="regClave" placeholder="Mín. 6 caracteres"/>
+              </div>
+            </div>
+            <div class="col-6">
+              <label class="reg-label" for="regClave2">Confirmar</label>
+              <div class="reg-input-wrap">
+                <i class="bi bi-lock-fill"></i>
+                <input type="password" id="regClave2" placeholder="Repite la clave"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer" style="flex-direction:column; gap:0.7rem;">
+          <button type="button" class="btn-crear" id="btnRegistrar">
+            <span id="regSpinner" class="spinner d-none"></span>
+            Crear cuenta
+          </button>
+          <p style="font-size:0.82rem; color:#7a9c8e; margin:0;">
+            ¿Ya tienes cuenta?
+            <a href="#" data-bs-dismiss="modal"
+               style="color:var(--verde-medio); font-weight:600; text-decoration:none;">
+              Inicia sesión
+            </a>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    const API = 'http://192.168.100.2:4000';
+    const API = 'http://localhost:4000/v1';
 
-    /* ── Mostrar / ocultar contraseña ── */
+    /* ── Mostrar/ocultar contraseña ── */
     document.getElementById('btnOjo').addEventListener('click', () => {
       const input = document.getElementById('contrasena');
       const icono = document.getElementById('iconoOjo');
@@ -435,8 +604,6 @@
 
     /* ── Login ── */
     document.getElementById('btnLogin').addEventListener('click', iniciarSesion);
-
-    // También con Enter
     ['correo', 'contrasena'].forEach(id => {
       document.getElementById(id).addEventListener('keydown', e => {
         if (e.key === 'Enter') iniciarSesion();
@@ -445,7 +612,6 @@
 
     async function iniciarSesion() {
       ocultarError();
-
       const correo     = document.getElementById('correo').value.trim();
       const contrasena = document.getElementById('contrasena').value;
       const btn        = document.getElementById('btnLogin');
@@ -455,7 +621,6 @@
         return;
       }
 
-      // Estado de carga
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Ingresando…';
 
@@ -465,7 +630,6 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ correo, contrasena })
         });
-
         const data = await response.json();
 
         if (!response.ok) {
@@ -473,12 +637,10 @@
           return;
         }
 
-        // Guardar sesión
         localStorage.setItem('token',   data.token);
         localStorage.setItem('usuario', JSON.stringify(data.usuario));
         localStorage.setItem('rol',     data.usuario.rol);
 
-        // Redirigir según rol
         if (data.usuario.rol === 'administrador') {
           window.location.href = 'dashboard.html';
         } else {
@@ -518,10 +680,10 @@
       spinner.classList.remove('d-none');
 
       try {
-        const res = await fetch(`${API}/usuarios/resetear-contrasena`, {
+        const res = await fetch(`${API}/usuarios/resetear-clave`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ correo, contrasena_nueva: password })
+          body: JSON.stringify({ correo, clave_nueva: password })
         });
         const data = await res.json();
 
@@ -543,7 +705,66 @@
       }
     });
 
-    /* ── Si ya hay sesión activa, redirigir ── */
+    /* ── Registro ── */
+    document.getElementById('btnRegistrar').addEventListener('click', async () => {
+      const nombre  = document.getElementById('regNombre').value.trim();
+      const correo  = document.getElementById('regCorreo').value.trim();
+      const clave   = document.getElementById('regClave').value;
+      const clave2  = document.getElementById('regClave2').value;
+      const alerta  = document.getElementById('alertaRegistro');
+      const spinner = document.getElementById('regSpinner');
+      const btn     = document.getElementById('btnRegistrar');
+
+      alerta.className = 'alert alerta-modal d-none';
+
+      if (!nombre || !correo || !clave || !clave2) {
+        alerta.className = 'alert alerta-modal alert-warning';
+        alerta.textContent = 'Completa todos los campos.';
+        return;
+      }
+      if (clave.length < 6) {
+        alerta.className = 'alert alerta-modal alert-warning';
+        alerta.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+        return;
+      }
+      if (clave !== clave2) {
+        alerta.className = 'alert alerta-modal alert-danger';
+        alerta.textContent = 'Las contraseñas no coinciden.';
+        return;
+      }
+
+      btn.disabled = true;
+      spinner.classList.remove('d-none');
+
+      try {
+        const res = await fetch(`${API}/usuarios/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, correo, clave })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          alerta.className = 'alert alerta-modal alert-danger';
+          alerta.textContent = data.error || 'No se pudo crear la cuenta.';
+        } else {
+          alerta.className = 'alert alerta-modal alert-success';
+          alerta.textContent = '¡Cuenta creada exitosamente! Ya puedes iniciar sesión.';
+          document.getElementById('regNombre').value = '';
+          document.getElementById('regCorreo').value = '';
+          document.getElementById('regClave').value = '';
+          document.getElementById('regClave2').value = '';
+        }
+      } catch {
+        alerta.className = 'alert alerta-modal alert-danger';
+        alerta.textContent = 'Error de conexión con el servidor.';
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('d-none');
+      }
+    });
+
+    /* ── Sesión activa ── */
     (function verificarSesion() {
       const token = localStorage.getItem('token');
       const rol   = localStorage.getItem('rol');

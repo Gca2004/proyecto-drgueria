@@ -120,7 +120,7 @@ MS_PRODUCTOS_URL=http://localhost:3001
 El frontend apunta al API Gateway en esta dirección:
 
 ```
-http://192.168.100.2:4000
+http://localhost:4000
 ```
 
 Si corres el proyecto en tu máquina local, reemplaza esa IP por `localhost`:
@@ -129,7 +129,7 @@ Si corres el proyecto en tu máquina local, reemplaza esa IP por `localhost`:
 http://localhost:4000
 ```
 
-Busca y reemplaza `http://192.168.100.2:4000` en todos los archivos `.html` del frontend.
+Busca y reemplaza `http://localhost:4000` en todos los archivos `.html` del frontend.
 
 ---
 

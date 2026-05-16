@@ -1,4 +1,6 @@
 
+
+###MS usuarios
 CREATE DATABASE IF NOT EXISTS drgueria_usuarios;
 USE drgueria_usuarios;
 
@@ -12,6 +14,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
+### MS productos
 
 CREATE DATABASE IF NOT EXISTS drgueria_productos;
 USE drgueria_productos;
@@ -28,6 +32,8 @@ CREATE TABLE IF NOT EXISTS productos (
 );
 
 
+###MS proveedores
+
 CREATE DATABASE IF NOT EXISTS drgueria_proveedores;
 USE drgueria_proveedores;
 
@@ -41,6 +47,9 @@ CREATE TABLE IF NOT EXISTS proveedores (
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
+### MS pedidos
+
 CREATE TABLE IF NOT EXISTS pedidos (
   id_pedido INT AUTO_INCREMENT PRIMARY KEY,
   id_producto INT NOT NULL,
@@ -53,4 +62,36 @@ CREATE TABLE IF NOT EXISTS pedidos (
   createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
   updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
+);
+
+###carrito de compras del MS producto
+
+USE drgueria_productos;
+CREATE TABLE IF NOT EXISTS carrito (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  producto_id INT NOT NULL,
+  cantidad INT NOT NULL DEFAULT 1,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_usuario_producto (usuario_id, producto_id)
+);
+
+
+
+### MS-PAGOS
+
+CREATE DATABASE IF NOT EXISTS drgueria_pagos;
+USE drgueria_pagos;
+
+CREATE TABLE IF NOT EXISTS transacciones (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  compra_id INT NOT NULL,
+  usuario_id INT NOT NULL,
+  monto DECIMAL(10,2) NOT NULL,
+  estado ENUM('pendiente','aprobado','rechazado') DEFAULT 'pendiente',
+  metodo_pago VARCHAR(50) DEFAULT 'efectivo',
+  numero_factura VARCHAR(100) UNIQUE,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

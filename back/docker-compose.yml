@@ -1,0 +1,192 @@
+version: '3.8'
+
+# ══════════════════════════════════════════════════════════════
+# DRGUERIA — Docker Compose completo
+# Levanta: MySQL + todos los microservicios + API Gateway + Front
+#
+# Comandos útiles:
+#   Levantar todo:         docker-compose up -d
+#   Ver logs:              docker-compose logs -f
+#   Ver logs de uno:       docker-compose logs -f ms-productos
+#   Parar todo:            docker-compose down
+#   Parar y borrar datos:  docker-compose down -v
+#   Reconstruir uno:       docker-compose up -d --build ms-productos
+# ══════════════════════════════════════════════════════════════
+
+services:
+
+  # ────────────────────────────────────────────
+  # BASE DE DATOS — MySQL único para todo
+  # ────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: drgueria-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: drgueria2024
+      MYSQL_DATABASE: drgueria_usuarios
+    ports:
+      - "3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - drgueria-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pdrgueria2024"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ────────────────────────────────────────────
+  # MS USUARIOS — Puerto 3000
+  # ────────────────────────────────────────────
+  ms-usuarios:
+    build:
+      context: ./ms-usuarios
+      dockerfile: Dockerfile
+    container_name: drgueria-ms-usuarios
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      DB_NAME: drgueria_usuarios
+      DB_USER: root
+      DB_PASSWORD: drgueria2024
+      DB_HOST: mysql
+      DB_PORT: 3306
+      JWT_SECRET: drgueria_secreto_2024
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - drgueria-net
+
+  # ────────────────────────────────────────────
+  # MS PRODUCTOS — Puerto 3001
+  # ────────────────────────────────────────────
+  ms-productos:
+    build:
+      context: ./ms-productos
+      dockerfile: Dockerfile
+    container_name: drgueria-ms-productos
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      DB_NAME: drgueria_productos
+      DB_USER: root
+      DB_PASSWORD: drgueria2024
+      DB_HOST: mysql
+      DB_PORT: 3306
+      MS_PROVEEDORES_URL: http://ms-proveedores:3002
+    ports:
+      - "3001:3001"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - drgueria-net
+
+  # ────────────────────────────────────────────
+  # MS PROVEEDORES — Puerto 3002
+  # ────────────────────────────────────────────
+  ms-proveedores:
+    build:
+      context: ./ms-proveedores
+      dockerfile: Dockerfile
+    container_name: drgueria-ms-proveedores
+    restart: unless-stopped
+    environment:
+      PORT: 3002
+      DB_NAME: drgueria_proveedores
+      DB_USER: root
+      DB_PASSWORD: drgueria2024
+      DB_HOST: mysql
+      DB_PORT: 3306
+      MS_PRODUCTOS_URL: http://ms-productos:3001
+    ports:
+      - "3002:3002"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - drgueria-net
+
+  # ────────────────────────────────────────────
+  # MS PAGOS — Puerto 3004
+  # ────────────────────────────────────────────
+  ms-pagos:
+    build:
+      context: ./ms-pagos
+      dockerfile: Dockerfile
+    container_name: drgueria-ms-pagos
+    restart: unless-stopped
+    environment:
+      PORT: 3004
+      DB_NAME: drgueria_pagos
+      DB_USER: root
+      DB_PASSWORD: drgueria2024
+      DB_HOST: mysql
+      DB_PORT: 3306
+      MS_NOTIFICACIONES_URL: http://ms-notificaciones:3005
+    ports:
+      - "3004:3004"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - drgueria-net
+
+  # ────────────────────────────────────────────
+  # API GATEWAY — Puerto 4000
+  # ────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: drgueria-api-gateway
+    restart: unless-stopped
+    environment:
+      PORT: 4000
+      MS_USUARIOS_URL: http://ms-usuarios:3000
+      MS_PRODUCTOS_URL: http://ms-productos:3001
+      MS_PROVEEDORES_URL: http://ms-proveedores:3002
+      MS_PAGOS_URL: http://ms-pagos:3004
+    ports:
+      - "4000:4000"
+    depends_on:
+      - ms-usuarios
+      - ms-productos
+      - ms-proveedores
+      - ms-pagos
+    networks:
+      - drgueria-net
+
+  # ────────────────────────────────────────────
+  # FRONTEND — Puerto 80
+  # ────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: drgueria-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - drgueria-net
+
+# ══════════════════════════════════════════════
+# REDES Y VOLÚMENES
+# ══════════════════════════════════════════════
+networks:
+  drgueria-net:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

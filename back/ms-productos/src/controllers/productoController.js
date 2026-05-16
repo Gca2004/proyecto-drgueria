@@ -1,3 +1,4 @@
+const breaker = require('../circuitBreaker');
 const Producto = require('../models/Producto');
 const axios = require('axios');
 const { Op } = require('sequelize');
@@ -82,43 +83,38 @@ const realizarCompra = async (req, res) => {
     producto.stock_actual -= cantidad;
     await producto.save();
 
-    let mensajeAlerta = null;
-
-    // Si el stock queda por debajo del mínimo
-    if (producto.stock_actual < producto.stock_minimo) {
-
-      // Calculamos cuánto hay que pedir
-      const cantidadAPedir = (producto.stock_minimo * 2) - producto.stock_actual;
-
-      try {
-        // Buscamos el proveedor de esa categoría en MS Proveedores
-        const respuestaProveedor = await axios.get(
-          `${process.env.MS_PROVEEDORES_URL}/proveedores/categoria/${encodeURIComponent(producto.categoria)}`
-        );
-        const proveedor = respuestaProveedor.data;
-
-        // Creamos el pedido automáticamente
-        await axios.post(`${process.env.MS_PROVEEDORES_URL}/pedidos`, {
-          id_producto: producto.id_producto,
-          id_proveedor: proveedor.id_proveedor,
-          cantidad_solicitada: cantidadAPedir
-        });
-
-        mensajeAlerta = `Stock bajo — Se solicitaron ${cantidadAPedir} unidades a ${proveedor.nombre}`;
-        console.log(`⚠️ ${mensajeAlerta}`);
-
-      } catch (err) {
-        mensajeAlerta = 'Stock bajo — No se encontró proveedor para esta categoría';
-        console.error('Error contactando MS Proveedores:', err.message);
-      }
-    }
-
+    // ✅ Respuesta al cliente SIN ninguna alerta
     res.json({
       mensaje: 'Compra realizada exitosamente',
       producto: producto.nombre_producto,
-      categoria: producto.categoria,
-      stock_restante: producto.stock_actual,
-      alerta: mensajeAlerta
+      cantidad_comprada: cantidad,
+      stock_restante: producto.stock_actual
+    });
+
+    // ✅ DESPUÉS de responder, verificamos internamente
+    setImmediate(async () => {
+      if (producto.stock_actual < producto.stock_minimo) {
+        const cantidadAPedir = (producto.stock_minimo * 2) - producto.stock_actual;
+
+        try {
+          // Buscar proveedor de esa categoría
+          const respuestaProveedor = await axios.get(
+            `${process.env.MS_PROVEEDORES_URL}/proveedores/categoria/${encodeURIComponent(producto.categoria)}`
+          );
+          const proveedor = respuestaProveedor.data;
+
+          // Crear pedido automático usando Circuit Breaker
+          await breaker.fire({
+            id_producto: producto.id_producto,
+            id_proveedor: proveedor.id_proveedor,
+            cantidad_solicitada: cantidadAPedir
+          });
+
+          console.log(`⚠️ Pedido automático generado: ${cantidadAPedir} uds de ${proveedor.nombre}`);
+        } catch (err) {
+          console.error('Error en proceso interno de stock bajo:', err.message);
+        }
+      }
     });
 
   } catch (error) {

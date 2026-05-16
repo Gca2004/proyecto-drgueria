@@ -12,13 +12,13 @@ const crearUsuario = async (req, res) => {
       return res.status(400).json({ error: 'Ya existe un usuario con ese correo' });
     }
 
-    const claveEncriptada = await bcrypt.hash(clave, 10);
+    const contrasenaEncriptada = await bcrypt.hash(clave, 10);
 
     const usuario = await Usuario.create({
       nombre,
       correo,
-      clave: claveEncriptada,
-      rol
+      contrasena: contrasenaEncriptada,
+      rol: rol || 'cliente'
     });
 
     res.status(201).json({
@@ -39,7 +39,7 @@ const crearUsuario = async (req, res) => {
 const obtenerUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll({
-      attributes: { exclude: ['clave'] }
+      attributes: { exclude: ['contrasena'] }
     });
     res.json(usuarios);
   } catch (error) {
@@ -51,7 +51,7 @@ const obtenerUsuarios = async (req, res) => {
 const obtenerUsuarioPorId = async (req, res) => {
   try {
     const usuario = await Usuario.findByPk(req.params.id, {
-      attributes: { exclude: ['clave'] }
+      attributes: { exclude: ['contrasena'] }
     });
     if (!usuario) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
@@ -102,16 +102,17 @@ const eliminarUsuario = async (req, res) => {
 // ── LOGIN ─────────────────────────────────────────────────────
 const login = async (req, res) => {
   try {
-    const { correo, clave } = req.body;
+    const { correo, contrasena, clave } = req.body;
+    const claveRecibida = contrasena || clave;
 
     const usuario = await Usuario.findOne({ where: { correo } });
     if (!usuario) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
-    const claveValida = await bcrypt.compare(clave, usuario.clave);
+    const claveValida = await bcrypt.compare(claveRecibida, usuario.contrasena);
     if (!claveValida) {
-      return res.status(401).json({ error: 'Clave incorrecta' });
+      return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
 
     const token = jwt.sign(
@@ -143,7 +144,7 @@ const logout = async (req, res) => {
   });
 };
 
-// ── CAMBIAR CLAVE ─────────────────────────────────────────────
+// ── CAMBIAR CONTRASEÑA ────────────────────────────────────────
 const cambiarclave = async (req, res) => {
   try {
     const usuario = await Usuario.findByPk(req.params.id);
@@ -153,34 +154,35 @@ const cambiarclave = async (req, res) => {
 
     const { clave_actual, clave_nueva } = req.body;
 
-    const claveValida = await bcrypt.compare(clave_actual, usuario.clave);
+    const claveValida = await bcrypt.compare(clave_actual, usuario.contrasena);
     if (!claveValida) {
-      return res.status(401).json({ error: 'La clave actual es incorrecta' });
+      return res.status(401).json({ error: 'La contraseña actual es incorrecta' });
     }
 
-    const claveNuevaEncriptada = await bcrypt.hash(clave_nueva, 10);
-    await usuario.update({ clave: claveNuevaEncriptada });
+    const nuevaEncriptada = await bcrypt.hash(clave_nueva, 10);
+    await usuario.update({ contrasena: nuevaEncriptada });
 
-    res.json({ mensaje: 'Clave actualizada exitosamente' });
+    res.json({ mensaje: 'Contraseña actualizada exitosamente' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// ── RESETEAR CLAVE ────────────────────────────────────────────
+// ── RESETEAR CONTRASEÑA ───────────────────────────────────────
 const resetearclave = async (req, res) => {
   try {
-    const { correo, clave_nueva } = req.body;
+    const { correo, clave_nueva, contrasena_nueva } = req.body;
+    const nuevaClave = clave_nueva || contrasena_nueva;
 
     const usuario = await Usuario.findOne({ where: { correo } });
     if (!usuario) {
       return res.status(404).json({ error: 'No existe un usuario con ese correo' });
     }
 
-    const claveNuevaEncriptada = await bcrypt.hash(clave_nueva, 10);
-    await usuario.update({ clave: claveNuevaEncriptada });
+    const nuevaEncriptada = await bcrypt.hash(nuevaClave, 10);
+    await usuario.update({ contrasena: nuevaEncriptada });
 
-    res.json({ mensaje: 'Clave reseteada exitosamente' });
+    res.json({ mensaje: 'Contraseña reseteada exitosamente' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
