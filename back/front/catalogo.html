@@ -492,6 +492,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const API = 'http://localhost:4000/v1';
+    const API_AUDITORIA = `${API}/auditoria`;
 
     /* ── Auth guard ── */
     const token   = localStorage.getItem('token');
@@ -518,6 +519,34 @@
 
     /* ── Formatear precio ── */
     const fmt = v => '$' + Number(v).toLocaleString('es-CO');
+
+    async function registrarAuditoriaCompra(producto, cantidad, stockRestante) {
+      try {
+        const total = Number(producto.precio || 0) * Number(cantidad || 0);
+        const detalle = JSON.stringify({
+          producto_id: producto.id_producto,
+          producto_nombre: producto.nombre_producto,
+          categoria: producto.categoria,
+          cantidad: Number(cantidad || 0),
+          precio_unitario: Number(producto.precio || 0),
+          monto_total: Number(total.toFixed(2)),
+          stock_restante: Number(stockRestante || 0)
+        });
+
+        await fetch(`${API_AUDITORIA}/log`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            servicio: 'ms-compras',
+            accion: 'compra_realizada',
+            usuario_id: usuario.id_usuario || null,
+            detalle
+          })
+        });
+      } catch (_) {
+        // No interrumpe la compra si auditoria falla.
+      }
+    }
 
     /* ── Cargar productos ── */
     async function cargarProductos() {
@@ -651,9 +680,11 @@
           return;
         }
 
+        await registrarAuditoriaCompra(productoSel, cantidad, data.stock_restante);
+
         modalBS.hide();
 
-       mostrarToast('¡Compra realizada!', `Stock restante: ${data.stock_restante} unidades.`, 'ok');
+        mostrarToast('¡Compra realizada!', `Stock restante: ${data.stock_restante} unidades.`, 'ok');
 
         await cargarProductos(); // refrescar stock
 

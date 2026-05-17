@@ -1,0 +1,608 @@
+{
+  "generado_en": "2026-05-17T03:41:24.790Z",
+  "usuarios": [
+    {
+      "id_usuario": 1,
+      "nombre": "juli",
+      "correo": "j@g.c",
+      "rol": "cliente",
+      "createdAt": "2026-05-17T03:03:08.000Z",
+      "updatedAt": "2026-05-17T03:03:08.000Z"
+    },
+    {
+      "id_usuario": 2,
+      "nombre": "Admin DRGUERIA",
+      "correo": "admin@drgueria.com",
+      "rol": "administrador",
+      "createdAt": "2026-05-17T03:03:50.000Z",
+      "updatedAt": "2026-05-17T03:03:50.000Z"
+    },
+    {
+      "id_usuario": 3,
+      "nombre": "j",
+      "correo": "jaguilarestacio@gmail.com",
+      "rol": "cliente",
+      "createdAt": "2026-05-17T03:33:42.000Z",
+      "updatedAt": "2026-05-17T03:33:42.000Z"
+    }
+  ],
+  "productos": [
+    {
+      "id_producto": 1,
+      "nombre_producto": "Acetaminofen 500mg x10",
+      "categoria": "Analgesico",
+      "precio": "2500.00",
+      "stock_actual": 90,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:39:58.000Z"
+    },
+    {
+      "id_producto": 2,
+      "nombre_producto": "Ibuprofeno 400mg x10",
+      "categoria": "Analgesico",
+      "precio": "3200.00",
+      "stock_actual": 99,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:32:32.000Z"
+    },
+    {
+      "id_producto": 3,
+      "nombre_producto": "Naproxeno 500mg x10",
+      "categoria": "Analgesico",
+      "precio": "4800.00",
+      "stock_actual": 98,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:39:51.000Z"
+    },
+    {
+      "id_producto": 4,
+      "nombre_producto": "Aspirina 100mg x10",
+      "categoria": "Analgesico",
+      "precio": "1800.00",
+      "stock_actual": 98,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:40:30.000Z"
+    },
+    {
+      "id_producto": 5,
+      "nombre_producto": "Diclofenaco 50mg x10",
+      "categoria": "Analgesico",
+      "precio": "3600.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 6,
+      "nombre_producto": "Meloxicam 15mg x10",
+      "categoria": "Analgesico",
+      "precio": "5200.00",
+      "stock_actual": 99,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:40:34.000Z"
+    },
+    {
+      "id_producto": 7,
+      "nombre_producto": "Tramadol 50mg x10",
+      "categoria": "Analgesico",
+      "precio": "7800.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 8,
+      "nombre_producto": "Ketorolaco 10mg x10",
+      "categoria": "Analgesico",
+      "precio": "6500.00",
+      "stock_actual": 99,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:11:55.000Z"
+    },
+    {
+      "id_producto": 9,
+      "nombre_producto": "Amoxicilina 500mg x21",
+      "categoria": "Antibiotico",
+      "precio": "18500.00",
+      "stock_actual": 98,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:19:20.000Z"
+    },
+    {
+      "id_producto": 10,
+      "nombre_producto": "Azitromicina 500mg x3",
+      "categoria": "Antibiotico",
+      "precio": "22000.00",
+      "stock_actual": 98,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:40:37.000Z"
+    },
+    {
+      "id_producto": 11,
+      "nombre_producto": "Ciprofloxacino 500mg x10",
+      "categoria": "Antibiotico",
+      "precio": "15800.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 12,
+      "nombre_producto": "Metronidazol 500mg x14",
+      "categoria": "Antibiotico",
+      "precio": "12000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 13,
+      "nombre_producto": "Clindamicina 300mg x16",
+      "categoria": "Antibiotico",
+      "precio": "28000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 14,
+      "nombre_producto": "Claritromicina 500mg x14",
+      "categoria": "Antibiotico",
+      "precio": "35000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 15,
+      "nombre_producto": "Cefalexina 500mg x20",
+      "categoria": "Antibiotico",
+      "precio": "19500.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 16,
+      "nombre_producto": "Doxiciclina 100mg x10",
+      "categoria": "Antibiotico",
+      "precio": "14000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 17,
+      "nombre_producto": "Vitamina C 1000mg x30",
+      "categoria": "Vitaminas y suplementos",
+      "precio": "18000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 18,
+      "nombre_producto": "Vitamina D3 2000UI x30",
+      "categoria": "Vitaminas y suplementos",
+      "precio": "22000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 19,
+      "nombre_producto": "Complejo B x30",
+      "categoria": "Vitaminas y suplementos",
+      "precio": "16500.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 20,
+      "nombre_producto": "Omega 3 1000mg x30",
+      "categoria": "Vitaminas y suplementos",
+      "precio": "28000.00",
+      "stock_actual": 99,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:35:11.000Z"
+    },
+    {
+      "id_producto": 21,
+      "nombre_producto": "Calcio + Vitamina D x60",
+      "categoria": "Vitaminas y suplementos",
+      "precio": "24000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 22,
+      "nombre_producto": "Zinc 50mg x30",
+      "categoria": "Vitaminas y suplementos",
+      "precio": "15000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 23,
+      "nombre_producto": "Hierro + Acido Folico x30",
+      "categoria": "Vitaminas y suplementos",
+      "precio": "19000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 24,
+      "nombre_producto": "Magnesio 400mg x60",
+      "categoria": "Vitaminas y suplementos",
+      "precio": "32000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 25,
+      "nombre_producto": "Protector solar SPF 50 50ml",
+      "categoria": "Cuidado personal",
+      "precio": "35000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 26,
+      "nombre_producto": "Shampoo anticaspa 400ml",
+      "categoria": "Cuidado personal",
+      "precio": "22000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 27,
+      "nombre_producto": "Crema hidratante facial 50ml",
+      "categoria": "Cuidado personal",
+      "precio": "42000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 28,
+      "nombre_producto": "Jabon antibacterial 250ml",
+      "categoria": "Cuidado personal",
+      "precio": "12000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 29,
+      "nombre_producto": "Hilo dental 50m",
+      "categoria": "Cuidado personal",
+      "precio": "8500.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 30,
+      "nombre_producto": "Crema dental blanqueadora 75ml",
+      "categoria": "Cuidado personal",
+      "precio": "14000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 31,
+      "nombre_producto": "Desodorante roll-on 50ml",
+      "categoria": "Cuidado personal",
+      "precio": "18000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 32,
+      "nombre_producto": "Gel antibacterial 500ml",
+      "categoria": "Cuidado personal",
+      "precio": "16000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 33,
+      "nombre_producto": "Condon Durex Natural x3",
+      "categoria": "Condones",
+      "precio": "12000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 34,
+      "nombre_producto": "Condon Durex Extra Fino x3",
+      "categoria": "Condones",
+      "precio": "13500.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 35,
+      "nombre_producto": "Condon Condomi Ultra x12",
+      "categoria": "Condones",
+      "precio": "38000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 36,
+      "nombre_producto": "Condon Prudence Fresa x3",
+      "categoria": "Condones",
+      "precio": "11000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 37,
+      "nombre_producto": "Condon Control Retard x3",
+      "categoria": "Condones",
+      "precio": "14500.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 38,
+      "nombre_producto": "Condon Lifestyles Ultra x12",
+      "categoria": "Condones",
+      "precio": "35000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 39,
+      "nombre_producto": "Condon Vive Placer Real x3",
+      "categoria": "Condones",
+      "precio": "10500.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 40,
+      "nombre_producto": "Condon Protex x12",
+      "categoria": "Condones",
+      "precio": "32000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 41,
+      "nombre_producto": "Lubricante Durex Play 50ml",
+      "categoria": "Lubricantes",
+      "precio": "28000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 42,
+      "nombre_producto": "Lubricante Intimo KY 75ml",
+      "categoria": "Lubricantes",
+      "precio": "32000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 43,
+      "nombre_producto": "Lubricante Pjur Original 30ml",
+      "categoria": "Lubricantes",
+      "precio": "45000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 44,
+      "nombre_producto": "Lubricante Nuei Delay 100ml",
+      "categoria": "Lubricantes",
+      "precio": "38000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 45,
+      "nombre_producto": "Lubricante Yes OB Natural 80ml",
+      "categoria": "Lubricantes",
+      "precio": "52000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 46,
+      "nombre_producto": "Lubricante Vive Sensitivo 50ml",
+      "categoria": "Lubricantes",
+      "precio": "25000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 47,
+      "nombre_producto": "Lubricante Prudence Aqua 60ml",
+      "categoria": "Lubricantes",
+      "precio": "22000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_producto": 48,
+      "nombre_producto": "Lubricante Control Aqua 75ml",
+      "categoria": "Lubricantes",
+      "precio": "29000.00",
+      "stock_actual": 100,
+      "stock_minimo": 25,
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    }
+  ],
+  "proveedores": [
+    {
+      "id_proveedor": 1,
+      "nombre": "Laboratorios Lafrancol S.A.S",
+      "contacto": "Carlos Andres Restrepo",
+      "telefono": "6024567890",
+      "categoria": "Analgesico",
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_proveedor": 2,
+      "nombre": "Genfar S.A - Grupo Sanofi",
+      "contacto": "Maria Claudia Ospina",
+      "telefono": "6013456789",
+      "categoria": "Antibiotico",
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_proveedor": 3,
+      "nombre": "Tecnoquimicas S.A",
+      "contacto": "Juan David Mejia",
+      "telefono": "6023456789",
+      "categoria": "Vitaminas y suplementos",
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_proveedor": 4,
+      "nombre": "Bayer S.A Colombia",
+      "contacto": "Adriana Morales Vargas",
+      "telefono": "6012345678",
+      "categoria": "Cuidado personal",
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_proveedor": 5,
+      "nombre": "Distribuidora Intima de Colombia S.A.S",
+      "contacto": "Jorge Ivan Perez",
+      "telefono": "3112345678",
+      "categoria": "Condones",
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    },
+    {
+      "id_proveedor": 6,
+      "nombre": "Laboratorios Siegfried Colombia S.A",
+      "contacto": "Sandra Milena Lopez",
+      "telefono": "6024123456",
+      "categoria": "Lubricantes",
+      "createdAt": "2026-05-17T03:01:07.000Z",
+      "updatedAt": "2026-05-17T03:01:07.000Z"
+    }
+  ],
+  "pedidos": [],
+  "alertas": {
+    "total_productos_con_stock_bajo": 0,
+    "productos_con_stock_bajo": [],
+    "pedidos_en_curso": []
+  },
+  "pagos": [],
+  "auditoria": [
+    {
+      "id": 4,
+      "servicio": "ms-compras",
+      "accion": "compra_realizada",
+      "usuario_id": 3,
+      "detalle": "{\"producto_id\":10,\"producto_nombre\":\"Azitromicina 500mg x3\",\"categoria\":\"Antibiotico\",\"cantidad\":1,\"precio_unitario\":22000,\"monto_total\":22000,\"stock_restante\":98}",
+      "fecha": "2026-05-17T03:40:37.000Z"
+    },
+    {
+      "id": 3,
+      "servicio": "ms-compras",
+      "accion": "compra_realizada",
+      "usuario_id": 3,
+      "detalle": "{\"producto_id\":6,\"producto_nombre\":\"Meloxicam 15mg x10\",\"categoria\":\"Analgesico\",\"cantidad\":1,\"precio_unitario\":5200,\"monto_total\":5200,\"stock_restante\":99}",
+      "fecha": "2026-05-17T03:40:34.000Z"
+    },
+    {
+      "id": 2,
+      "servicio": "ms-compras",
+      "accion": "compra_realizada",
+      "usuario_id": 3,
+      "detalle": "{\"producto_id\":4,\"producto_nombre\":\"Aspirina 100mg x10\",\"categoria\":\"Analgesico\",\"cantidad\":1,\"precio_unitario\":1800,\"monto_total\":1800,\"stock_restante\":98}",
+      "fecha": "2026-05-17T03:40:30.000Z"
+    },
+    {
+      "id": 1,
+      "servicio": "ms-compras",
+      "accion": "compra_realizada",
+      "usuario_id": 1,
+      "detalle": "{\"producto_id\":2,\"producto_nombre\":\"Ibuprofeno 400mg x10\",\"categoria\":\"Analgesico\",\"cantidad\":1,\"precio_unitario\":3200,\"monto_total\":3200,\"stock_restante\":99}",
+      "fecha": "2026-05-17T03:32:32.000Z"
+    }
+  ]
+}
