@@ -95,12 +95,40 @@ app.use('/v1/pagos', createProxyMiddleware({
   }
 }));
 
+// MS Auditoria — Puerto 3006
+app.use('/v1/auditoria', createProxyMiddleware({
+  target: process.env.MS_AUDITORIA_URL,
+  changeOrigin: true,
+  pathRewrite: (path) => '/auditoria' + path,
+  on: {
+    error: (err, req, res) => {
+      console.error('❌ Error proxy MS Auditoria:', err.message);
+      res.status(502).json({ error: 'MS Auditoria no disponible', detalle: err.message });
+    }
+  }
+}));
+
+// MS Reportes — Puerto 3007
+app.use('/v1/reportes', createProxyMiddleware({
+  target: process.env.MS_REPORTES_URL,
+  changeOrigin: true,
+  pathRewrite: (path) => '/reportes' + path,
+  on: {
+    error: (err, req, res) => {
+      console.error('❌ Error proxy MS Reportes:', err.message);
+      res.status(502).json({ error: 'MS Reportes no disponible', detalle: err.message });
+    }
+  }
+}));
+
 // Compatibilidad sin /v1/
 app.use('/usuarios',    (req, res) => res.redirect(307, `/v1/usuarios${req.url}`));
 app.use('/productos',   (req, res) => res.redirect(307, `/v1/productos${req.url}`));
 app.use('/proveedores', (req, res) => res.redirect(307, `/v1/proveedores${req.url}`));
 app.use('/pedidos',     (req, res) => res.redirect(307, `/v1/pedidos${req.url}`));
 app.use('/pagos',       (req, res) => res.redirect(307, `/v1/pagos${req.url}`));
+app.use('/auditoria',   (req, res) => res.redirect(307, `/v1/auditoria${req.url}`));
+app.use('/reportes',    (req, res) => res.redirect(307, `/v1/reportes${req.url}`));
 
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -112,7 +140,9 @@ app.get('/health', (req, res) => {
       usuarios:    process.env.MS_USUARIOS_URL    || 'no configurado',
       productos:   process.env.MS_PRODUCTOS_URL   || 'no configurado',
       proveedores: process.env.MS_PROVEEDORES_URL || 'no configurado',
-      pagos:       process.env.MS_PAGOS_URL       || 'no configurado'
+      pagos:       process.env.MS_PAGOS_URL       || 'no configurado',
+      auditoria:   process.env.MS_AUDITORIA_URL   || 'no configurado',
+      reportes:    process.env.MS_REPORTES_URL    || 'no configurado'
     }
   });
 });
@@ -127,6 +157,8 @@ app.get('/', (req, res) => {
       proveedores: '/v1/proveedores',
       pedidos:     '/v1/pedidos',
       pagos:       '/v1/pagos',
+      auditoria:   '/v1/auditoria',
+      reportes:    '/v1/reportes',
       health:      '/health'
     }
   });
@@ -136,7 +168,7 @@ app.use((req, res) => {
   res.status(404).json({
     error: 'Ruta no encontrada en el API Gateway',
     ruta_solicitada: req.originalUrl,
-    rutas_validas: ['/v1/usuarios', '/v1/productos', '/v1/proveedores', '/v1/pedidos', '/v1/pagos']
+    rutas_validas: ['/v1/usuarios', '/v1/productos', '/v1/proveedores', '/v1/pedidos', '/v1/pagos', '/v1/auditoria', '/v1/reportes']
   });
 });
 
@@ -149,4 +181,6 @@ app.listen(PORT, () => {
   console.log(`   /v1/proveedores → ${process.env.MS_PROVEEDORES_URL}`);
   console.log(`   /v1/pedidos     → ${process.env.MS_PROVEEDORES_URL}`);
   console.log(`   /v1/pagos       → ${process.env.MS_PAGOS_URL}`);
+  console.log(`   /v1/auditoria   → ${process.env.MS_AUDITORIA_URL}`);
+  console.log(`   /v1/reportes    → ${process.env.MS_REPORTES_URL}`);
 });

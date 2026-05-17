@@ -97,6 +97,21 @@ CREATE TABLE IF NOT EXISTS transacciones (
 );
 
 
+### MS-AUDITORIA
+
+CREATE DATABASE IF NOT EXISTS drgueria_auditoria;
+USE drgueria_auditoria;
+
+CREATE TABLE IF NOT EXISTS logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  servicio VARCHAR(100) NOT NULL,
+  accion VARCHAR(100) NOT NULL,
+  usuario_id INT,
+  detalle TEXT,
+  fecha DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
 USE drgueria_productos;
  
 INSERT INTO productos (nombre_producto, categoria, precio, stock_actual, stock_minimo) VALUES

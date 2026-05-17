@@ -1,0 +1,5 @@
+compra_id,usuario_id,usuario_rol,usuario_nombre,producto_id,producto_nombre,categoria,precio,stock_actual,stock_minimo,proveedor_id,proveedor_nombre,cantidad_solicitada,estado_pedido,monto_pago,estado_pago,metodo_pago,numero_factura,logs_usuario,fecha_referencia
+4,3,cliente,j,10,Azitromicina 500mg x3,Antibiotico,22000.0,98,25,,,1,compra_directa,22000.0,registrado_auditoria,sin_dato,,3,2026-05-17T03:40:37.000Z
+3,3,cliente,j,6,Meloxicam 15mg x10,Analgesico,5200.0,99,25,,,1,compra_directa,5200.0,registrado_auditoria,sin_dato,,3,2026-05-17T03:40:34.000Z
+2,3,cliente,j,4,Aspirina 100mg x10,Analgesico,1800.0,98,25,,,1,compra_directa,1800.0,registrado_auditoria,sin_dato,,3,2026-05-17T03:40:30.000Z
+1,1,cliente,juli,2,Ibuprofeno 400mg x10,Analgesico,3200.0,99,25,,,1,compra_directa,3200.0,registrado_auditoria,sin_dato,,1,2026-05-17T03:32:32.000Z
