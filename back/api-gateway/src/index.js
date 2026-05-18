@@ -82,6 +82,19 @@ app.use('/v1/pedidos', createProxyMiddleware({
   }
 }));
 
+// MS COMPRAS — Puerto 3003
+app.use('/v1/compras', createProxyMiddleware({
+  target: process.env.MS_COMPRAS_URL,
+  changeOrigin: true,
+  pathRewrite: (path) => '/compras' + path,
+  on: {
+    error: (err, req, res) => {
+      console.error('❌ Error proxy MS Compras:', err.message);
+      res.status(502).json({ error: 'MS Compras no disponible', detalle: err.message });
+    }
+  }
+}));
+
 // MS Pagos — Puerto 3004
 app.use('/v1/pagos', createProxyMiddleware({
   target: process.env.MS_PAGOS_URL,
@@ -121,6 +134,14 @@ app.use('/v1/reportes', createProxyMiddleware({
   }
 }));
 
+
+
+
+
+
+
+
+
 // Compatibilidad sin /v1/
 app.use('/usuarios',    (req, res) => res.redirect(307, `/v1/usuarios${req.url}`));
 app.use('/productos',   (req, res) => res.redirect(307, `/v1/productos${req.url}`));
@@ -129,6 +150,9 @@ app.use('/pedidos',     (req, res) => res.redirect(307, `/v1/pedidos${req.url}`)
 app.use('/pagos',       (req, res) => res.redirect(307, `/v1/pagos${req.url}`));
 app.use('/auditoria',   (req, res) => res.redirect(307, `/v1/auditoria${req.url}`));
 app.use('/reportes',    (req, res) => res.redirect(307, `/v1/reportes${req.url}`));
+app.use('/compras', (req, res) => res.redirect(307, `/v1/compras${req.url}`));
+
+
 
 app.get('/health', (req, res) => {
   res.status(200).json({
@@ -174,7 +198,7 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`🚀 API Gateway corriendo en http://localhost:${PORT}`);
+  console.log(`🚀 API Gateway corriendo en http://192.168.100.2:${PORT}`);
   console.log(`📋 Rutas activas:`);
   console.log(`   /v1/usuarios    → ${process.env.MS_USUARIOS_URL}`);
   console.log(`   /v1/productos   → ${process.env.MS_PRODUCTOS_URL}`);

@@ -115,6 +115,32 @@ services:
       - drgueria-net
 
   # ────────────────────────────────────────────
+  # MS COMPRAS — Puerto 3003
+  # ────────────────────────────────────────────
+  ms-compras:
+    build:
+      context: ./ms-compras
+      dockerfile: Dockerfile
+    container_name: drgueria-ms-compras
+    restart: unless-stopped
+    environment:
+      PORT: 3003
+      DB_NAME: drgueria_compras
+      DB_USER: root
+      DB_PASSWORD: drgueria2024
+      DB_HOST: mysql
+      DB_PORT: 3306
+      MS_PRODUCTOS_URL: http://ms-productos:3001
+      MS_PAGOS_URL: http://ms-pagos:3004
+    ports:
+      - "3003:3003"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - drgueria-net
+
+  # ────────────────────────────────────────────
   # MS PAGOS — Puerto 3004
   # ────────────────────────────────────────────
   ms-pagos:
@@ -138,6 +164,10 @@ services:
         condition: service_healthy
     networks:
       - drgueria-net
+
+  # ────────────────────────────────────────────
+  # MS AUDITORIA — Puerto 3006
+  # ────────────────────────────────────────────
 
   ms-auditoria:
     build:
@@ -217,6 +247,7 @@ services:
       MS_USUARIOS_URL: http://ms-usuarios:3000
       MS_PRODUCTOS_URL: http://ms-productos:3001
       MS_PROVEEDORES_URL: http://ms-proveedores:3002
+      MS_COMPRAS_URL: http://ms-compras:3003
       MS_PAGOS_URL: http://ms-pagos:3004
       MS_AUDITORIA_URL: http://ms-auditoria:3006
       MS_REPORTES_URL: http://ms-reportes:3007
@@ -228,6 +259,7 @@ services:
       - ms-proveedores
       - ms-pagos
       - ms-auditoria
+      - ms-compras
     networks:
       - drgueria-net
 

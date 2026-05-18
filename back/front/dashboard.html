@@ -526,6 +526,8 @@
       <a class="sidebar-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
       <a class="sidebar-link" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
       <a class="sidebar-link" href="pagos.html"><i class="bi bi-credit-card"></i>Pagos</a>
+      <div class="nav-section-title">MS Compras</div>
+      <a class="sidebar-link" href="ms-compras.html"><i class="bi bi-cart-check"></i>Panel de Compras</a>
       <div class="nav-section-title">Analítica</div>
       <a class="sidebar-link" href="auditoria.html"><i class="bi bi-activity"></i>Auditoría</a>
       <a class="sidebar-link" href="reportes.html"><i class="bi bi-graph-up-arrow"></i>Reportes</a>
@@ -665,6 +667,24 @@
             <a class="btn-mini-link azul" href="reportes.html"><i class="bi bi-bar-chart-line"></i>Ver reportes</a>
           </div>
         </div>
+        <div class="micro-card" style="animation-delay:.15s">
+          <div class="micro-card-head">
+            <h3 class="micro-card-title">MS Compras</h3>
+            <span class="badge-estado badge-proceso" id="badgeComprasSvc">Cargando</span>
+          </div>
+          <div class="micro-card-sub">Resumen de ventas del día de hoy.</div>
+          <div class="micro-stat">
+            <div class="micro-stat-num" id="kpiComprasHoy">—</div>
+            <div class="micro-stat-lbl">compras hoy</div>
+          </div>
+          <div class="micro-stat" style="margin-top:-0.4rem">
+            <div class="micro-stat-num verde" id="kpiIngresosHoy" style="font-size:1.2rem;color:var(--verde-medio)">—</div>
+            <div class="micro-stat-lbl">ingresos hoy</div>
+          </div>
+          <div class="micro-actions">
+            <a class="btn-mini-link verde" href="ms-compras.html"><i class="bi bi-cart-check"></i>Ver panel</a>
+          </div>
+        </div>
       </div>
 
       <div class="row g-4 mt-1">
@@ -708,244 +728,230 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const API = 'http://localhost:4000/v1';
-    const API_AUDITORIA = `${API}/auditoria`;
-    const API_REPORTES = `${API}/reportes`;
+const API = 'http://192.168.100.1:4000/v1';
+const API_AUDITORIA = `${API}/auditoria`;
+const API_REPORTES = `${API}/reportes`;
 
-    /* ── Auth guard (solo admin) ── */
-    const token   = localStorage.getItem('token');
-    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
-    const rol     = localStorage.getItem('rol');
-    if (!token)                     window.location.href = 'index.html';
-    if (rol !== 'administrador')    window.location.href = 'catalogo.html';
+const token   = localStorage.getItem('token');
+const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+const rol     = localStorage.getItem('rol');
+if (!token)                  window.location.href = 'index.html';
+if (rol !== 'administrador') window.location.href = 'catalogo.html';
 
-    document.getElementById('sidebarNombre').textContent = usuario.nombre || 'Admin';
+document.getElementById('sidebarNombre').textContent = usuario.nombre || 'Admin';
+document.getElementById('fechaHoy').textContent = new Date().toLocaleDateString('es-CO', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+});
 
-    /* Fecha */
-    document.getElementById('fechaHoy').textContent = new Date().toLocaleDateString('es-CO', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+const iconos = {
+  'Analgésico':'💊','Antibiótico':'🧬','Vitaminas y suplementos':'🍊',
+  'Cuidado personal':'🧴','Condones':'🛡️','Lubricantes':'💧'
+};
+
+async function cargarTodoDashboard() {
+  await Promise.all([cargarDatos(), cargarMicroservicios(), cargarResumenCompras()]);
+}
+
+async function cargarResumenCompras() {
+  const badge = document.getElementById('badgeComprasSvc');
+  try {
+    const res  = await fetch(`${API}/compras/resumen-hoy`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    badge.textContent = 'Activo';
+    badge.className   = 'badge-estado badge-ok';
+    document.getElementById('kpiComprasHoy').textContent  = data.total_compras ?? '0';
+    document.getElementById('kpiIngresosHoy').textContent =
+      '$' + Number(data.ingresos_hoy || 0).toLocaleString('es-CO');
+  } catch {
+    badge.textContent = 'Sin conexión';
+    badge.className   = 'badge-estado badge-error';
+    document.getElementById('kpiComprasHoy').textContent  = '—';
+    document.getElementById('kpiIngresosHoy').textContent = '—';
+  }
+}
+
+async function cargarDatos() {
+  const btn = document.getElementById('btnRefresh');
+  btn.classList.add('girando');
+  try {
+    const [resAlertas, resProductos] = await Promise.all([
+      fetch(`${API}/productos/alertas`),
+      fetch(`${API}/productos`)
+    ]);
+    const alertas   = await resAlertas.json();
+    const productos = await resProductos.json();
+
+    const total          = Array.isArray(productos) ? productos.length : 0;
+    const stockBajo      = alertas.total_productos_con_stock_bajo || 0;
+    const pedidosActivos = (alertas.pedidos_en_curso || []).length;
+
+    document.getElementById('kpiStockBajo').textContent      = stockBajo;
+    document.getElementById('kpiPedidosActivos').textContent = pedidosActivos;
+    document.getElementById('kpiTotalProductos').textContent = total;
+    document.getElementById('kpiOk').textContent             = total - stockBajo;
+    document.getElementById('badgeAlertas').textContent      = stockBajo;
+    document.getElementById('badgePedidos').textContent      = pedidosActivos;
+
+    renderAlertas(alertas.productos_con_stock_bajo || []);
+    renderPedidos(alertas.pedidos_en_curso || []);
+  } catch (e) {
+    mostrarToast('Error de conexión', 'No se pudo cargar el dashboard.', true);
+  } finally {
+    btn.classList.remove('girando');
+  }
+}
+
+async function cargarMicroservicios() {
+  try {
+    const [healthAuditoria, logsAuditoria, estadoReportes, resultadosReportes] = await Promise.allSettled([
+      fetch(`${API_AUDITORIA}/health`).then(r => r.json()),
+      fetch(`${API_AUDITORIA}/logs`).then(r => r.json()),
+      fetch(`${API_REPORTES}/estado`).then(r => r.json()),
+      fetch(`${API_REPORTES}/resultados`).then(r => r.json())
+    ]);
+
+    const badgeAuditoria = document.getElementById('badgeAuditoriaSvc');
+    const badgeReportes  = document.getElementById('badgeReportesSvc');
+
+    if (healthAuditoria.status === 'fulfilled' && healthAuditoria.value.status === 'ok') {
+      badgeAuditoria.textContent = 'Activo';
+      badgeAuditoria.className   = 'badge-estado badge-ok';
+    } else {
+      badgeAuditoria.textContent = 'Sin conexión';
+      badgeAuditoria.className   = 'badge-estado badge-error';
+    }
+
+    if (estadoReportes.status === 'fulfilled' && estadoReportes.value.servicio === 'ms-reportes') {
+      badgeReportes.textContent = 'Activo';
+      badgeReportes.className   = 'badge-estado badge-ok';
+    } else {
+      badgeReportes.textContent = 'Sin conexión';
+      badgeReportes.className   = 'badge-estado badge-error';
+    }
+
+    const logs = logsAuditoria.status === 'fulfilled' && Array.isArray(logsAuditoria.value)
+      ? logsAuditoria.value : [];
+    document.getElementById('kpiEventosAuditoria').textContent = logs.length;
+    renderLogsRecientes(logs.slice(0, 5));
+
+    if (estadoReportes.status === 'fulfilled' && estadoReportes.value.resumen) {
+      document.getElementById('kpiIngresosReportes').textContent =
+        '$' + Number(estadoReportes.value.resumen.ingresos_aprobados || 0).toLocaleString('es-CO', { minimumFractionDigits: 0 });
+    } else {
+      document.getElementById('kpiIngresosReportes').textContent = '—';
+    }
+
+    if (resultadosReportes.status === 'fulfilled' && resultadosReportes.value.contenido) {
+      document.getElementById('sparkPreview').textContent = resultadosReportes.value.contenido;
+    } else {
+      document.getElementById('sparkPreview').textContent = 'No se pudieron cargar los resultados analíticos.';
+    }
+  } catch {
+    document.getElementById('sparkPreview').textContent = 'No se pudieron cargar los resultados analíticos.';
+  }
+}
+
+function renderLogsRecientes(lista) {
+  const body = document.getElementById('bodyLogsRecientes');
+  if (!lista.length) {
+    body.innerHTML = `<tr><td colspan="3" class="estado-vacio"><i class="bi bi-journal-x"></i>No hay logs disponibles</td></tr>`;
+    return;
+  }
+  body.innerHTML = lista.map(log => `
+    <tr>
+      <td><strong>${log.servicio || '—'}</strong><div class="mono-mini">#${log.id || '—'}</div></td>
+      <td>${log.accion || '—'}</td>
+      <td>${log.detalle || 'Sin detalle'}</td>
+    </tr>`).join('');
+}
+
+function renderAlertas(lista) {
+  const cont = document.getElementById('listaAlertas');
+  if (lista.length === 0) {
+    cont.innerHTML = `<div class="estado-vacio bg-white rounded-3 border" style="border-color:var(--gris-borde)!important">
+      <i class="bi bi-check-circle-fill" style="color:var(--verde-claro)"></i>
+      <p class="mb-0 small">¡Todo el stock está en niveles normales!</p>
+    </div>`;
+    return;
+  }
+  cont.innerHTML = lista.map((p, i) => `
+    <div class="alerta-card" style="animation-delay:${i*0.06}s">
+      <div class="alerta-icono">${iconos[p.categoria] || '💊'}</div>
+      <div class="alerta-info">
+        <div class="alerta-cat">${p.categoria}</div>
+        <div class="alerta-nombre">${p.nombre_producto}</div>
+        <div class="alerta-msg">${p.mensaje}</div>
+      </div>
+      <div class="alerta-stats">
+        <div class="stock-num">${p.stock_actual}</div>
+        <div class="stock-label">en stock</div>
+        <div class="pedir-num">⬆ Pedir ${p.cantidad_a_pedir}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderPedidos(lista) {
+  const body = document.getElementById('bodyPedidos');
+  if (lista.length === 0) {
+    body.innerHTML = `<tr><td colspan="5" class="estado-vacio"><i class="bi bi-check2-all"></i>No hay pedidos en curso</td></tr>`;
+    return;
+  }
+  body.innerHTML = lista.map(p => {
+    const badgeClass   = p.estado_pedido === 'aceptado' ? 'badge-aceptado' : p.estado_pedido === 'en proceso' ? 'badge-proceso' : 'badge-entregado';
+    const puedeAvanzar = p.estado_pedido !== 'entregado';
+    const siguiente    = p.estado_pedido === 'aceptado' ? 'en proceso' : 'entregado';
+    const btnClass     = siguiente === 'en proceso' ? 'btn-a-proceso' : 'btn-a-entregado';
+    const btnLabel     = siguiente === 'en proceso' ? '<i class="bi bi-play-fill me-1"></i>En proceso' : '<i class="bi bi-check-lg me-1"></i>Entregado';
+    return `
+    <tr>
+      <td><span class="text-muted">#${p.id_pedido}</span></td>
+      <td>Producto #${p.id_producto}</td>
+      <td><strong>${p.cantidad_solicitada}</strong> uds.</td>
+      <td><span class="badge-estado ${badgeClass}">${p.estado_pedido}</span></td>
+      <td>${puedeAvanzar
+        ? `<button class="btn-estado ${btnClass}" onclick="cambiarEstado(${p.id_pedido}, '${siguiente}', this)">${btnLabel}</button>`
+        : `<span class="text-muted small">Finalizado</span>`}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function cambiarEstado(id, nuevoEstado, btn) {
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>';
+  try {
+    const res = await fetch(`${API}/pedidos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ estado_pedido: nuevoEstado })
     });
+    if (!res.ok) throw new Error();
+    mostrarToast('Estado actualizado', nuevoEstado === 'entregado' ? '¡Stock recargado automáticamente!' : 'Pedido marcado como "en proceso"');
+    setTimeout(cargarDatos, 600);
+  } catch {
+    mostrarToast('Error', 'No se pudo actualizar el estado.', true);
+    btn.disabled = false;
+  }
+}
 
-    /* ── Iconos ── */
-    const iconos = {
-      'Analgésico':'💊','Antibiótico':'🧬','Vitaminas y suplementos':'🍊',
-      'Cuidado personal':'🧴','Condones':'🛡️','Lubricantes':'💧'
-    };
+let toastT;
+function mostrarToast(titulo, msg, error = false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastTitulo').textContent = titulo;
+  document.getElementById('toastMsg').textContent    = msg;
+  t.className = 'toast-drg' + (error ? ' error' : '');
+  t.style.display = 'block';
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.style.display = 'none', 4500);
+}
 
-    /* ── Cargar datos ── */
-    async function cargarTodoDashboard() {
-      await Promise.all([cargarDatos(), cargarMicroservicios()]);
-    }
+function cerrarSesion() {
+  localStorage.clear();
+  window.location.href = 'index.html';
+}
 
-    async function cargarDatos() {
-      const btn = document.getElementById('btnRefresh');
-      btn.classList.add('girando');
-
-      try {
-        const [resAlertas, resProductos] = await Promise.all([
-          fetch(`${API}/productos/alertas`),
-          fetch(`${API}/productos`)
-        ]);
-        const alertas   = await resAlertas.json();
-        const productos = await resProductos.json();
-
-        const total   = Array.isArray(productos) ? productos.length : 0;
-        const stockBajo = alertas.total_productos_con_stock_bajo || 0;
-        const pedidosActivos = (alertas.pedidos_en_curso || []).length;
-
-        /* KPIs */
-        document.getElementById('kpiStockBajo').textContent     = stockBajo;
-        document.getElementById('kpiPedidosActivos').textContent = pedidosActivos;
-        document.getElementById('kpiTotalProductos').textContent = total;
-        document.getElementById('kpiOk').textContent            = total - stockBajo;
-
-        /* Badges */
-        document.getElementById('badgeAlertas').textContent = stockBajo;
-        document.getElementById('badgePedidos').textContent  = pedidosActivos;
-
-        /* Alertas */
-        renderAlertas(alertas.productos_con_stock_bajo || []);
-
-        /* Pedidos en curso */
-        renderPedidos(alertas.pedidos_en_curso || []);
-
-      } catch (e) {
-        mostrarToast('Error de conexión', 'No se pudo cargar el dashboard.', true);
-      } finally {
-        btn.classList.remove('girando');
-      }
-    }
-
-    async function cargarMicroservicios() {
-      try {
-        const [healthAuditoria, logsAuditoria, estadoReportes, resultadosReportes] = await Promise.allSettled([
-          fetch(`${API_AUDITORIA}/health`).then(r => r.json()),
-          fetch(`${API_AUDITORIA}/logs`).then(r => r.json()),
-          fetch(`${API_REPORTES}/estado`).then(r => r.json()),
-          fetch(`${API_REPORTES}/resultados`).then(r => r.json())
-        ]);
-
-        const badgeAuditoria = document.getElementById('badgeAuditoriaSvc');
-        const badgeReportes = document.getElementById('badgeReportesSvc');
-
-        if (healthAuditoria.status === 'fulfilled' && healthAuditoria.value.status === 'ok') {
-          badgeAuditoria.textContent = 'Activo';
-          badgeAuditoria.className = 'badge-estado badge-ok';
-        } else {
-          badgeAuditoria.textContent = 'Sin conexión';
-          badgeAuditoria.className = 'badge-estado badge-error';
-        }
-
-        if (estadoReportes.status === 'fulfilled' && estadoReportes.value.servicio === 'ms-reportes') {
-          badgeReportes.textContent = 'Activo';
-          badgeReportes.className = 'badge-estado badge-ok';
-        } else {
-          badgeReportes.textContent = 'Sin conexión';
-          badgeReportes.className = 'badge-estado badge-error';
-        }
-
-        const logs = logsAuditoria.status === 'fulfilled' && Array.isArray(logsAuditoria.value)
-          ? logsAuditoria.value
-          : [];
-        document.getElementById('kpiEventosAuditoria').textContent = logs.length;
-        renderLogsRecientes(logs.slice(0, 5));
-
-        if (estadoReportes.status === 'fulfilled' && estadoReportes.value.resumen) {
-          document.getElementById('kpiIngresosReportes').textContent =
-            '$' + Number(estadoReportes.value.resumen.ingresos_aprobados || 0).toLocaleString('es-CO', { minimumFractionDigits: 0 });
-        } else {
-          document.getElementById('kpiIngresosReportes').textContent = '—';
-        }
-
-        if (resultadosReportes.status === 'fulfilled' && resultadosReportes.value.contenido) {
-          document.getElementById('sparkPreview').textContent = resultadosReportes.value.contenido;
-        } else {
-          document.getElementById('sparkPreview').textContent = 'No se pudieron cargar los resultados analíticos.';
-        }
-
-      } catch {
-        document.getElementById('sparkPreview').textContent = 'No se pudieron cargar los resultados analíticos.';
-      }
-    }
-
-    function renderLogsRecientes(lista) {
-      const body = document.getElementById('bodyLogsRecientes');
-      if (!lista.length) {
-        body.innerHTML = `<tr><td colspan="3" class="estado-vacio"><i class="bi bi-journal-x"></i>No hay logs disponibles</td></tr>`;
-        return;
-      }
-
-      body.innerHTML = lista.map(log => `
-        <tr>
-          <td><strong>${log.servicio || '—'}</strong><div class="mono-mini">#${log.id || '—'}</div></td>
-          <td>${log.accion || '—'}</td>
-          <td>${log.detalle || 'Sin detalle'}</td>
-        </tr>
-      `).join('');
-    }
-
-    /* ── Renderizar alertas ── */
-    function renderAlertas(lista) {
-      const cont = document.getElementById('listaAlertas');
-      if (lista.length === 0) {
-        cont.innerHTML = `<div class="estado-vacio bg-white rounded-3 border" style="border-color:var(--gris-borde)!important">
-          <i class="bi bi-check-circle-fill" style="color:var(--verde-claro)"></i>
-          <p class="mb-0 small">¡Todo el stock está en niveles normales!</p>
-        </div>`;
-        return;
-      }
-      cont.innerHTML = lista.map((p, i) => `
-        <div class="alerta-card" style="animation-delay:${i*0.06}s">
-          <div class="alerta-icono">${iconos[p.categoria] || '💊'}</div>
-          <div class="alerta-info">
-            <div class="alerta-cat">${p.categoria}</div>
-            <div class="alerta-nombre">${p.nombre_producto}</div>
-            <div class="alerta-msg">${p.mensaje}</div>
-          </div>
-          <div class="alerta-stats">
-            <div class="stock-num">${p.stock_actual}</div>
-            <div class="stock-label">en stock</div>
-            <div class="pedir-num">⬆ Pedir ${p.cantidad_a_pedir}</div>
-          </div>
-        </div>`).join('');
-    }
-
-    /* ── Renderizar pedidos en curso ── */
-    function renderPedidos(lista) {
-      const body = document.getElementById('bodyPedidos');
-      if (lista.length === 0) {
-        body.innerHTML = `<tr><td colspan="5" class="estado-vacio">
-          <i class="bi bi-check2-all"></i>No hay pedidos en curso
-        </td></tr>`;
-        return;
-      }
-      body.innerHTML = lista.map(p => {
-        const badgeClass = p.estado_pedido === 'aceptado' ? 'badge-aceptado'
-                         : p.estado_pedido === 'en proceso' ? 'badge-proceso'
-                         : 'badge-entregado';
-        const puedeAvanzar = p.estado_pedido !== 'entregado';
-        const siguiente    = p.estado_pedido === 'aceptado' ? 'en proceso' : 'entregado';
-        const btnClass     = siguiente === 'en proceso' ? 'btn-a-proceso' : 'btn-a-entregado';
-        const btnLabel     = siguiente === 'en proceso'
-          ? '<i class="bi bi-play-fill me-1"></i>En proceso'
-          : '<i class="bi bi-check-lg me-1"></i>Entregado';
-
-        return `
-        <tr>
-          <td><span class="text-muted">#${p.id_pedido}</span></td>
-          <td>Producto #${p.id_producto}</td>
-          <td><strong>${p.cantidad_solicitada}</strong> uds.</td>
-          <td><span class="badge-estado ${badgeClass}">${p.estado_pedido}</span></td>
-          <td>
-            ${puedeAvanzar
-              ? `<button class="btn-estado ${btnClass}" onclick="cambiarEstado(${p.id_pedido}, '${siguiente}', this)">${btnLabel}</button>`
-              : `<span class="text-muted small">Finalizado</span>`}
-          </td>
-        </tr>`;
-      }).join('');
-    }
-
-    /* ── Cambiar estado pedido ── */
-    async function cambiarEstado(id, nuevoEstado, btn) {
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>';
-      try {
-        const res = await fetch(`${API}/pedidos/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ estado_pedido: nuevoEstado })
-        });
-        if (!res.ok) throw new Error();
-        const msg = nuevoEstado === 'entregado'
-          ? '¡Stock recargado automáticamente!'
-          : 'Pedido marcado como "en proceso"';
-        mostrarToast('Estado actualizado', msg);
-        setTimeout(cargarDatos, 600);
-      } catch {
-        mostrarToast('Error', 'No se pudo actualizar el estado.', true);
-        btn.disabled = false;
-      }
-    }
-
-    /* ── Toast ── */
-    let toastT;
-    function mostrarToast(titulo, msg, error = false) {
-      const t = document.getElementById('toast');
-      document.getElementById('toastTitulo').textContent = titulo;
-      document.getElementById('toastMsg').textContent    = msg;
-      t.className = 'toast-drg' + (error ? ' error' : '');
-      t.style.display = 'block';
-      clearTimeout(toastT);
-      toastT = setTimeout(() => t.style.display = 'none', 4500);
-    }
-
-    /* ── Logout ── */
-    function cerrarSesion() {
-      localStorage.clear();
-      window.location.href = 'index.html';
-    }
-
-    cargarTodoDashboard();
+cargarTodoDashboard();
   </script>
 </body>
 </html>

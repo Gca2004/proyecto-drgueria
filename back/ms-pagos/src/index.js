@@ -28,7 +28,7 @@ sequelize.authenticate()
   })
   .then(() => {
     app.listen(process.env.PORT, () => {
-      console.log(`MS Pagos corriendo en http://localhost:${process.env.PORT}`);
+      console.log(`MS Pagos corriendo en http://192.168.100.2:${process.env.PORT}`);
     });
   })
   .catch(err => console.error('Error al conectar con MySQL:', err));

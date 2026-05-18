@@ -1,29 +1,29 @@
 {
-  "generado_en": "2026-05-17T03:41:24.790Z",
+  "generado_en": "2026-05-18T20:25:36.732Z",
   "usuarios": [
     {
       "id_usuario": 1,
-      "nombre": "juli",
-      "correo": "j@g.c",
+      "nombre": "cliente1",
+      "correo": "cliente@gmail.com",
       "rol": "cliente",
-      "createdAt": "2026-05-17T03:03:08.000Z",
-      "updatedAt": "2026-05-17T03:03:08.000Z"
+      "createdAt": "2026-05-18T01:43:30.000Z",
+      "updatedAt": "2026-05-18T01:43:30.000Z"
     },
     {
       "id_usuario": 2,
-      "nombre": "Admin DRGUERIA",
-      "correo": "admin@drgueria.com",
+      "nombre": "admin1",
+      "correo": "admin@gmail.com",
       "rol": "administrador",
-      "createdAt": "2026-05-17T03:03:50.000Z",
-      "updatedAt": "2026-05-17T03:03:50.000Z"
+      "createdAt": "2026-05-18T01:43:41.000Z",
+      "updatedAt": "2026-05-18T01:43:41.000Z"
     },
     {
       "id_usuario": 3,
-      "nombre": "j",
-      "correo": "jaguilarestacio@gmail.com",
+      "nombre": "cliente2",
+      "correo": "cliente2@gmail.com",
       "rol": "cliente",
-      "createdAt": "2026-05-17T03:33:42.000Z",
-      "updatedAt": "2026-05-17T03:33:42.000Z"
+      "createdAt": "2026-05-18T19:45:17.000Z",
+      "updatedAt": "2026-05-18T19:45:17.000Z"
     }
   ],
   "productos": [
@@ -32,40 +32,40 @@
       "nombre_producto": "Acetaminofen 500mg x10",
       "categoria": "Analgesico",
       "precio": "2500.00",
-      "stock_actual": 90,
+      "stock_actual": 98,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:39:58.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T05:38:32.000Z"
     },
     {
       "id_producto": 2,
       "nombre_producto": "Ibuprofeno 400mg x10",
       "categoria": "Analgesico",
       "precio": "3200.00",
-      "stock_actual": 99,
+      "stock_actual": 26,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:32:32.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T20:20:31.000Z"
     },
     {
       "id_producto": 3,
       "nombre_producto": "Naproxeno 500mg x10",
       "categoria": "Analgesico",
       "precio": "4800.00",
-      "stock_actual": 98,
+      "stock_actual": 71,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:39:51.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T20:20:17.000Z"
     },
     {
       "id_producto": 4,
       "nombre_producto": "Aspirina 100mg x10",
       "categoria": "Analgesico",
       "precio": "1800.00",
-      "stock_actual": 98,
+      "stock_actual": 99,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:40:30.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T04:54:50.000Z"
     },
     {
       "id_producto": 5,
@@ -74,8 +74,8 @@
       "precio": "3600.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 6,
@@ -84,8 +84,8 @@
       "precio": "5200.00",
       "stock_actual": 99,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:40:34.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T04:54:50.000Z"
     },
     {
       "id_producto": 7,
@@ -94,38 +94,38 @@
       "precio": "7800.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 8,
       "nombre_producto": "Ketorolaco 10mg x10",
       "categoria": "Analgesico",
       "precio": "6500.00",
-      "stock_actual": 99,
+      "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:11:55.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 9,
       "nombre_producto": "Amoxicilina 500mg x21",
       "categoria": "Antibiotico",
       "precio": "18500.00",
-      "stock_actual": 98,
+      "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:19:20.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 10,
       "nombre_producto": "Azitromicina 500mg x3",
       "categoria": "Antibiotico",
       "precio": "22000.00",
-      "stock_actual": 98,
+      "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:40:37.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 11,
@@ -134,8 +134,8 @@
       "precio": "15800.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 12,
@@ -144,8 +144,8 @@
       "precio": "12000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 13,
@@ -154,8 +154,8 @@
       "precio": "28000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 14,
@@ -164,8 +164,8 @@
       "precio": "35000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 15,
@@ -174,8 +174,8 @@
       "precio": "19500.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 16,
@@ -184,8 +184,8 @@
       "precio": "14000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 17,
@@ -194,8 +194,8 @@
       "precio": "18000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 18,
@@ -204,28 +204,28 @@
       "precio": "22000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 19,
       "nombre_producto": "Complejo B x30",
       "categoria": "Vitaminas y suplementos",
       "precio": "16500.00",
-      "stock_actual": 100,
+      "stock_actual": 50,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T20:21:12.000Z"
     },
     {
       "id_producto": 20,
       "nombre_producto": "Omega 3 1000mg x30",
       "categoria": "Vitaminas y suplementos",
       "precio": "28000.00",
-      "stock_actual": 99,
+      "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:35:11.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 21,
@@ -234,8 +234,8 @@
       "precio": "24000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 22,
@@ -244,8 +244,8 @@
       "precio": "15000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 23,
@@ -254,8 +254,8 @@
       "precio": "19000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 24,
@@ -264,8 +264,8 @@
       "precio": "32000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 25,
@@ -274,8 +274,8 @@
       "precio": "35000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 26,
@@ -284,8 +284,8 @@
       "precio": "22000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 27,
@@ -294,8 +294,8 @@
       "precio": "42000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 28,
@@ -304,8 +304,8 @@
       "precio": "12000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 29,
@@ -314,8 +314,8 @@
       "precio": "8500.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 30,
@@ -324,8 +324,8 @@
       "precio": "14000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 31,
@@ -334,8 +334,8 @@
       "precio": "18000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 32,
@@ -344,18 +344,18 @@
       "precio": "16000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 33,
       "nombre_producto": "Condon Durex Natural x3",
       "categoria": "Condones",
       "precio": "12000.00",
-      "stock_actual": 100,
+      "stock_actual": 50,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T19:49:58.000Z"
     },
     {
       "id_producto": 34,
@@ -364,8 +364,8 @@
       "precio": "13500.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 35,
@@ -374,8 +374,8 @@
       "precio": "38000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 36,
@@ -384,8 +384,8 @@
       "precio": "11000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 37,
@@ -394,8 +394,8 @@
       "precio": "14500.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 38,
@@ -404,8 +404,8 @@
       "precio": "35000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 39,
@@ -414,8 +414,8 @@
       "precio": "10500.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 40,
@@ -424,8 +424,8 @@
       "precio": "32000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 41,
@@ -434,8 +434,8 @@
       "precio": "28000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 42,
@@ -444,8 +444,8 @@
       "precio": "32000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 43,
@@ -454,8 +454,8 @@
       "precio": "45000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 44,
@@ -464,8 +464,8 @@
       "precio": "38000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 45,
@@ -474,8 +474,8 @@
       "precio": "52000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 46,
@@ -484,8 +484,8 @@
       "precio": "25000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 47,
@@ -494,8 +494,8 @@
       "precio": "22000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_producto": 48,
@@ -504,8 +504,8 @@
       "precio": "29000.00",
       "stock_actual": 100,
       "stock_minimo": 25,
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     }
   ],
   "proveedores": [
@@ -515,8 +515,8 @@
       "contacto": "Carlos Andres Restrepo",
       "telefono": "6024567890",
       "categoria": "Analgesico",
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_proveedor": 2,
@@ -524,8 +524,8 @@
       "contacto": "Maria Claudia Ospina",
       "telefono": "6013456789",
       "categoria": "Antibiotico",
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_proveedor": 3,
@@ -533,8 +533,8 @@
       "contacto": "Juan David Mejia",
       "telefono": "6023456789",
       "categoria": "Vitaminas y suplementos",
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_proveedor": 4,
@@ -542,8 +542,8 @@
       "contacto": "Adriana Morales Vargas",
       "telefono": "6012345678",
       "categoria": "Cuidado personal",
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_proveedor": 5,
@@ -551,8 +551,8 @@
       "contacto": "Jorge Ivan Perez",
       "telefono": "3112345678",
       "categoria": "Condones",
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     },
     {
       "id_proveedor": 6,
@@ -560,49 +560,186 @@
       "contacto": "Sandra Milena Lopez",
       "telefono": "6024123456",
       "categoria": "Lubricantes",
-      "createdAt": "2026-05-17T03:01:07.000Z",
-      "updatedAt": "2026-05-17T03:01:07.000Z"
+      "createdAt": "2026-05-18T01:40:56.000Z",
+      "updatedAt": "2026-05-18T01:40:56.000Z"
     }
   ],
-  "pedidos": [],
+  "pedidos": [
+    {
+      "id_pedido": 1,
+      "id_producto": 33,
+      "id_proveedor": 5,
+      "cantidad_solicitada": 40,
+      "estado_pedido": "entregado",
+      "fecha_pedido": "2026-05-18T19:48:19.000Z",
+      "fecha_entrega": null,
+      "numero_factura": null,
+      "createdAt": "2026-05-18T19:48:19.000Z",
+      "updatedAt": "2026-05-18T19:49:57.000Z",
+      "Proveedor": {
+        "nombre": "Distribuidora Intima de Colombia S.A.S",
+        "contacto": "Jorge Ivan Perez",
+        "telefono": "3112345678",
+        "categoria": "Condones"
+      }
+    },
+    {
+      "id_pedido": 2,
+      "id_producto": 19,
+      "id_proveedor": 3,
+      "cantidad_solicitada": 40,
+      "estado_pedido": "entregado",
+      "fecha_pedido": "2026-05-18T20:20:08.000Z",
+      "fecha_entrega": null,
+      "numero_factura": null,
+      "createdAt": "2026-05-18T20:20:08.000Z",
+      "updatedAt": "2026-05-18T20:21:12.000Z",
+      "Proveedor": {
+        "nombre": "Tecnoquimicas S.A",
+        "contacto": "Juan David Mejia",
+        "telefono": "6023456789",
+        "categoria": "Vitaminas y suplementos"
+      }
+    }
+  ],
   "alertas": {
     "total_productos_con_stock_bajo": 0,
     "productos_con_stock_bajo": [],
     "pedidos_en_curso": []
   },
-  "pagos": [],
-  "auditoria": [
+  "pagos": [
     {
-      "id": 4,
-      "servicio": "ms-compras",
-      "accion": "compra_realizada",
-      "usuario_id": 3,
-      "detalle": "{\"producto_id\":10,\"producto_nombre\":\"Azitromicina 500mg x3\",\"categoria\":\"Antibiotico\",\"cantidad\":1,\"precio_unitario\":22000,\"monto_total\":22000,\"stock_restante\":98}",
-      "fecha": "2026-05-17T03:40:37.000Z"
-    },
-    {
-      "id": 3,
-      "servicio": "ms-compras",
-      "accion": "compra_realizada",
-      "usuario_id": 3,
-      "detalle": "{\"producto_id\":6,\"producto_nombre\":\"Meloxicam 15mg x10\",\"categoria\":\"Analgesico\",\"cantidad\":1,\"precio_unitario\":5200,\"monto_total\":5200,\"stock_restante\":99}",
-      "fecha": "2026-05-17T03:40:34.000Z"
+      "id": 1,
+      "compra_id": 1,
+      "usuario_id": 1,
+      "monto": "15000.00",
+      "estado": "aprobado",
+      "metodo_pago": "efectivo",
+      "numero_factura": "FAC-1779080090621-1-1",
+      "createdAt": "2026-05-18T04:54:50.000Z",
+      "updatedAt": "2026-05-18T04:54:50.000Z"
     },
     {
       "id": 2,
-      "servicio": "ms-compras",
-      "accion": "compra_realizada",
-      "usuario_id": 3,
-      "detalle": "{\"producto_id\":4,\"producto_nombre\":\"Aspirina 100mg x10\",\"categoria\":\"Analgesico\",\"cantidad\":1,\"precio_unitario\":1800,\"monto_total\":1800,\"stock_restante\":98}",
-      "fecha": "2026-05-17T03:40:30.000Z"
+      "compra_id": 2,
+      "usuario_id": 1,
+      "monto": "5000.00",
+      "estado": "aprobado",
+      "metodo_pago": "tarjeta",
+      "numero_factura": "FAC-1779082713008-1-2",
+      "createdAt": "2026-05-18T05:38:33.000Z",
+      "updatedAt": "2026-05-18T05:38:33.000Z"
     },
     {
-      "id": 1,
-      "servicio": "ms-compras",
-      "accion": "compra_realizada",
+      "id": 3,
+      "compra_id": 3,
       "usuario_id": 1,
-      "detalle": "{\"producto_id\":2,\"producto_nombre\":\"Ibuprofeno 400mg x10\",\"categoria\":\"Analgesico\",\"cantidad\":1,\"precio_unitario\":3200,\"monto_total\":3200,\"stock_restante\":99}",
-      "fecha": "2026-05-17T03:32:32.000Z"
+      "monto": "4800.00",
+      "estado": "aprobado",
+      "metodo_pago": "efectivo",
+      "numero_factura": "FAC-1779130957405-1-3",
+      "createdAt": "2026-05-18T19:02:37.000Z",
+      "updatedAt": "2026-05-18T19:02:37.000Z"
+    },
+    {
+      "id": 4,
+      "compra_id": 4,
+      "usuario_id": 1,
+      "monto": "19200.00",
+      "estado": "aprobado",
+      "metodo_pago": "efectivo",
+      "numero_factura": "FAC-1779130980385-1-4",
+      "createdAt": "2026-05-18T19:03:00.000Z",
+      "updatedAt": "2026-05-18T19:03:00.000Z"
+    },
+    {
+      "id": 5,
+      "compra_id": 5,
+      "usuario_id": 1,
+      "monto": "12800.00",
+      "estado": "aprobado",
+      "metodo_pago": "efectivo",
+      "numero_factura": "FAC-1779131223530-1-5",
+      "createdAt": "2026-05-18T19:07:03.000Z",
+      "updatedAt": "2026-05-18T19:07:03.000Z"
+    },
+    {
+      "id": 6,
+      "compra_id": 6,
+      "usuario_id": 3,
+      "monto": "240000.00",
+      "estado": "aprobado",
+      "metodo_pago": "efectivo",
+      "numero_factura": "FAC-1779133583662-3-6",
+      "createdAt": "2026-05-18T19:46:23.000Z",
+      "updatedAt": "2026-05-18T19:46:23.000Z"
+    },
+    {
+      "id": 7,
+      "compra_id": 7,
+      "usuario_id": 3,
+      "monto": "1080000.00",
+      "estado": "aprobado",
+      "metodo_pago": "efectivo",
+      "numero_factura": "FAC-1779133699283-3-7",
+      "createdAt": "2026-05-18T19:48:19.000Z",
+      "updatedAt": "2026-05-18T19:48:19.000Z"
+    },
+    {
+      "id": 8,
+      "compra_id": 8,
+      "usuario_id": 1,
+      "monto": "1485000.00",
+      "estado": "aprobado",
+      "metodo_pago": "efectivo",
+      "numero_factura": "FAC-1779135608834-1-8",
+      "createdAt": "2026-05-18T20:20:08.000Z",
+      "updatedAt": "2026-05-18T20:20:08.000Z"
+    },
+    {
+      "id": 9,
+      "compra_id": 9,
+      "usuario_id": 1,
+      "monto": "4800.00",
+      "estado": "aprobado",
+      "metodo_pago": "tarjeta",
+      "numero_factura": "FAC-1779135617464-1-9",
+      "createdAt": "2026-05-18T20:20:17.000Z",
+      "updatedAt": "2026-05-18T20:20:17.000Z"
+    },
+    {
+      "id": 10,
+      "compra_id": 10,
+      "usuario_id": 1,
+      "monto": "3200.00",
+      "estado": "aprobado",
+      "metodo_pago": "transferencia",
+      "numero_factura": "FAC-1779135621989-1-10",
+      "createdAt": "2026-05-18T20:20:21.000Z",
+      "updatedAt": "2026-05-18T20:20:21.000Z"
+    },
+    {
+      "id": 11,
+      "compra_id": 11,
+      "usuario_id": 1,
+      "monto": "3200.00",
+      "estado": "aprobado",
+      "metodo_pago": "nequi",
+      "numero_factura": "FAC-1779135626975-1-11",
+      "createdAt": "2026-05-18T20:20:26.000Z",
+      "updatedAt": "2026-05-18T20:20:26.000Z"
+    },
+    {
+      "id": 12,
+      "compra_id": 12,
+      "usuario_id": 1,
+      "monto": "3200.00",
+      "estado": "aprobado",
+      "metodo_pago": "daviplata",
+      "numero_factura": "FAC-1779135631288-1-12",
+      "createdAt": "2026-05-18T20:20:31.000Z",
+      "updatedAt": "2026-05-18T20:20:31.000Z"
     }
-  ]
+  ],
+  "auditoria": []
 }

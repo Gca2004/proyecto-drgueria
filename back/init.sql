@@ -182,3 +182,22 @@ INSERT INTO proveedores (nombre, contacto, telefono, categoria) VALUES
 ('Bayer S.A Colombia', 'Adriana Morales Vargas', '6012345678', 'Cuidado personal'),
 ('Distribuidora Intima de Colombia S.A.S', 'Jorge Ivan Perez', '3112345678', 'Condones'),
 ('Laboratorios Siegfried Colombia S.A', 'Sandra Milena Lopez', '6024123456', 'Lubricantes');
+
+
+###  MS-Compras
+CREATE DATABASE IF NOT EXISTS drgueria_compras;
+USE drgueria_compras;
+CREATE TABLE IF NOT EXISTS compras (
+  id_compra       INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id      INT NOT NULL,
+  items           TEXT NOT NULL,
+  total           DECIMAL(12,2) NOT NULL,
+  metodo_pago     VARCHAR(50) DEFAULT 'efectivo',
+  estado          ENUM('pendiente','pagado','cancelado') DEFAULT 'pagado',
+  numero_factura  VARCHAR(100) UNIQUE,
+  id_transaccion  INT,
+  createdAt       DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updatedAt       DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+

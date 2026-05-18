@@ -1,14 +1,20 @@
-// Carga el .env PRIMERO, antes de todo
+// Carga el .env PRIMERO antes que todo lo demás
 require('dotenv').config();
 
 const express = require('express');
 const sequelize = require('./config/db');
+const morgan = require('morgan');
+const cors = require('cors');
+const axiosRetry = require('axios-retry').default || require('axios-retry');
+const axios = require('axios');
 
 const app = express();
 
-const axios = require('axios');
-const axiosRetry = require('axios-retry').default;
+app.use(cors());
+app.use(morgan('dev'));
+app.use(express.json());
 
+// ── Retry con backoff exponencial ──────────────────────────────
 axiosRetry(axios, {
   retries: 3,
   retryDelay: (retryCount) => {
@@ -17,68 +23,68 @@ axiosRetry(axios, {
   },
   retryCondition: (error) => {
     return axiosRetry.isNetworkOrIdempotentRequestError(error)
-      || error.response?.status >= 500;
+      || (error.response && error.response.status >= 500);
   }
 });
-// Permite recibir JSON en el body de las peticiones
-app.use(express.json());
 
-// Registramos las rutas
-const productoRoutes = require('./routes/productoRoutes');
-app.use('/productos', productoRoutes);
-
-// Ruta raíz para verificar que el servicio funciona
-app.get('/', (req, res) => {
-  res.json({ mensaje: 'MS Productos funcionando correctamente' });
-});
-
-  // Asociación Sequelize para el JOIN del carrito
-const Carrito = require('./models/Carrito');
+// ── Modelos y asociaciones ──────────────────────────────────────
 const Producto = require('./models/Producto');
+const Carrito  = require('./models/Carrito');
+
+// Asociación necesaria para el JOIN en verCarrito
 Carrito.belongsTo(Producto, { foreignKey: 'producto_id' });
+Producto.hasMany(Carrito,   { foreignKey: 'producto_id' });
 
-// Rutas del carrito
-const carritoRoutes = require('./routes/carritoRoutes');
+// ── Rutas ───────────────────────────────────────────────────────
+const productoRoutes = require('./routes/productoRoutes');
+const carritoRoutes  = require('./routes/carritoRoutes');
+
+// IMPORTANTE: /productos/carrito ANTES de /productos/:id
+// para que Express no confunda "carrito" con un :id numérico
 app.use('/productos/carrito', carritoRoutes);
+app.use('/productos',         productoRoutes);
 
+// ── Health check ────────────────────────────────────────────────
 app.get('/health', async (req, res) => {
   try {
     await sequelize.authenticate();
     res.status(200).json({
       status: 'ok',
-      service: 'ms-proveedores',
+      service: 'ms-productos',
       timestamp: new Date().toISOString(),
       database: 'connected'
     });
   } catch (error) {
     res.status(500).json({
       status: 'error',
-      service: 'ms-proveedores',
+      service: 'ms-productos',
       timestamp: new Date().toISOString(),
       database: 'disconnected'
     });
   }
 });
 
-// Manejo de errores global
-app.use((err, req, res, next) => {
-  console.error('Error no controlado:', err.message);
-  res.status(500).json({
-    error: 'Error interno del servidor',
-    mensaje: err.message
-  });
+// Ruta raíz
+app.get('/', (req, res) => {
+  res.json({ mensaje: 'MS Productos funcionando correctamente' });
 });
 
+// ── Manejo de errores global ─────────────────────────────────────
+app.use((err, req, res, next) => {
+  console.error('Error no controlado:', err.message);
+  res.status(500).json({ error: 'Error interno del servidor', mensaje: err.message });
+});
 
-// Conectamos a MySQL y arrancamos el servidor
+// ── Conectar MySQL y arrancar ────────────────────────────────────
 sequelize.authenticate()
   .then(() => {
     console.log('Conectado a MySQL - drgueria_productos');
-    return sequelize.sync(); // sincroniza el modelo con la tabla
+    // sync({ alter: true }) actualiza columnas si cambian los modelos
+    return sequelize.sync({ alter: false });
   })
   .then(() => {
     app.listen(process.env.PORT, () => {
-      console.log(`MS Productos corriendo en http://localhost:${process.env.PORT}`);
+      console.log(`MS Productos corriendo en http://192.168.100.2:${process.env.PORT}`);
     });
   })
   .catch(err => {

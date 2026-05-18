@@ -94,6 +94,8 @@
       <a class="sidebar-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
       <a class="sidebar-link" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
       <a class="sidebar-link" href="pagos.html"><i class="bi bi-credit-card"></i>Pagos</a>
+      <div class="nav-section-title">MS Compras</div>
+      <a class="sidebar-link" href="ms-compras.html"><i class="bi bi-cart-check"></i>MS Compras</a>
       <div class="nav-section-title">Analítica</div>
       <a class="sidebar-link" href="auditoria.html"><i class="bi bi-activity"></i>Auditoría</a>
       <a class="sidebar-link activo" href="reportes.html"><i class="bi bi-graph-up-arrow"></i>Reportes</a>
@@ -183,7 +185,7 @@
   </div>
 
   <script>
-    const API = 'http://localhost:4000/v1';
+    const API = 'http://192.168.100.1:4000/v1';
     const API_REPORTES = `${API}/reportes`;
     const API_AUDITORIA = `${API}/auditoria`;
     const token = localStorage.getItem('token');

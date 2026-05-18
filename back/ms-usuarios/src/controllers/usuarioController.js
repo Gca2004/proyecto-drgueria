@@ -5,9 +5,15 @@ const jwt = require('jsonwebtoken');
 // ── CREAR usuario ─────────────────────────────────────────────
 const crearUsuario = async (req, res) => {
   try {
-    const { nombre, correo, clave, rol } = req.body;
+    const { nombre, correo, rol } = req.body;
+    const clave = req.body.clave || req.body.contrasena || req.body.password;
+
+    if (!clave) {
+      return res.status(400).json({ error: 'La contraseña es obligatoria' });
+    }
 
     const usuarioExistente = await Usuario.findOne({ where: { correo } });
+  
     if (usuarioExistente) {
       return res.status(400).json({ error: 'Ya existe un usuario con ese correo' });
     }

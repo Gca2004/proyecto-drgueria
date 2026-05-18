@@ -38,5 +38,5 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3007;
 app.listen(PORT, () => {
-  console.log(`MS Reportes corriendo en http://localhost:${PORT}`);
+  console.log(`MS Reportes corriendo en http://192.168.100.2:${PORT}`);
 });
