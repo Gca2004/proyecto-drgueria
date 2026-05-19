@@ -1,26 +1,34 @@
-# Imagen base - Node.js con soporte para Python analitico
+# ══════════════════════════════════════════════════════════
+# ms-reportes — Node.js + Python + PySpark + Matplotlib
+# ══════════════════════════════════════════════════════════
 FROM node:20-bookworm-slim
 
-# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Instalar Python y dependencias analiticas
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends python3 python3-pip \
-  && pip3 install --break-system-packages --no-cache-dir pandas pillow reportlab \
-  && rm -rf /var/lib/apt/lists/*
+# ── Instalar Java (requerido por PySpark) + Python + libs ──
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-dev \
+    default-jdk-headless \
+    fonts-dejavu-core \
+    && pip3 install --break-system-packages --no-cache-dir \
+        pyspark==3.5.1 \
+        pandas \
+        matplotlib \
+        seaborn \
+        numpy \
+        pillow \
+        reportlab \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copiar package.json primero (aprovecha cache de Docker)
+# ── Instalar dependencias Node ──────────────────────────────
 COPY package*.json ./
-
-# Instalar solo dependencias de produccion
 RUN npm install --omit=dev
 
-# Copiar el resto del codigo fuente
+# ── Copiar código fuente ────────────────────────────────────
 COPY . .
 
-# Exponer el puerto del microservicio
 EXPOSE 3007
-
-# Comando de inicio
 CMD ["node", "src/index.js"]

@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: ms-usuarios
-          image: drgueria/ms-usuarios:latest
+          image: gustavocoque/ms-usuarios:latest
           # En Minikube usar: imagePullPolicy: Never
           # (porque las imágenes se construyen localmente)
           imagePullPolicy: Never

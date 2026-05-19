@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: ms-proveedores
-          image: drgueria/ms-proveedores:latest
+          image: gustavocoque/ms-proveedores:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 3002

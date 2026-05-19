@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: api-gateway
-          image: drgueria/api-gateway:latest
+          image: gustavocoque/api-gateway:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 4000

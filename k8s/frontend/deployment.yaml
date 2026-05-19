@@ -16,7 +16,7 @@ spec:
       terminationGracePeriodSeconds: 15
       containers:
         - name: frontend
-          image: drgueria/frontend:latest
+          image: gustavocoque/frontend:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 80

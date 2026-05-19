@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: ms-notificaciones
-          image: drgueria/ms-notificaciones:latest
+          image: gustavocoque/ms-notificaciones:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 3005
