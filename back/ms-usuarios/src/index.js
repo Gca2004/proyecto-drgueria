@@ -21,6 +21,24 @@ app.get('/', (req, res) => {
   res.json({ mensaje: 'MS Usuarios funcionando correctamente' });
 });
 
+app.get('/health', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    res.status(200).json({
+      status: 'ok',
+      service: 'ms-usuarios',
+      timestamp: new Date().toISOString(),
+      database: 'connected'
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      service: 'ms-usuarios',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected'
+    });
+  }
+});
 // Conectamos a MySQL y arrancamos el servidor
 sequelize.authenticate()
   .then(() => {

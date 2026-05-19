@@ -1,35 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway
+  name: ms-notificaciones
   namespace: drgueria
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: api-gateway
+      app: ms-notificaciones
   template:
     metadata:
       labels:
-        app: api-gateway
+        app: ms-notificaciones
         monitored: "true"
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-        - name: api-gateway
-          image: drgueria/api-gateway:latest
+        - name: ms-notificaciones
+          image: drgueria/ms-notificaciones:latest
           imagePullPolicy: Never
           ports:
-            - containerPort: 4000
+            - containerPort: 3005
           envFrom:
             - configMapRef:
-                name: api-gateway-config
+                name: ms-notificaciones-config
             - secretRef:
-                name: api-gateway-secret
+                name: ms-notificaciones-secret
           livenessProbe:
             httpGet:
               path: /health
-              port: 4000
+              port: 3005
             initialDelaySeconds: 15
             periodSeconds: 20
             timeoutSeconds: 5
@@ -37,32 +37,30 @@ spec:
           readinessProbe:
             httpGet:
               path: /health
-              port: 4000
+              port: 3005
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 3
           resources:
             requests:
               memory: "128Mi"
-              cpu: "150m"
+              cpu: "100m"
             limits:
               memory: "256Mi"
-              cpu: "300m"
+              cpu: "200m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-gateway-svc
+  name: ms-notificaciones-svc
   namespace: drgueria
   labels:
-    app: api-gateway
+    app: ms-notificaciones
     monitored: "true"
 spec:
   selector:
-    app: api-gateway
+    app: ms-notificaciones
   ports:
     - name: http
-      port: 4000
-      targetPort: 4000
-  # NodePort para acceder desde fuera del cluster en Minikube
-  type: NodePort
+      port: 3005
+      targetPort: 3005

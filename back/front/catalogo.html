@@ -29,6 +29,8 @@
       background: var(--verde-bg);
       color: var(--gris-texto);
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     /* ══ NAVBAR ══════════════════════════════════════════════ */
@@ -51,7 +53,7 @@
     .nav-derecha { display: flex; align-items: center; gap: 1rem; }
     .nav-nombre  { color: rgba(255,255,255,0.8); font-size: 0.88rem; }
     .nav-nombre strong { color: #fff; }
-
+    
     /* Botón carrito en navbar */
     .btn-carrito-nav {
       position: relative;
@@ -131,8 +133,10 @@
     .layout-principal {
       display: flex;
       gap: 0;
-      max-width: 1500px;
-      margin: 0 auto;
+      flex: 1;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
     }
 
     /* ══ GRILLA PRODUCTOS ════════════════════════════════════ */
@@ -482,6 +486,9 @@
   <a class="navbar-brand-drg" href="catalogo.html">DR<span>GUERIA</span></a>
   <div class="nav-derecha">
     <span class="nav-nombre">Hola, <strong id="navNombre">…</strong></span>
+    <a href="perfil.html" class="btn-logout-nav" style="text-decoration:none">
+      <i class="bi bi-person-circle me-1"></i>Mi perfil
+    </a>
     <button class="btn-carrito-nav" onclick="toggleCarrito()">
       <i class="bi bi-cart3"></i>
       Mi carrito
@@ -552,6 +559,7 @@
 
     <!-- Items -->
     <div class="carrito-items" id="carritoItems">
+      <div class="carrito-vacio" id="carritoVacio">
         <i class="bi bi-cart3"></i>
         <p style="font-size:0.9rem;margin:0">Tu carrito está vacío.<br>Agrega productos del catálogo.</p>
       </div>
@@ -633,7 +641,7 @@
   // ════════════════════════════════════════════════
   // CONFIGURACIÓN
   // ════════════════════════════════════════════════
-  const API = 'http://192.168.100.1:4000/v1';
+  const API = 'http://localhost:4000/v1';
 
   const token   = localStorage.getItem('token');
   const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');

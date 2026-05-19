@@ -1,0 +1,24 @@
+# ══════════════════════════════════════════════════════════
+# ServiceMonitor — le dice a Prometheus qué servicios
+# scrapear para recolectar métricas /metrics
+# Requiere: kube-prometheus-stack instalado con Helm
+# ══════════════════════════════════════════════════════════
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: drgueria-monitor
+  namespace: monitoring
+  labels:
+    release: monitoring   # debe coincidir con el nombre del Helm release
+spec:
+  namespaceSelector:
+    matchNames:
+      - drgueria
+  selector:
+    matchLabels:
+      monitored: "true"   # los Services con esta etiqueta serán scrapeados
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s

@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-reportes
+  namespace: drgueria
+spec:
+  replicas: 1   # Solo 1 réplica — Spark corre localmente dentro del pod
+  selector:
+    matchLabels:
+      app: ms-reportes
+  template:
+    metadata:
+      labels:
+        app: ms-reportes
+        monitored: "true"
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: ms-reportes
+          image: drgueria/ms-reportes:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3007
+          envFrom:
+            - configMapRef:
+                name: ms-reportes-config
+            - secretRef:
+                name: ms-reportes-secret
+          # Volúmenes para persistir los datos y outputs de Spark
+          volumeMounts:
+            - name: reportes-data
+              mountPath: /app/data
+            - name: reportes-output
+              mountPath: /app/output
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3007
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3007
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            timeoutSeconds: 5
+          resources:
+            # Más recursos porque ejecuta Python/Spark
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+      volumes:
+        - name: reportes-data
+          emptyDir: {}
+        - name: reportes-output
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-reportes-svc
+  namespace: drgueria
+  labels:
+    app: ms-reportes
+    monitored: "true"
+spec:
+  selector:
+    app: ms-reportes
+  ports:
+    - name: http
+      port: 3007
+      targetPort: 3007

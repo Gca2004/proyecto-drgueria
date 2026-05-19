@@ -1,16 +1,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: api-gateway-config
+  name: ms-compras-config
   namespace: drgueria
 data:
-  PORT: "4000"
+  PORT: "3003"
+  DB_HOST: "mysql-service"
+  DB_PORT: "3306"
+  DB_NAME: "drgueria_compras"
   NODE_ENV: "production"
-  MS_USUARIOS_URL: "http://ms-usuarios-svc:3000"
   MS_PRODUCTOS_URL: "http://ms-productos-svc:3001"
-  MS_PROVEEDORES_URL: "http://ms-proveedores-svc:3002"
-  MS_COMPRAS_URL: "http://ms-compras-svc:3003"
   MS_PAGOS_URL: "http://ms-pagos-svc:3004"
   MS_NOTIFICACIONES_URL: "http://ms-notificaciones-svc:3005"
   MS_AUDITORIA_URL: "http://ms-auditoria-svc:3006"
-  MS_REPORTES_URL: "http://ms-reportes-svc:3007"
