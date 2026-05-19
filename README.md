@@ -1,3 +1,7 @@
+
+
+
+
 # 💊 DRGUERIA — Sistema de Gestión Farmacéutica
 
 Sistema web de gestión de ventas e inventario para droguería, desarrollado con arquitectura de **microservicios**. Permite a clientes comprar productos en línea y a administradores gestionar inventario, proveedores y pedidos con alertas automáticas de stock bajo.

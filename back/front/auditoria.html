@@ -176,16 +176,18 @@
       const btn = document.getElementById('btnRefresh');
       btn.classList.add('girando');
       try {
-        const [resHealth, resLogs] = await Promise.all([
+        const [resHealth, resResumen, resLogs] = await Promise.all([
           fetch(`${API_AUDITORIA}/health`),
+          fetch(`${API_AUDITORIA}/resumen`),
           fetch(`${API_AUDITORIA}/logs`)
         ]);
 
         const health = await resHealth.json();
+        const resumen = await resResumen.json();
         logs = await resLogs.json();
         if (!Array.isArray(logs)) logs = [];
 
-        actualizarKPIs(health);
+        actualizarKPIs(health, resumen);
         poblarFiltroServicios();
         renderTabla();
       } catch {
@@ -196,12 +198,12 @@
       }
     }
 
-    function actualizarKPIs(health) {
+    function actualizarKPIs(health, resumen = {}) {
       const servicios = [...new Set(logs.map(l => l.servicio).filter(Boolean))];
       const usuarios = [...new Set(logs.map(l => l.usuario_id).filter(v => v !== null && v !== undefined && v !== ''))];
-      document.getElementById('kpiTotal').textContent = logs.length;
-      document.getElementById('kpiServicios').textContent = servicios.length;
-      document.getElementById('kpiUsuarios').textContent = usuarios.length;
+      document.getElementById('kpiTotal').textContent = resumen.total_eventos ?? logs.length;
+      document.getElementById('kpiServicios').textContent = resumen.microservicios_activos ?? servicios.length;
+      document.getElementById('kpiUsuarios').textContent = resumen.usuarios_involucrados ?? usuarios.length;
       const estado = document.getElementById('kpiEstado');
       estado.textContent = health && health.status === 'ok' ? 'OK' : 'Error';
       estado.style.color = health && health.status === 'ok' ? 'var(--verde-medio)' : 'var(--rojo)';

@@ -73,7 +73,24 @@ const obtenerAuditoria = async () => {
   }
 
   try {
-    const res = await api.get(`${process.env.MS_AUDITORIA_URL}/logs`);
+    const baseUrl = process.env.MS_AUDITORIA_URL.replace(/\/$/, '');
+    const url = baseUrl.endsWith('/auditoria') ? `${baseUrl}/logs` : `${baseUrl}/auditoria/logs`;
+    const res = await api.get(url);
+    return Array.isArray(res.data) ? res.data : [];
+  } catch (error) {
+    return [];
+  }
+};
+
+const obtenerCompras = async () => {
+  if (!process.env.MS_COMPRAS_URL) {
+    return [];
+  }
+
+  try {
+    const baseUrl = process.env.MS_COMPRAS_URL.replace(/\/$/, '');
+    const url = baseUrl.endsWith('/compras') ? baseUrl : `${baseUrl}/compras`;
+    const res = await api.get(url);
     return Array.isArray(res.data) ? res.data : [];
   } catch (error) {
     return [];
@@ -87,6 +104,7 @@ const obtenerDatosEnVivo = async () => {
     proveedoresRes,
     pedidosRes,
     alertasRes,
+    compras,
     pagos,
     auditoria
   ] = await Promise.all([
@@ -95,6 +113,7 @@ const obtenerDatosEnVivo = async () => {
     api.get(process.env.MS_PROVEEDORES_URL),
     api.get(process.env.MS_PEDIDOS_URL),
     api.get(`${process.env.MS_PRODUCTOS_URL}/alertas`),
+    obtenerCompras(),
     obtenerPagos(),
     obtenerAuditoria()
   ]);
@@ -106,6 +125,7 @@ const obtenerDatosEnVivo = async () => {
     proveedores: proveedoresRes.data,
     pedidos: pedidosRes.data,
     alertas: alertasRes.data,
+    compras,
     pagos,
     auditoria
   };
@@ -116,6 +136,7 @@ const obtenerResumenTiempoReal = async () => {
 
   const productos = Array.isArray(datos.productos) ? datos.productos : [];
   const pedidos = Array.isArray(datos.pedidos) ? datos.pedidos : [];
+  const compras = Array.isArray(datos.compras) ? datos.compras : [];
   const pagos = Array.isArray(datos.pagos) ? datos.pagos : [];
   const usuarios = Array.isArray(datos.usuarios) ? datos.usuarios : [];
   const alertas = Array.isArray(datos.alertas?.productos_con_stock_bajo)
@@ -123,13 +144,16 @@ const obtenerResumenTiempoReal = async () => {
     : [];
   const comprasAuditoria = extraerComprasDesdeAuditoria(Array.isArray(datos.auditoria) ? datos.auditoria : []);
 
+  const ingresosDesdeCompras = compras
+    .filter(compra => compra.estado === 'pagado')
+    .reduce((suma, compra) => suma + parseFloat(compra.total || 0), 0);
   const ventasAprobadas = pagos
     .filter(pago => pago.estado === 'aprobado')
     .reduce((suma, pago) => suma + parseFloat(pago.monto || 0), 0);
   const ingresosDesdeAuditoria = comprasAuditoria
     .reduce((suma, compra) => suma + Number(compra.monto_total || 0), 0);
-  const totalCompras = pagos.length || comprasAuditoria.length;
-  const ingresosTotales = pagos.length ? ventasAprobadas : ingresosDesdeAuditoria;
+  const totalCompras = compras.length || pagos.length || comprasAuditoria.length;
+  const ingresosTotales = compras.length ? ingresosDesdeCompras : pagos.length ? ventasAprobadas : ingresosDesdeAuditoria;
 
   const stockTotal = productos.reduce((suma, producto) => suma + Number(producto.stock_actual || 0), 0);
   const clientes = usuarios.filter(usuario => usuario.rol === 'cliente').length;

@@ -1,10 +1,10 @@
 Analisis DRGUERIA - resultados_spark.txt
-Generado: 2026-05-17 03:41:25
+Generado: 2026-05-18 23:48:55
 
 Resumen general del analisis:
-- Registros analizados: 4
-- Ingresos aprobados: $0.00
+- Registros analizados: 2
+- Ingresos aprobados: $5,700.00
 - Productos con stock bajo detectados en dataset: 0
-- Metodo de pago mas usado: sin_dato (4)
-- Estado de pedido dominante: compra_directa (4)
-- Categoria con mayor ingreso: Antibiotico ($22,000.00)
+- Metodo de pago mas usado: efectivo (2)
+- Estado de pedido dominante: compra_directa (2)
+- Categoria con mayor ingreso: Analgesico ($5,700.00)
