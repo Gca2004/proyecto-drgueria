@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-pagos-config
+  namespace: drgueria
+data:
+  PORT: "3004"
+  DB_HOST: "mysql-service"
+  DB_PORT: "3306"
+  DB_NAME: "drgueria_pagos"
+  NODE_ENV: "production"
+  MS_NOTIFICACIONES_URL: "http://ms-notificaciones-svc:3005"

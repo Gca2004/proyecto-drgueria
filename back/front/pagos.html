@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DRGUERIA · Pagos</title>
+  <title>DRGUERIA · Notificaciones</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
@@ -16,21 +16,36 @@
       --verde-claro:   #2cbf8e;
       --verde-suave:   #d6f5ec;
       --verde-bg:      #f2faf7;
-      --blanco:        #f8fdfb;
       --gris-texto:    #3d4a44;
       --gris-borde:    #c4ddd5;
       --rojo:          #e05252;
+      --rojo-bg:       #fdf2f1;
       --amarillo:      #f59e0b;
+      --amarillo-bg:   #fdf8ec;
       --azul:          #3b82f6;
+      --azul-bg:       #eff6ff;
       --sidebar-w:     240px;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--verde-bg); color: var(--gris-texto); display: flex; min-height: 100vh; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--verde-bg);
+      color: var(--gris-texto);
+      display: flex;
+      min-height: 100vh;
+    }
 
     /* ══ Sidebar ══ */
-    .sidebar { width: var(--sidebar-w); background: var(--verde-oscuro); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; overflow-y: auto; }
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--verde-oscuro);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0;
+      height: 100vh; z-index: 200; overflow-y: auto;
+    }
     .sidebar-logo { padding: 1.6rem 1.4rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .sidebar-logo a { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: #fff; text-decoration: none; }
+    .sidebar-logo a { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: #fff; text-decoration: none; letter-spacing: -0.5px; }
     .sidebar-logo a span { color: #a8e8d0; }
     .sidebar-logo .rol-badge { display: inline-block; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 4px; padding: 0.15rem 0.5rem; margin-top: 0.3rem; }
     .sidebar-nav { flex: 1; padding: 1rem 0; }
@@ -47,215 +62,199 @@
 
     /* ══ Main ══ */
     .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
-    .topbar { background: #fff; border-bottom: 1px solid var(--gris-borde); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; }
+
+    .topbar { background: #fff; border-bottom: 1px solid var(--gris-borde); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
     .topbar h1 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--verde-oscuro); margin: 0; }
     .topbar .sub { font-size: 0.82rem; color: #9db8ad; }
-    .topbar-acciones { display: flex; gap: 0.7rem; align-items: center; }
 
-    .btn-refresh { background: var(--verde-suave); border: none; border-radius: 8px; color: var(--verde-oscuro); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; transition: background 0.18s; display: flex; align-items: center; gap: 0.4rem; }
+    .btn-refresh {
+      background: var(--verde-suave); border: none; border-radius: 8px;
+      color: var(--verde-oscuro); padding: 0.45rem 1rem; font-size: 0.85rem;
+      cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600;
+      display: flex; align-items: center; gap: 0.4rem; transition: background 0.18s;
+    }
     .btn-refresh:hover { background: #b8edd8; }
     .btn-refresh.girando i { animation: spin 0.8s linear infinite; }
-
-    .btn-nuevo { background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio)); border: none; border-radius: 9px; color: #fff; padding: 0.55rem 1.2rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 4px 14px rgba(10,92,69,0.22); transition: transform 0.15s, opacity 0.18s; }
-    .btn-nuevo:hover { transform: translateY(-1px); opacity: 0.92; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .pagina { padding: 1.8rem 2rem; }
 
-    /* ══ KPIs ══ */
-    .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.6rem; }
-    .kpi-card { background: #fff; border-radius: 14px; border: 1.5px solid var(--gris-borde); padding: 1.1rem 1.3rem; display: flex; align-items: center; gap: 0.9rem; animation: fadeUp 0.3s ease both; }
-    .kpi-icon { width: 44px; height: 44px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
-    .kpi-num { font-family: 'DM Serif Display', serif; font-size: 1.75rem; line-height: 1; }
-    .kpi-lbl { font-size: 0.76rem; color: #9db8ad; margin-top: 0.1rem; }
+    /* ══ KPI Cards ══ */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .kpi-card {
+      background: #fff; border-radius: 14px;
+      border: 1.5px solid var(--gris-borde);
+      padding: 1.2rem 1.4rem;
+      display: flex; align-items: center; gap: 1rem;
+      animation: fadeUp 0.3s ease both;
+    }
+    .kpi-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .kpi-icon.verde   { background: var(--verde-suave); }
+    .kpi-icon.azul    { background: var(--azul-bg); }
+    .kpi-icon.amarillo{ background: var(--amarillo-bg); }
+    .kpi-icon.rojo    { background: var(--rojo-bg); }
+    .kpi-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--verde-oscuro); line-height: 1; }
+    .kpi-label { font-size: 0.78rem; color: #7a9c8e; margin-top: 0.15rem; }
 
-    /* ══ Toolbar ══ */
-    .toolbar { background: #fff; border-radius: 12px; border: 1.5px solid var(--gris-borde); padding: 1rem 1.2rem; margin-bottom: 1.2rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
-    .busqueda-wrap { flex: 1; min-width: 200px; position: relative; }
-    .busqueda-wrap i { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #9db8ad; }
-    .busqueda-wrap input { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.5rem 1rem 0.5rem 2.4rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
-    .busqueda-wrap input:focus { border-color: var(--verde-medio); }
-    .select-filtro { border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.5rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--gris-texto); outline: none; background: #fff; cursor: pointer; }
-    .select-filtro:focus { border-color: var(--verde-medio); }
+    /* ══ Alertas tiempo real ══ */
+    .alertas-panel {
+      background: #fff; border-radius: 14px;
+      border: 1.5px solid var(--gris-borde);
+      padding: 1.2rem; margin-bottom: 1.5rem;
+    }
+    .alertas-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .alertas-titulo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.05rem; color: var(--verde-oscuro);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .badge-count { background: var(--rojo); color: #fff; border-radius: 20px; padding: 0.1rem 0.55rem; font-size: 0.7rem; font-weight: 700; }
+    .badge-count.amarillo { background: var(--amarillo); }
+    .badge-count.verde    { background: var(--verde-claro); }
 
-    /* ══ Tabla ══ */
-    .tabla-wrap { background: #fff; border-radius: 14px; border: 1.5px solid var(--gris-borde); overflow: hidden; }
+    .alerta-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.65rem 0.8rem; border-radius: 9px; margin-bottom: 0.4rem;
+      transition: background 0.15s;
+    }
+    .alerta-item:hover { background: var(--verde-bg); }
+    .alerta-item.urgente { background: var(--rojo-bg); border-left: 3px solid var(--rojo); }
+    .alerta-item.aviso   { background: var(--amarillo-bg); border-left: 3px solid var(--amarillo); }
+    .alerta-item.info    { background: var(--verde-suave); border-left: 3px solid var(--verde-claro); }
+    .alerta-icono { font-size: 1.1rem; margin-top: 1px; flex-shrink: 0; }
+    .alerta-texto { flex: 1; }
+    .alerta-msg  { font-size: 0.84rem; color: var(--gris-texto); font-weight: 500; }
+    .alerta-meta { font-size: 0.72rem; color: #9db8ad; margin-top: 0.15rem; }
+    .btn-leer {
+      background: none; border: 1.5px solid var(--gris-borde); border-radius: 6px;
+      padding: 0.2rem 0.6rem; font-size: 0.72rem; color: #9db8ad;
+      cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap;
+      transition: all 0.15s; flex-shrink: 0;
+    }
+    .btn-leer:hover { border-color: var(--verde-medio); color: var(--verde-oscuro); }
+
+    .vacio-alertas { text-align: center; padding: 2rem; color: #9db8ad; }
+    .vacio-alertas i { font-size: 2rem; display: block; margin-bottom: 0.5rem; color: var(--verde-claro); }
+
+    /* ══ Sección titulo ══ */
+    .seccion-titulo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem; color: var(--verde-oscuro);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    /* ══ Filtros ══ */
+    .toolbar {
+      background: #fff; border-radius: 12px;
+      border: 1.5px solid var(--gris-borde);
+      padding: 1rem 1.2rem; margin-bottom: 1rem;
+      display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+    }
+    .toolbar input, .toolbar select {
+      border: 1.5px solid var(--gris-borde); border-radius: 8px;
+      padding: 0.45rem 0.85rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem; outline: none; background: #fff; color: var(--gris-texto);
+    }
+    .toolbar input:focus, .toolbar select:focus { border-color: var(--verde-medio); }
+    .toolbar input { flex: 1; min-width: 160px; }
+
+    .chip-tipo {
+      border: 1.5px solid var(--gris-borde); background: #fff;
+      border-radius: 20px; padding: 0.3rem 0.85rem;
+      font-size: 0.8rem; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; white-space: nowrap;
+      transition: all 0.18s;
+    }
+    .chip-tipo:hover, .chip-tipo.activo {
+      background: var(--verde-oscuro); border-color: var(--verde-oscuro); color: #fff;
+    }
+
+    /* ══ Tabla notificaciones ══ */
+    .tabla-wrap {
+      background: #fff; border-radius: 14px;
+      border: 1.5px solid var(--gris-borde);
+      overflow: hidden; margin-bottom: 1.5rem;
+    }
     .tabla-wrap table { width: 100%; border-collapse: collapse; }
     .tabla-wrap thead { background: var(--verde-oscuro); color: #fff; }
-    .tabla-wrap thead th { padding: 0.85rem 1.1rem; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
-    .tabla-wrap tbody tr { border-bottom: 1px solid var(--gris-borde); transition: background 0.15s; }
-    .tabla-wrap tbody tr:last-child { border-bottom: none; }
+    .tabla-wrap thead th { padding: 0.85rem 1rem; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+    .tabla-wrap tbody td { padding: 0.85rem 1rem; font-size: 0.85rem; border-bottom: 1px solid var(--gris-borde); vertical-align: middle; }
+    .tabla-wrap tbody tr:last-child td { border-bottom: none; }
     .tabla-wrap tbody tr:hover { background: var(--verde-bg); }
-    .tabla-wrap tbody td { padding: 0.9rem 1.1rem; font-size: 0.88rem; vertical-align: middle; }
-    .tabla-footer { padding: 0.7rem 1.2rem; border-top: 1px solid var(--gris-borde); font-size: 0.8rem; color: #9db8ad; }
 
-    /* Badges */
-    .badge-estado { border-radius: 20px; padding: 0.22rem 0.75rem; font-size: 0.73rem; font-weight: 600; white-space: nowrap; }
-    .badge-aprobado  { background: var(--verde-suave); color: var(--verde-oscuro); }
-    .badge-pendiente { background: #fef3c7; color: #92400e; }
-    .badge-rechazado { background: #ffe4e4; color: var(--rojo); }
-
-    .metodo-chip { display: inline-flex; align-items: center; gap: 0.3rem; background: #f1f5f9; color: #475569; border-radius: 20px; padding: 0.2rem 0.65rem; font-size: 0.75rem; font-weight: 600; }
-
-    .monto-cell { font-family: 'DM Serif Display', serif; font-size: 1.05rem; color: var(--verde-oscuro); }
-    .factura-cell { font-size: 0.78rem; color: #9db8ad; font-family: monospace; }
-
-    /* Acciones */
-    .acciones { display: flex; gap: 0.4rem; }
-    .btn-accion { border: none; border-radius: 7px; padding: 0.38rem 0.75rem; font-size: 0.8rem; cursor: pointer; transition: opacity 0.18s; display: flex; align-items: center; gap: 0.3rem; font-family: 'DM Sans', sans-serif; font-weight: 500; white-space: nowrap; }
-    .btn-accion:hover { opacity: 0.8; }
-    .btn-ver     { background: var(--verde-suave); color: var(--verde-oscuro); }
-    .btn-imprimir{ background: #dbeafe; color: #1e40af; }
-    .btn-estado  { background: #fef3c7; color: #92400e; }
-
-    /* Vacío */
-    .estado-vacio { text-align: center; padding: 3rem 2rem; color: #9db8ad; }
-    .estado-vacio i { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
-
-    /* Skeleton */
-    .sk { height: 13px; border-radius: 6px; background: linear-gradient(90deg,#e8f5f1 25%,#d6f5ec 50%,#e8f5f1 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; }
-
-    /* ══ Modal header ══ */
-    .modal-header-verde { background: var(--verde-oscuro); color: #fff; border-radius: 12px 12px 0 0; }
-    .modal-header-verde .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
-    .modal-header-verde .btn-close { filter: invert(1); }
-    .form-label-custom { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gris-texto); margin-bottom: 0.35rem; display: block; }
-    .input-custom { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.6rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; color: var(--gris-texto); outline: none; transition: border-color 0.2s; }
-    .input-custom:focus { border-color: var(--verde-medio); box-shadow: 0 0 0 3px rgba(26,138,104,0.1); }
-    .select-custom { width: 100%; border: 1.5px solid var(--gris-borde); border-radius: 9px; padding: 0.6rem 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.92rem; color: var(--gris-texto); outline: none; background: #fff; transition: border-color 0.2s; cursor: pointer; }
-    .select-custom:focus { border-color: var(--verde-medio); }
-    .btn-guardar-modal { background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio)); border: none; border-radius: 9px; color: #fff; padding: 0.65rem 1.8rem; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: opacity 0.18s; }
-    .btn-guardar-modal:hover { opacity: 0.9; }
-    .btn-guardar-modal:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    /* ══ FACTURA IMPRIMIBLE ══ */
-    .factura-modal .modal-dialog { max-width: 680px; }
-    .factura-modal .modal-content { border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 20px 60px rgba(10,92,69,0.18); }
-
-    .factura-doc {
-      background: #fff;
-      font-family: 'DM Sans', sans-serif;
+    .badge-tipo {
+      border-radius: 20px; padding: 0.22rem 0.7rem;
+      font-size: 0.72rem; font-weight: 600; white-space: nowrap;
     }
+    .badge-tipo.compra   { background: #dbeafe; color: #1e40af; }
+    .badge-tipo.stock    { background: var(--amarillo-bg); color: #92400e; }
+    .badge-tipo.pago_ok  { background: var(--verde-suave); color: var(--verde-oscuro); }
+    .badge-tipo.pago_no  { background: var(--rojo-bg); color: var(--rojo); }
+    .badge-tipo.pedido   { background: #f3e8ff; color: #6b21a8; }
+    .badge-tipo.otro     { background: #f1f5f9; color: #64748b; }
 
-    /* Header factura */
-    .fac-header {
-      background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 100%);
-      padding: 2rem 2.5rem 1.5rem;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-    .fac-logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 2rem;
-      letter-spacing: -0.5px;
-      line-height: 1;
-    }
-    .fac-logo span { color: #a8e8d0; }
-    .fac-logo-sub { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 0.3rem; }
-    .fac-titulo-bloque { text-align: right; }
-    .fac-titulo { font-family: 'DM Serif Display', serif; font-size: 1.6rem; opacity: 0.9; }
-    .fac-numero { font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-top: 0.2rem; font-family: monospace; letter-spacing: 0.05em; }
-    .fac-fecha-emit { font-size: 0.78rem; color: rgba(255,255,255,0.55); margin-top: 0.15rem; }
+    .badge-leida { border-radius: 20px; padding: 0.2rem 0.65rem; font-size: 0.7rem; font-weight: 600; }
+    .badge-leida.si { background: var(--verde-suave); color: var(--verde-oscuro); }
+    .badge-leida.no { background: var(--rojo-bg); color: var(--rojo); }
 
-    /* Info bloques */
-    .fac-info-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      border-bottom: 1px solid #eef4f1;
+    .btn-ver {
+      background: var(--verde-suave); border: none; border-radius: 7px;
+      padding: 0.3rem 0.7rem; font-size: 0.78rem; font-weight: 600;
+      color: var(--verde-oscuro); cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: opacity 0.15s;
     }
-    .fac-info-bloque {
-      padding: 1.4rem 2.5rem;
-    }
-    .fac-info-bloque:first-child { border-right: 1px solid #eef4f1; }
-    .fac-info-titulo { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--verde-medio); font-weight: 700; margin-bottom: 0.6rem; }
-    .fac-info-nombre { font-weight: 700; font-size: 1rem; color: var(--gris-texto); }
-    .fac-info-detalle { font-size: 0.83rem; color: #9db8ad; margin-top: 0.2rem; }
+    .btn-ver:hover { opacity: 0.8; }
 
-    /* Estado badge en factura */
-    .fac-estado {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      border-radius: 20px; padding: 0.28rem 0.9rem;
-      font-size: 0.8rem; font-weight: 700;
-      margin-top: 0.5rem;
+    /* ══ Buscar por usuario ══ */
+    .buscar-usuario-panel {
+      background: #fff; border-radius: 14px;
+      border: 1.5px solid var(--gris-borde);
+      padding: 1.2rem; margin-bottom: 1.5rem;
     }
-    .fac-estado.aprobado  { background: var(--verde-suave); color: var(--verde-oscuro); }
-    .fac-estado.pendiente { background: #fef3c7; color: #92400e; }
-    .fac-estado.rechazado { background: #ffe4e4; color: var(--rojo); }
+    .buscar-row { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem; }
+    .buscar-row input {
+      flex: 1; border: 1.5px solid var(--gris-borde); border-radius: 8px;
+      padding: 0.5rem 0.9rem; font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem; outline: none;
+    }
+    .buscar-row input:focus { border-color: var(--verde-medio); }
+    .btn-buscar {
+      background: var(--verde-oscuro); border: none; border-radius: 8px;
+      color: #fff; padding: 0.5rem 1.2rem; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      display: flex; align-items: center; gap: 0.4rem; transition: opacity 0.15s;
+    }
+    .btn-buscar:hover { opacity: 0.88; }
 
-    /* Tabla de items en factura */
-    .fac-items { padding: 0 2.5rem; }
-    .fac-items-titulo { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--verde-medio); font-weight: 700; margin: 1.4rem 0 0.7rem; }
-    .fac-table { width: 100%; border-collapse: collapse; }
-    .fac-table thead tr { border-bottom: 2px solid var(--verde-suave); }
-    .fac-table thead th { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--verde-oscuro); padding: 0.5rem 0.6rem; text-align: left; }
-    .fac-table thead th:last-child { text-align: right; }
-    .fac-table tbody tr { border-bottom: 1px solid #f2faf7; }
-    .fac-table tbody td { padding: 0.75rem 0.6rem; font-size: 0.88rem; color: var(--gris-texto); vertical-align: middle; }
-    .fac-table tbody td:last-child { text-align: right; font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--verde-oscuro); }
-    .fac-item-nombre { font-weight: 600; }
-    .fac-item-desc { font-size: 0.75rem; color: #9db8ad; margin-top: 0.1rem; }
-
-    /* Totales */
-    .fac-totales {
-      padding: 1.2rem 2.5rem;
-      border-top: 1px solid #eef4f1;
+    .usuario-resumen {
+      display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;
     }
-    .fac-total-fila { display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0; font-size: 0.88rem; color: #9db8ad; }
-    .fac-total-fila.principal { border-top: 2px solid var(--verde-suave); margin-top: 0.5rem; padding-top: 0.8rem; }
-    .fac-total-fila.principal .lbl { font-size: 1rem; font-weight: 700; color: var(--gris-texto); }
-    .fac-total-fila.principal .val { font-family: 'DM Serif Display', serif; font-size: 1.7rem; color: var(--verde-oscuro); }
-
-    /* Metodo pago en factura */
-    .fac-metodo {
-      padding: 0.9rem 2.5rem;
-      background: var(--verde-bg);
-      display: flex; align-items: center; gap: 0.7rem;
-      border-top: 1px solid #eef4f1;
-    }
-    .fac-metodo-icon { width: 36px; height: 36px; background: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; border: 1px solid var(--gris-borde); flex-shrink: 0; }
-    .fac-metodo-info .lbl { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: #9db8ad; font-weight: 700; }
-    .fac-metodo-info .val { font-weight: 600; font-size: 0.9rem; color: var(--gris-texto); text-transform: capitalize; }
-
-    /* Footer factura */
-    .fac-footer {
-      padding: 1.2rem 2.5rem;
-      border-top: 1px solid #eef4f1;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .fac-footer-msg { font-size: 0.8rem; color: #9db8ad; }
-    .fac-footer-msg strong { color: var(--verde-medio); }
-    .fac-qr {
-      width: 54px; height: 54px;
-      background: var(--verde-suave);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem;
-    }
-
-    /* Botones factura modal */
-    .fac-modal-acciones {
-      background: #fff;
-      padding: 1rem 1.5rem;
-      display: flex; gap: 0.7rem; justify-content: flex-end;
-      border-top: 1px solid var(--gris-borde);
-    }
-    .btn-imprimir-fac {
-      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
-      border: none; border-radius: 9px; color: #fff;
-      padding: 0.6rem 1.4rem; font-family: 'DM Sans', sans-serif;
-      font-weight: 600; font-size: 0.9rem; cursor: pointer;
+    .usuario-stat {
+      background: var(--verde-bg); border-radius: 9px;
+      padding: 0.6rem 1rem; font-size: 0.82rem;
       display: flex; align-items: center; gap: 0.5rem;
-      transition: opacity 0.18s;
     }
-    .btn-imprimir-fac:hover { opacity: 0.9; }
-    .btn-cerrar-fac {
-      background: #f1f5f9; border: none; border-radius: 9px;
-      color: #475569; padding: 0.6rem 1.2rem;
-      font-family: 'DM Sans', sans-serif; font-weight: 600;
-      font-size: 0.9rem; cursor: pointer;
-    }
+    .usuario-stat strong { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--verde-oscuro); }
+
+    /* ══ Modal detalle ══ */
+    .modal-detalle .modal-header { background: var(--verde-oscuro); color: #fff; }
+    .modal-detalle .modal-title  { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
+    .modal-detalle .btn-close    { filter: invert(1); }
+    .detalle-campo { margin-bottom: 0.85rem; }
+    .detalle-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--verde-medio); margin-bottom: 0.2rem; }
+    .detalle-val   { font-size: 0.92rem; color: var(--gris-texto); font-weight: 500; }
+
+    /* ══ Estado vacío ══ */
+    .estado-vacio { text-align: center; padding: 3rem; color: #9db8ad; }
+    .estado-vacio i { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
 
     /* ══ Toast ══ */
     .toast-drg { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(10,92,69,0.18); border-left: 4px solid var(--verde-claro); padding: 1rem 1.3rem; min-width: 260px; display: none; animation: slideIn 0.3s ease; }
@@ -263,622 +262,500 @@
     .toast-titulo { font-weight: 600; font-size: 0.9rem; }
     .toast-msg    { font-size: 0.82rem; color: #7a9c8e; margin-top: 0.15rem; }
 
-    @keyframes spin    { to { transform: rotate(360deg); } }
-    @keyframes shimmer { to { background-position: -200% 0; } }
-    @keyframes slideIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
     @keyframes fadeUp  { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
-
-    @media print {
-      body * { visibility: hidden; }
-      .factura-doc, .factura-doc * { visibility: visible; }
-      .factura-doc { position: fixed; top: 0; left: 0; width: 100%; }
-      .fac-modal-acciones { display: none !important; }
-    }
+    @keyframes slideIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
 
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
       .main { margin-left: 0; }
       .pagina { padding: 1rem; }
-      .tabla-wrap { overflow-x: auto; }
-      .fac-info-row { grid-template-columns: 1fr; }
-      .fac-info-bloque:first-child { border-right: none; border-bottom: 1px solid #eef4f1; }
-      .fac-header { flex-direction: column; gap: 1rem; }
-      .fac-titulo-bloque { text-align: left; }
+      .kpi-grid { grid-template-columns: repeat(2,1fr); }
     }
   </style>
 </head>
 <body>
 
-  <!-- ══ Sidebar ══ -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <a href="dashboard.html">DR<span>GUERIA</span></a>
-      <div class="rol-badge">Administrador</div>
-    </div>
-    <nav class="sidebar-nav">
-      <div class="nav-section-title">Principal</div>
-      <a class="sidebar-link" href="dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a>
-      <div class="nav-section-title">Inventario</div>
-      <a class="sidebar-link" href="productos.html"><i class="bi bi-box-seam"></i>Productos</a>
-      <a class="sidebar-link" href="pedidos.html"><i class="bi bi-truck"></i>Pedidos</a>
-      <div class="nav-section-title">Gestión</div>
-      <a class="sidebar-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
-      <a class="sidebar-link" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
-      <a class="sidebar-link activo" href="pagos.html"><i class="bi bi-credit-card"></i>Pagos</a>
-      <div class="nav-section-title">MS Compras</div>
+<!-- ══ Sidebar ══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="dashboard.html">DR<span>GUERIA</span></a>
+    <div class="rol-badge">Administrador</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Principal</div>
+    <a class="sidebar-link" href="dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a>
+    <div class="nav-section-title">Inventario</div>
+    <a class="sidebar-link" href="productos.html"><i class="bi bi-box-seam"></i>Productos</a>
+    <a class="sidebar-link" href="pedidos.html"><i class="bi bi-truck"></i>Pedidos</a>
+    <div class="nav-section-title">Gestión</div>
+    <a class="sidebar-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
+    <a class="sidebar-link" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
+    <a class="sidebar-link" href="pagos.html"><i class="bi bi-credit-card"></i>Pagos</a>
+    <div class="nav-section-title">MS Compras</div>
+    <a class="sidebar-link" href="ms-compras.html"><i class="bi bi-cart-check"></i>Panel de Compras</a>
+    <div class="nav-section-title">Analítica</div>
+    <a class="sidebar-link" href="auditoria.html"><i class="bi bi-activity"></i>Auditoría</a>
+    <a class="sidebar-link" href="reportes.html"><i class="bi bi-graph-up-arrow"></i>Reportes</a>
+    <a class="sidebar-link activo" href="notificaciones.html"><i class="bi bi-bell"></i>Notificaciones</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-usuario">Sesión iniciada como<strong id="sidebarNombre">…</strong></div>
+    <button class="btn-logout-sidebar" onclick="cerrarSesion()">
+      <i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión
+    </button>
+  </div>
+</aside>
 
-      <a class="sidebar-link" href="ms-compras.html"><i class="bi bi-cart-check"></i>MS Compras</a>
-      <div class="nav-section-title">Analítica</div>
-      <a class="sidebar-link" href="auditoria.html"><i class="bi bi-activity"></i>Auditoría</a>
-      <a class="sidebar-link" href="reportes.html"><i class="bi bi-graph-up-arrow"></i>Reportes</a>
-      <a class="sidebar-link" href="notificaciones.html">
-        <i class="bi bi-bell"></i>Notificaciones
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-usuario">Sesión iniciada como<strong id="sidebarNombre">…</strong></div>
-      <button class="btn-logout-sidebar" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión</button>
-    </div>
-  </aside>
+<!-- ══ Main ══ -->
+<div class="main">
 
-  <!-- ══ Main ══ -->
-  <div class="main">
-    <div class="topbar">
-      <div>
-        <h1>Pagos y Facturas</h1>
-        <div class="sub">Historial de transacciones y facturas del sistema</div>
+  <!-- Topbar -->
+  <div class="topbar">
+    <div>
+      <h1><i class="bi bi-bell-fill me-2" style="color:var(--verde-medio)"></i>Notificaciones</h1>
+      <div class="sub">Centro de alertas y eventos del sistema</div>
+    </div>
+    <button class="btn-refresh" id="btnRefresh" onclick="cargarTodo()">
+      <i class="bi bi-arrow-clockwise"></i> Actualizar
+    </button>
+  </div>
+
+  <div class="pagina">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card" style="animation-delay:.05s">
+        <div class="kpi-icon verde"><i class="bi bi-bell-fill" style="color:var(--verde-medio)"></i></div>
+        <div>
+          <div class="kpi-num" id="kpiTotal">—</div>
+          <div class="kpi-label">Total hoy</div>
+        </div>
       </div>
-      <div class="topbar-acciones">
-        <button class="btn-refresh" id="btnRefresh" onclick="cargarPagos()">
-          <i class="bi bi-arrow-clockwise"></i> Actualizar
+      <div class="kpi-card" style="animation-delay:.1s">
+        <div class="kpi-icon azul"><i class="bi bi-check-circle-fill" style="color:var(--azul)"></i></div>
+        <div>
+          <div class="kpi-num" id="kpiEnviadas">—</div>
+          <div class="kpi-label">Enviadas</div>
+        </div>
+      </div>
+      <div class="kpi-card" style="animation-delay:.15s">
+        <div class="kpi-icon amarillo"><i class="bi bi-exclamation-triangle-fill" style="color:var(--amarillo)"></i></div>
+        <div>
+          <div class="kpi-num" id="kpiStockBajo">—</div>
+          <div class="kpi-label">Stock bajo alertado</div>
+        </div>
+      </div>
+      <div class="kpi-card" style="animation-delay:.2s">
+        <div class="kpi-icon rojo"><i class="bi bi-cart-fill" style="color:var(--azul)"></i></div>
+        <div>
+          <div class="kpi-num" id="kpiCompras">—</div>
+          <div class="kpi-label">Compras notificadas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alertas en tiempo real -->
+    <div class="alertas-panel">
+      <div class="alertas-header">
+        <div class="alertas-titulo">
+          <i class="bi bi-bell-fill" style="color:var(--rojo)"></i>
+          Alertas activas
+          <span class="badge-count" id="badgeAlertas">0</span>
+        </div>
+        <button class="btn-refresh" onclick="cargarAlertas()" style="font-size:0.78rem;padding:0.3rem 0.75rem">
+          <i class="bi bi-arrow-clockwise"></i> Refrescar
         </button>
-        <button class="btn-nuevo" onclick="abrirModalNuevoPago()">
-          <i class="bi bi-plus-lg"></i> Registrar pago
-        </button>
+      </div>
+      <div id="listaAlertas">
+        <div class="vacio-alertas"><i class="bi bi-hourglass-split"></i>Cargando alertas…</div>
       </div>
     </div>
 
-    <div class="pagina">
+    <!-- Tabla de todas las notificaciones -->
+    <div class="seccion-titulo">
+      <i class="bi bi-table" style="color:var(--verde-medio)"></i>
+      Todas las notificaciones
+    </div>
 
-      <!-- KPIs -->
-      <div class="kpi-row">
-        <div class="kpi-card" style="animation-delay:.05s">
-          <div class="kpi-icon" style="background:var(--verde-suave)"><i class="bi bi-receipt" style="color:var(--verde-medio);font-size:1.3rem"></i></div>
-          <div>
-            <div class="kpi-num" style="color:var(--verde-oscuro)" id="kpiTotal">—</div>
-            <div class="kpi-lbl">Total transacciones</div>
-          </div>
-        </div>
-        <div class="kpi-card" style="animation-delay:.1s">
-          <div class="kpi-icon" style="background:var(--verde-suave)"><i class="bi bi-check-circle-fill" style="color:var(--verde-medio);font-size:1.3rem"></i></div>
-          <div>
-            <div class="kpi-num" style="color:var(--verde-medio)" id="kpiAprobados">—</div>
-            <div class="kpi-lbl">Aprobados</div>
-          </div>
-        </div>
-        <div class="kpi-card" style="animation-delay:.15s">
-          <div class="kpi-icon" style="background:#fef3c7"><i class="bi bi-hourglass-split" style="color:var(--amarillo);font-size:1.3rem"></i></div>
-          <div>
-            <div class="kpi-num" style="color:var(--amarillo)" id="kpiPendientes">—</div>
-            <div class="kpi-lbl">Pendientes</div>
-          </div>
-        </div>
-        <div class="kpi-card" style="animation-delay:.2s">
-          <div class="kpi-icon" style="background:#ffe4e4"><i class="bi bi-x-circle-fill" style="color:var(--rojo);font-size:1.3rem"></i></div>
-          <div>
-            <div class="kpi-num" style="color:var(--rojo)" id="kpiRechazados">—</div>
-            <div class="kpi-lbl">Rechazados</div>
-          </div>
-        </div>
-        <div class="kpi-card" style="animation-delay:.25s">
-          <div class="kpi-icon" style="background:#dbeafe"><i class="bi bi-cash-stack" style="color:var(--azul);font-size:1.3rem"></i></div>
-          <div>
-            <div class="kpi-num" style="color:var(--azul);font-size:1.3rem" id="kpiMonto">—</div>
-            <div class="kpi-lbl">Total recaudado</div>
-          </div>
-        </div>
+    <!-- Filtros -->
+    <div class="toolbar">
+      <input type="text" id="filtroUsuario" placeholder="Filtrar por usuario ID…" oninput="filtrarTabla()"/>
+      <input type="date" id="filtroDesde" onchange="filtrarTabla()"/>
+      <input type="date" id="filtroHasta" onchange="filtrarTabla()"/>
+      <div class="d-flex gap-2 flex-wrap">
+        <button class="chip-tipo activo" data-tipo="todos" onclick="selChip(this)">Todas</button>
+        <button class="chip-tipo" data-tipo="compra" onclick="selChip(this)">🛒 Compras</button>
+        <button class="chip-tipo" data-tipo="stock" onclick="selChip(this)">⚠️ Stock bajo</button>
+        <button class="chip-tipo" data-tipo="pago" onclick="selChip(this)">💳 Pagos</button>
+        <button class="chip-tipo" data-tipo="pedido" onclick="selChip(this)">📦 Pedidos</button>
       </div>
+    </div>
 
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <div class="busqueda-wrap">
-          <i class="bi bi-search"></i>
-          <input type="text" id="inputBusqueda" placeholder="Buscar por factura, usuario o compra…"/>
-        </div>
-        <select class="select-filtro" id="filtroEstado">
-          <option value="">Todos los estados</option>
-          <option value="aprobado">Aprobado</option>
-          <option value="pendiente">Pendiente</option>
-          <option value="rechazado">Rechazado</option>
-        </select>
-        <select class="select-filtro" id="filtroMetodo">
-          <option value="">Todos los métodos</option>
-          <option value="efectivo">Efectivo</option>
-          <option value="tarjeta">Tarjeta</option>
-          <option value="transferencia">Transferencia</option>
-        </select>
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tipo</th>
+            <th>Usuario</th>
+            <th>Mensaje</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>Leída</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tablaBody">
+          <tr><td colspan="8" class="estado-vacio"><i class="bi bi-hourglass-split"></i>Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Buscar por usuario -->
+    <div class="seccion-titulo">
+      <i class="bi bi-person-lines-fill" style="color:var(--verde-medio)"></i>
+      Historial por Usuario
+    </div>
+    <div class="buscar-usuario-panel">
+      <div class="buscar-row">
+        <input type="number" id="inputUsuarioId" placeholder="ID del usuario…" min="1"/>
+        <button class="btn-buscar" onclick="buscarPorUsuario()">
+          <i class="bi bi-search"></i> Buscar
+        </button>
       </div>
-
-      <!-- Tabla -->
-      <div class="tabla-wrap">
+      <div id="usuarioResumen" style="display:none" class="usuario-resumen"></div>
+      <div id="usuarioTabla" style="display:none" class="tabla-wrap">
         <table>
           <thead>
-            <tr>
-              <th>#</th>
-              <th>Número de factura</th>
-              <th>Compra ID</th>
-              <th>Usuario ID</th>
-              <th>Monto</th>
-              <th>Método</th>
-              <th>Estado</th>
-              <th>Fecha</th>
-              <th>Acciones</th>
-            </tr>
+            <tr><th>#</th><th>Tipo</th><th>Mensaje</th><th>Fecha</th><th>Leída</th><th></th></tr>
           </thead>
-          <tbody id="bodyPagos">
-            <tr><td colspan="9"><div class="sk w-100 my-2" style="height:14px"></div></td></tr>
-            <tr><td colspan="9"><div class="sk w-100 my-2" style="height:14px"></div></td></tr>
-            <tr><td colspan="9"><div class="sk w-100 my-2" style="height:14px"></div></td></tr>
-          </tbody>
+          <tbody id="usuarioBody"></tbody>
         </table>
-        <div class="tabla-footer" id="tablaFooter">Cargando…</div>
+      </div>
+      <div id="usuarioVacio" style="display:none" class="estado-vacio">
+        <i class="bi bi-person-x"></i>
+        <p>No hay notificaciones para este usuario.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal detalle -->
+<div class="modal fade modal-detalle" id="modalDetalle" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-bell me-2"></i>Detalle de notificación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4" id="modalDetalleBody"></div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn-buscar" id="btnMarcarLeida" onclick="marcarLeida()">
+          <i class="bi bi-check2"></i> Marcar como leída
+        </button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- ══ Modal: Registrar pago ══ -->
-  <div class="modal fade" id="modalNuevoPago" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
-        <div class="modal-header modal-header-verde">
-          <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Registrar pago</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div id="alertaNuevo" class="alert d-none small mb-3" style="border-radius:9px;"></div>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label-custom">ID de Compra</label>
-              <input type="number" class="input-custom" id="nCompraId" placeholder="Ej: 1" min="1"/>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label-custom">ID de Usuario</label>
-              <input type="number" class="input-custom" id="nUsuarioId" placeholder="Ej: 1" min="1"/>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label-custom">Monto (COP)</label>
-              <input type="number" class="input-custom" id="nMonto" placeholder="0" min="0" step="0.01"/>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label-custom">Método de pago</label>
-              <select class="select-custom" id="nMetodo">
-                <option value="efectivo">💵 Efectivo</option>
-                <option value="tarjeta">💳 Tarjeta</option>
-                <option value="transferencia">🏦 Transferencia</option>
-              </select>
-            </div>
-          </div>
-          <div class="mt-3 p-3 rounded-3" style="background:var(--verde-suave);font-size:0.83rem;color:var(--verde-oscuro);">
-            <i class="bi bi-info-circle me-1"></i>
-            El número de factura se genera automáticamente. El estado inicial será <strong>aprobado</strong>.
-          </div>
-        </div>
-        <div class="modal-footer border-0 pt-0 px-4 pb-4">
-          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn-guardar-modal" id="btnGuardarPago" onclick="crearPago()">
-            <span id="spinnerNuevo" class="spinner-border spinner-border-sm me-1 d-none"></span>
-            Procesar pago
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- Toast -->
+<div class="toast-drg" id="toast">
+  <div class="toast-titulo" id="toastTitulo"></div>
+  <div class="toast-msg"    id="toastMsg"></div>
+</div>
 
-  <!-- ══ Modal: Cambiar estado ══ -->
-  <div class="modal fade" id="modalEstado" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-      <div class="modal-content border-0 shadow" style="border-radius:14px;overflow:hidden;">
-        <div class="modal-header modal-header-verde">
-          <h5 class="modal-title"><i class="bi bi-arrow-repeat me-2"></i>Cambiar estado</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body p-4">
-          <div id="alertaEstado" class="alert d-none small mb-3" style="border-radius:9px;"></div>
-          <p class="small text-muted mb-3">Transacción <strong id="estadoId"></strong></p>
-          <label class="form-label-custom">Nuevo estado</label>
-          <select class="select-custom" id="nuevoEstado">
-            <option value="aprobado">✅ Aprobado</option>
-            <option value="pendiente">⏳ Pendiente</option>
-            <option value="rechazado">❌ Rechazado</option>
-          </select>
-        </div>
-        <div class="modal-footer border-0 pt-0 px-4 pb-4">
-          <button type="button" class="btn btn-sm text-muted" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn-guardar-modal" id="btnGuardarEstado" onclick="guardarEstado()">
-            <span id="spinnerEstado" class="spinner-border spinner-border-sm me-1 d-none"></span>
-            Guardar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const API = 'http://localhost:4000/v1';
 
-  <!-- ══ Modal: FACTURA ══ -->
-  <div class="modal fade factura-modal" id="modalFactura" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0">
+  const token   = localStorage.getItem('token');
+  const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+  const rol     = localStorage.getItem('rol');
+  if (!token)                  window.location.href = 'index.html';
+  if (rol !== 'administrador') window.location.href = 'catalogo.html';
+  document.getElementById('sidebarNombre').textContent = usuario.nombre || 'Admin';
 
-        <div class="factura-doc" id="facturaDoc">
+  const modalDetalle = new bootstrap.Modal(document.getElementById('modalDetalle'));
+  let notificacionActual = null;
+  let todasLasNotificaciones = [];
+  let tipoActual = 'todos';
 
-          <!-- Header -->
-          <div class="fac-header">
-            <div>
-              <div class="fac-logo">DR<span>GUERIA</span></div>
-              <div class="fac-logo-sub">Sistema de gestión farmacéutica</div>
-            </div>
-            <div class="fac-titulo-bloque">
-              <div class="fac-titulo">FACTURA</div>
-              <div class="fac-numero" id="facNumero">—</div>
-              <div class="fac-fecha-emit" id="facFechaEmit">—</div>
-            </div>
-          </div>
+  // ════════════════════════════════════════
+  // HELPERS
+  // ════════════════════════════════════════
+  const fmt = fecha => {
+    if (!fecha) return '—';
+    return new Date(fecha).toLocaleString('es-CO', {
+      day:'2-digit', month:'2-digit', year:'numeric',
+      hour:'2-digit', minute:'2-digit'
+    });
+  };
 
-          <!-- Info bloques -->
-          <div class="fac-info-row">
-            <div class="fac-info-bloque">
-              <div class="fac-info-titulo">Emitido por</div>
-              <div class="fac-info-nombre">DRGUERIA S.A.S.</div>
-              <div class="fac-info-detalle">Sistema de gestión farmacéutica</div>
-              <div class="fac-info-detalle">NIT: 900.123.456-7</div>
-              <div class="fac-info-detalle">Colombia</div>
-            </div>
-            <div class="fac-info-bloque">
-              <div class="fac-info-titulo">Cliente</div>
-              <div class="fac-info-nombre" id="facCliente">—</div>
-              <div class="fac-info-detalle" id="facUsuarioId">—</div>
-              <div id="facEstadoBloque" class="mt-1">
-                <span class="fac-estado aprobado" id="facEstadoBadge">✅ Aprobado</span>
-              </div>
-            </div>
-          </div>
+  function badgeTipo(tipo) {
+    if (!tipo) return `<span class="badge-tipo otro">—</span>`;
+    const t = tipo.toLowerCase();
+    if (t.includes('compra'))       return `<span class="badge-tipo compra">🛒 Compra</span>`;
+    if (t.includes('stock'))        return `<span class="badge-tipo stock">⚠️ Stock bajo</span>`;
+    if (t.includes('aprobado'))     return `<span class="badge-tipo pago_ok">✅ Pago aprobado</span>`;
+    if (t.includes('rechazado'))    return `<span class="badge-tipo pago_no">❌ Pago rechazado</span>`;
+    if (t.includes('pago'))         return `<span class="badge-tipo pago_ok">💳 Pago</span>`;
+    if (t.includes('pedido'))       return `<span class="badge-tipo pedido">📦 Pedido</span>`;
+    return `<span class="badge-tipo otro">${tipo}</span>`;
+  }
 
-          <!-- Tabla de compra -->
-          <div class="fac-items">
-            <div class="fac-items-titulo">Detalle de la compra</div>
-            <table class="fac-table">
-              <thead>
-                <tr>
-                  <th>Descripción</th>
-                  <th>Compra Ref.</th>
-                  <th>Método de pago</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody id="facTablaBody">
-                <tr>
-                  <td>
-                    <div class="fac-item-nombre">Compra de productos farmacéuticos</div>
-                    <div class="fac-item-desc">Venta al consumidor final</div>
-                  </td>
-                  <td id="facCompraRef">—</td>
-                  <td id="facMetodoPago">—</td>
-                  <td id="facMontoItem">—</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+  function clasificarAlerta(n) {
+    const t = (n.tipo || '').toLowerCase();
+    if (t.includes('stock') || t.includes('rechazado')) return 'urgente';
+    if (t.includes('pago'))   return 'aviso';
+    return 'info';
+  }
 
-          <!-- Totales -->
-          <div class="fac-totales">
-            <div class="fac-total-fila">
-              <span class="lbl">Subtotal</span>
-              <span class="val" id="facSubtotal">—</span>
-            </div>
-            <div class="fac-total-fila">
-              <span class="lbl">IVA (0% — Medicamentos exentos)</span>
-              <span class="val">$0</span>
-            </div>
-            <div class="fac-total-fila principal">
-              <span class="lbl">TOTAL A PAGAR</span>
-              <span class="val" id="facTotal">—</span>
-            </div>
-          </div>
+  function iconoAlerta(clase) {
+    if (clase === 'urgente') return '🔴';
+    if (clase === 'aviso')   return '🟡';
+    return '🟢';
+  }
 
-          <!-- Método -->
-          <div class="fac-metodo">
-            <div class="fac-metodo-icon" id="facMetodoIcon">💵</div>
-            <div class="fac-metodo-info">
-              <div class="lbl">Método de pago</div>
-              <div class="val" id="facMetodoTexto">Efectivo</div>
-            </div>
-          </div>
+  let toastT;
+  function toast(titulo, msg, error = false) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastTitulo').textContent = titulo;
+    document.getElementById('toastMsg').textContent    = msg;
+    t.className = 'toast-drg' + (error ? ' error' : '');
+    t.style.display = 'block';
+    clearTimeout(toastT);
+    toastT = setTimeout(() => t.style.display = 'none', 4000);
+  }
 
-          <!-- Footer -->
-          <div class="fac-footer">
-            <div class="fac-footer-msg">
-              Gracias por su compra en <strong>DRGUERIA</strong>.<br/>
-              Este documento es válido como comprobante de pago.
-            </div>
-            <div class="fac-qr">🧾</div>
-          </div>
+  // ════════════════════════════════════════
+  // CARGAR NOTIFICACIONES
+  // ════════════════════════════════════════
+  async function cargarNotificaciones() {
+    try {
+      const res  = await fetch(`${API}/notificaciones`);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      todasLasNotificaciones = Array.isArray(data) ? data : [];
+      calcularKPIs();
+      renderTabla(todasLasNotificaciones);
+    } catch(e) {
+      document.getElementById('tablaBody').innerHTML =
+        `<tr><td colspan="8" class="estado-vacio"><i class="bi bi-wifi-off"></i>No se pudo conectar con MS Notificaciones</td></tr>`;
+    }
+  }
 
-        </div>
+  function calcularKPIs() {
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    const hoy_notif = todasLasNotificaciones.filter(n => new Date(n.fecha) >= hoy);
+    document.getElementById('kpiTotal').textContent    = hoy_notif.length;
+    document.getElementById('kpiEnviadas').textContent = hoy_notif.filter(n => n.estado === 'enviada').length;
+    document.getElementById('kpiStockBajo').textContent = todasLasNotificaciones.filter(n => (n.tipo||'').includes('stock')).length;
+    document.getElementById('kpiCompras').textContent   = todasLasNotificaciones.filter(n => (n.tipo||'').includes('compra')).length;
+  }
 
-        <!-- Acciones -->
-        <div class="fac-modal-acciones">
-          <button class="btn-cerrar-fac" data-bs-dismiss="modal">Cerrar</button>
-          <button class="btn-imprimir-fac" onclick="imprimirFactura()">
-            <i class="bi bi-printer"></i> Imprimir / PDF
-          </button>
-        </div>
+  function renderTabla(lista) {
+    const body = document.getElementById('tablaBody');
+    if (!lista.length) {
+      body.innerHTML = `<tr><td colspan="8" class="estado-vacio"><i class="bi bi-bell-slash"></i>No hay notificaciones</td></tr>`;
+      return;
+    }
+    body.innerHTML = lista.map(n => `
+      <tr>
+        <td><span style="color:#9db8ad">#${n.id}</span></td>
+        <td>${badgeTipo(n.tipo)}</td>
+        <td>${n.usuario_id ? `<code style="font-size:0.8rem">Usuario #${n.usuario_id}</code>` : '<span style="color:#ccc">—</span>'}</td>
+        <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${n.mensaje}">${n.mensaje}</td>
+        <td style="white-space:nowrap;font-size:0.8rem">${fmt(n.fecha)}</td>
+        <td><span class="badge-leida si">${n.estado || 'enviada'}</span></td>
+        <td><span class="badge-leida ${n.leida ? 'si' : 'no'}">${n.leida ? 'Sí' : 'No'}</span></td>
+        <td><button class="btn-ver" onclick="verDetalle(${n.id})"><i class="bi bi-eye"></i></button></td>
+      </tr>`).join('');
+  }
 
-      </div>
-    </div>
-  </div>
+  // ════════════════════════════════════════
+  // FILTROS
+  // ════════════════════════════════════════
+  function selChip(btn) {
+    document.querySelectorAll('.chip-tipo').forEach(b => b.classList.remove('activo'));
+    btn.classList.add('activo');
+    tipoActual = btn.dataset.tipo;
+    filtrarTabla();
+  }
 
-  <!-- Toast -->
-  <div class="toast-drg" id="toast">
-    <div class="toast-titulo" id="toastTitulo"></div>
-    <div class="toast-msg"    id="toastMsg"></div>
-  </div>
+  function filtrarTabla() {
+    const uid    = document.getElementById('filtroUsuario').value.trim();
+    const desde  = document.getElementById('filtroDesde').value;
+    const hasta  = document.getElementById('filtroHasta').value;
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    const API = 'http://192.168.100.1:4000/v1';
+    let lista = todasLasNotificaciones;
 
-    /* ── Auth ── */
-    const token   = localStorage.getItem('token');
-    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
-    const rol     = localStorage.getItem('rol');
-    if (!token)                  window.location.href = 'index.html';
-    if (rol !== 'administrador') window.location.href = 'catalogo.html';
-    document.getElementById('sidebarNombre').textContent = usuario.nombre || 'Admin';
-
-    /* ── Estado ── */
-    let pagos        = [];
-    let idEditandoE  = null;
-
-    const modalNuevoBS   = new bootstrap.Modal(document.getElementById('modalNuevoPago'));
-    const modalEstadoBS  = new bootstrap.Modal(document.getElementById('modalEstado'));
-    const modalFacturaBS = new bootstrap.Modal(document.getElementById('modalFactura'));
-
-    /* ── Formatear ── */
-    const fmt     = v => '$' + Number(v).toLocaleString('es-CO', { minimumFractionDigits: 0 });
-    const fmtFecha = f => f ? new Date(f).toLocaleDateString('es-CO', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
-    const fmtFechaCorta = f => f ? new Date(f).toLocaleDateString('es-CO', { day:'2-digit', month:'long', year:'numeric' }) : '—';
-
-    const metodoIcono = { efectivo: '💵', tarjeta: '💳', transferencia: '🏦' };
-    const metodoLabel = { efectivo: 'Efectivo', tarjeta: 'Tarjeta de crédito/débito', transferencia: 'Transferencia bancaria' };
-
-    /* ── Cargar pagos ── */
-    async function cargarPagos() {
-      const btn = document.getElementById('btnRefresh');
-      btn.classList.add('girando');
-      try {
-        // Intentamos obtener todos — el MS devuelve por usuario/compra,
-        // usamos un rango amplio para traer todos los registros del sistema
-        const intentos = [];
-        for (let i = 1; i <= 200; i++) intentos.push(i);
-
-        const resultados = await Promise.allSettled(
-          intentos.map(id =>
-            fetch(`${API}/pagos/${id}`).then(r => r.ok ? r.json() : null)
-          )
-        );
-
-        pagos = resultados
-          .filter(r => r.status === 'fulfilled' && r.value && r.value.id)
-          .map(r => r.value);
-
-        // Deduplicar por id
-        const seen = new Set();
-        pagos = pagos.filter(p => { if (seen.has(p.id)) return false; seen.add(p.id); return true; });
-        pagos.sort((a, b) => b.id - a.id);
-
-        actualizarKPIs();
-        renderTabla();
-      } catch {
-        mostrarToast('Error', 'No se pudo cargar los pagos.', true);
-      } finally {
-        btn.classList.remove('girando');
-      }
+    if (tipoActual !== 'todos') {
+      lista = lista.filter(n => (n.tipo || '').toLowerCase().includes(tipoActual));
+    }
+    if (uid) {
+      lista = lista.filter(n => String(n.usuario_id) === uid);
+    }
+    if (desde) {
+      lista = lista.filter(n => new Date(n.fecha) >= new Date(desde));
+    }
+    if (hasta) {
+      const h = new Date(hasta); h.setHours(23,59,59);
+      lista = lista.filter(n => new Date(n.fecha) <= h);
     }
 
-    /* ── KPIs ── */
-    function actualizarKPIs() {
-      const aprobados  = pagos.filter(p => p.estado === 'aprobado').length;
-      const pendientes = pagos.filter(p => p.estado === 'pendiente').length;
-      const rechazados = pagos.filter(p => p.estado === 'rechazado').length;
-      const totalMonto = pagos.filter(p => p.estado === 'aprobado').reduce((s, p) => s + parseFloat(p.monto || 0), 0);
+    renderTabla(lista);
+  }
 
-      document.getElementById('kpiTotal').textContent      = pagos.length;
-      document.getElementById('kpiAprobados').textContent  = aprobados;
-      document.getElementById('kpiPendientes').textContent = pendientes;
-      document.getElementById('kpiRechazados').textContent = rechazados;
-      document.getElementById('kpiMonto').textContent      = fmt(totalMonto);
+  // ════════════════════════════════════════
+  // ALERTAS EN TIEMPO REAL (no leídas)
+  // ════════════════════════════════════════
+  async function cargarAlertas() {
+    const cont  = document.getElementById('listaAlertas');
+    const badge = document.getElementById('badgeAlertas');
+
+    const noLeidas = todasLasNotificaciones.filter(n => !n.leida);
+    badge.textContent = noLeidas.length;
+
+    if (!noLeidas.length) {
+      cont.innerHTML = `<div class="vacio-alertas">
+        <i class="bi bi-check-circle-fill"></i>
+        <p style="margin:0;font-size:0.88rem">¡Todo al día! No hay alertas pendientes.</p>
+      </div>`;
+      return;
     }
 
-    /* ── Render tabla ── */
-    function renderTabla() {
-      const q       = document.getElementById('inputBusqueda').value.toLowerCase().trim();
-      const estado  = document.getElementById('filtroEstado').value;
-      const metodo  = document.getElementById('filtroMetodo').value;
-      const body    = document.getElementById('bodyPagos');
-      const footer  = document.getElementById('tablaFooter');
+    cont.innerHTML = noLeidas.slice(0, 10).map(n => {
+      const clase = clasificarAlerta(n);
+      return `<div class="alerta-item ${clase}">
+        <div class="alerta-icono">${iconoAlerta(clase)}</div>
+        <div class="alerta-texto">
+          <div class="alerta-msg">${n.mensaje}</div>
+          <div class="alerta-meta">${fmt(n.fecha)} · ${badgeTipo(n.tipo)}</div>
+        </div>
+        <button class="btn-leer" onclick="marcarLeidaId(${n.id}, this)">Marcar leída</button>
+      </div>`;
+    }).join('');
+  }
 
-      let lista = pagos;
-      if (estado) lista = lista.filter(p => p.estado === estado);
-      if (metodo) lista = lista.filter(p => p.metodo_pago === metodo);
-      if (q)      lista = lista.filter(p =>
-        (p.numero_factura || '').toLowerCase().includes(q) ||
-        String(p.usuario_id).includes(q) ||
-        String(p.compra_id).includes(q)
-      );
+  // ════════════════════════════════════════
+  // VER DETALLE
+  // ════════════════════════════════════════
+  async function verDetalle(id) {
+    try {
+      const res  = await fetch(`${API}/notificaciones/${id}`);
+      const data = await res.json();
+      notificacionActual = data;
 
-      if (lista.length === 0) {
-        body.innerHTML = `<tr><td colspan="9" class="estado-vacio"><i class="bi bi-receipt"></i>No hay pagos que coincidan</td></tr>`;
-        footer.textContent = '0 transacciones';
-        return;
-      }
+      document.getElementById('modalDetalleBody').innerHTML = `
+        <div class="detalle-campo"><div class="detalle-label">ID</div><div class="detalle-val">#${data.id}</div></div>
+        <div class="detalle-campo"><div class="detalle-label">Tipo</div><div class="detalle-val">${badgeTipo(data.tipo)}</div></div>
+        <div class="detalle-campo"><div class="detalle-label">Usuario</div><div class="detalle-val">${data.usuario_id ? `#${data.usuario_id}` : 'Sistema'}</div></div>
+        <div class="detalle-campo"><div class="detalle-label">Mensaje</div><div class="detalle-val">${data.mensaje}</div></div>
+        <div class="detalle-campo"><div class="detalle-label">Fecha</div><div class="detalle-val">${fmt(data.fecha)}</div></div>
+        <div class="detalle-campo"><div class="detalle-label">Estado</div><div class="detalle-val"><span class="badge-leida si">${data.estado || 'enviada'}</span></div></div>
+        <div class="detalle-campo"><div class="detalle-label">Leída</div><div class="detalle-val"><span class="badge-leida ${data.leida ? 'si' : 'no'}">${data.leida ? 'Sí' : 'No'}</span></div></div>
+        ${data.referencia_id ? `<div class="detalle-campo"><div class="detalle-label">Referencia</div><div class="detalle-val">${data.referencia_tipo} #${data.referencia_id}</div></div>` : ''}
+      `;
 
-      const badgeClass = e => e === 'aprobado' ? 'badge-aprobado' : e === 'pendiente' ? 'badge-pendiente' : 'badge-rechazado';
+      const btn = document.getElementById('btnMarcarLeida');
+      btn.style.display = data.leida ? 'none' : 'flex';
+      modalDetalle.show();
+    } catch(e) {
+      toast('Error', 'No se pudo cargar el detalle.', true);
+    }
+  }
 
-      body.innerHTML = lista.map((p, i) => `
-        <tr style="animation:fadeUp .22s ease ${i*0.03}s both">
-          <td class="text-muted small">${p.id}</td>
-          <td class="factura-cell">${p.numero_factura || '—'}</td>
-          <td class="text-muted small">#${p.compra_id}</td>
-          <td class="text-muted small">Usuario #${p.usuario_id}</td>
-          <td class="monto-cell">${fmt(p.monto)}</td>
-          <td><span class="metodo-chip">${metodoIcono[p.metodo_pago] || '💵'} ${p.metodo_pago || 'efectivo'}</span></td>
-          <td><span class="badge-estado ${badgeClass(p.estado)}">${p.estado}</span></td>
-          <td class="text-muted small" style="white-space:nowrap">${fmtFecha(p.createdAt)}</td>
-          <td>
-            <div class="acciones">
-              <button class="btn-accion btn-ver" onclick="verFactura(${p.id})"><i class="bi bi-file-text"></i> Factura</button>
-              <button class="btn-accion btn-estado" onclick="abrirModalEstado(${p.id})"><i class="bi bi-arrow-repeat"></i></button>
-            </div>
-          </td>
+  // ════════════════════════════════════════
+  // MARCAR COMO LEÍDA
+  // ════════════════════════════════════════
+  async function marcarLeida() {
+    if (!notificacionActual) return;
+    await marcarLeidaId(notificacionActual.id);
+    modalDetalle.hide();
+  }
+
+  async function marcarLeidaId(id, btn) {
+    try {
+      const res = await fetch(`${API}/notificaciones/${id}/leer`, { method: 'PUT' });
+      if (!res.ok) throw new Error();
+      toast('Listo', 'Notificación marcada como leída.');
+      if (btn) btn.disabled = true;
+      await cargarNotificaciones();
+      cargarAlertas();
+    } catch {
+      toast('Error', 'No se pudo marcar como leída.', true);
+    }
+  }
+
+  // ════════════════════════════════════════
+  // BUSCAR POR USUARIO
+  // ════════════════════════════════════════
+  async function buscarPorUsuario() {
+    const id = document.getElementById('inputUsuarioId').value.trim();
+    if (!id) return;
+
+    const resumen  = document.getElementById('usuarioResumen');
+    const tablaEl  = document.getElementById('usuarioTabla');
+    const body     = document.getElementById('usuarioBody');
+    const vacioEl  = document.getElementById('usuarioVacio');
+
+    resumen.style.display = 'none';
+    tablaEl.style.display = 'none';
+    vacioEl.style.display = 'none';
+
+    try {
+      const res  = await fetch(`${API}/notificaciones/usuario/${id}`);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+
+      if (!data.length) { vacioEl.style.display = 'block'; return; }
+
+      const leidas   = data.filter(n => n.leida).length;
+      const noLeidas = data.filter(n => !n.leida).length;
+
+      resumen.style.display = 'flex';
+      resumen.innerHTML = `
+        <div class="usuario-stat"><strong>${data.length}</strong> total</div>
+        <div class="usuario-stat"><strong>${leidas}</strong> leídas</div>
+        <div class="usuario-stat"><strong>${noLeidas}</strong> sin leer</div>
+        <div class="usuario-stat"><strong>${data.filter(n=>(n.tipo||'').includes('compra')).length}</strong> compras</div>
+        <div class="usuario-stat"><strong>${data.filter(n=>(n.tipo||'').includes('pago')).length}</strong> pagos</div>
+      `;
+
+      body.innerHTML = data.map(n => `
+        <tr>
+          <td><span style="color:#9db8ad">#${n.id}</span></td>
+          <td>${badgeTipo(n.tipo)}</td>
+          <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${n.mensaje}</td>
+          <td style="font-size:0.8rem;white-space:nowrap">${fmt(n.fecha)}</td>
+          <td><span class="badge-leida ${n.leida ? 'si' : 'no'}">${n.leida ? 'Sí' : 'No'}</span></td>
+          <td><button class="btn-ver" onclick="verDetalle(${n.id})"><i class="bi bi-eye"></i></button></td>
         </tr>`).join('');
 
-      footer.textContent = `${lista.length} transacción${lista.length !== 1 ? 'es' : ''}`;
+      tablaEl.style.display = 'block';
+    } catch {
+      vacioEl.style.display = 'block';
+      toast('Error', 'No se pudo buscar el historial.', true);
     }
+  }
 
-    /* Filtros */
-    document.getElementById('inputBusqueda').addEventListener('input', renderTabla);
-    document.getElementById('filtroEstado').addEventListener('change', renderTabla);
-    document.getElementById('filtroMetodo').addEventListener('change', renderTabla);
+  // ════════════════════════════════════════
+  // INIT
+  // ════════════════════════════════════════
+  async function cargarTodo() {
+    const btn = document.getElementById('btnRefresh');
+    btn.classList.add('girando');
+    await cargarNotificaciones();
+    cargarAlertas();
+    btn.classList.remove('girando');
+  }
 
-    /* ── Ver factura ── */
-    function verFactura(id) {
-      const p = pagos.find(x => x.id === id);
-      if (!p) return;
+  function cerrarSesion() { localStorage.clear(); window.location.href = 'index.html'; }
 
-      // Rellenar factura
-      document.getElementById('facNumero').textContent    = p.numero_factura || `FAC-${p.id}`;
-      document.getElementById('facFechaEmit').textContent = `Emitida el ${fmtFechaCorta(p.createdAt)}`;
-      document.getElementById('facCliente').textContent   = `Usuario #${p.usuario_id}`;
-      document.getElementById('facUsuarioId').textContent = `ID de compra: #${p.compra_id}`;
-
-      // Estado badge
-      const badge = document.getElementById('facEstadoBadge');
-      badge.className = `fac-estado ${p.estado}`;
-      const iconosEstado = { aprobado: '✅', pendiente: '⏳', rechazado: '❌' };
-      badge.textContent = `${iconosEstado[p.estado] || ''} ${p.estado.charAt(0).toUpperCase() + p.estado.slice(1)}`;
-
-      // Items
-      document.getElementById('facCompraRef').textContent  = `#${p.compra_id}`;
-      document.getElementById('facMetodoPago').textContent = (p.metodo_pago || 'efectivo').charAt(0).toUpperCase() + (p.metodo_pago || 'efectivo').slice(1);
-      document.getElementById('facMontoItem').textContent  = fmt(p.monto);
-      document.getElementById('facSubtotal').textContent   = fmt(p.monto);
-      document.getElementById('facTotal').textContent      = fmt(p.monto);
-
-      // Método
-      document.getElementById('facMetodoIcon').textContent  = metodoIcono[p.metodo_pago] || '💵';
-      document.getElementById('facMetodoTexto').textContent = metodoLabel[p.metodo_pago] || 'Efectivo';
-
-      modalFacturaBS.show();
-    }
-
-    /* ── Imprimir factura ── */
-    function imprimirFactura() {
-      window.print();
-    }
-
-    /* ── Modal estado ── */
-    function abrirModalEstado(id) {
-      const p = pagos.find(x => x.id === id);
-      if (!p) return;
-      idEditandoE = id;
-      document.getElementById('estadoId').textContent = `#${id}`;
-      document.getElementById('nuevoEstado').value    = p.estado;
-      document.getElementById('alertaEstado').className = 'alert d-none small mb-3';
-      modalEstadoBS.show();
-    }
-
-    async function guardarEstado() {
-      const estado  = document.getElementById('nuevoEstado').value;
-      const alerta  = document.getElementById('alertaEstado');
-      const btn     = document.getElementById('btnGuardarEstado');
-      const spinner = document.getElementById('spinnerEstado');
-
-      btn.disabled = true; spinner.classList.remove('d-none');
-      try {
-        const res  = await fetch(`${API}/pagos/${idEditandoE}/estado`, {
-          method: 'PUT', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ estado })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Error al actualizar.');
-        modalEstadoBS.hide();
-        mostrarToast('Estado actualizado', `Transacción #${idEditandoE} → ${estado}`);
-        await cargarPagos();
-      } catch (e) {
-        alerta.className = 'alert alert-danger small mb-3';
-        alerta.textContent = e.message;
-      } finally {
-        btn.disabled = false; spinner.classList.add('d-none');
-      }
-    }
-
-    /* ── Crear pago ── */
-    function abrirModalNuevoPago() {
-      ['nCompraId','nUsuarioId','nMonto'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('nMetodo').value = 'efectivo';
-      document.getElementById('alertaNuevo').className = 'alert d-none small mb-3';
-      modalNuevoBS.show();
-    }
-
-    async function crearPago() {
-      const compra_id   = parseInt(document.getElementById('nCompraId').value);
-      const usuario_id  = parseInt(document.getElementById('nUsuarioId').value);
-      const monto       = parseFloat(document.getElementById('nMonto').value);
-      const metodo_pago = document.getElementById('nMetodo').value;
-      const alerta      = document.getElementById('alertaNuevo');
-      const btn         = document.getElementById('btnGuardarPago');
-      const spinner     = document.getElementById('spinnerNuevo');
-
-      if (!compra_id || !usuario_id || isNaN(monto) || monto <= 0) {
-        alerta.className = 'alert alert-warning small mb-3';
-        alerta.textContent = 'Completa todos los campos correctamente.';
-        return;
-      }
-
-      btn.disabled = true; spinner.classList.remove('d-none');
-      try {
-        const res  = await fetch(`${API}/pagos`, {
-          method: 'POST', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ compra_id, usuario_id, monto, metodo_pago })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Error al registrar el pago.');
-        modalNuevoBS.hide();
-        mostrarToast('Pago registrado', `Factura: ${data.transaccion?.numero_factura || 'generada'}`);
-        await cargarPagos();
-      } catch (e) {
-        alerta.className = 'alert alert-danger small mb-3';
-        alerta.textContent = e.message;
-      } finally {
-        btn.disabled = false; spinner.classList.add('d-none');
-      }
-    }
-
-    /* ── Toast ── */
-    let toastT;
-    function mostrarToast(titulo, msg, error = false) {
-      const t = document.getElementById('toast');
-      document.getElementById('toastTitulo').textContent = titulo;
-      document.getElementById('toastMsg').textContent    = msg;
-      t.className = 'toast-drg' + (error ? ' error' : '');
-      t.style.display = 'block';
-      clearTimeout(toastT);
-      toastT = setTimeout(() => t.style.display = 'none', 4500);
-    }
-
-    /* ── Logout ── */
-    function cerrarSesion() { localStorage.clear(); window.location.href = 'index.html'; }
-
-    cargarPagos();
-  </script>
+  cargarTodo();
+  setInterval(cargarTodo, 30000);
+</script>
 </body>
 </html>

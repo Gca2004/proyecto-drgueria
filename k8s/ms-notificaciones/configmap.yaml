@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-notificaciones-config
+  namespace: drgueria
+data:
+  PORT: "3005"
+  DB_HOST: "mysql-service"
+  DB_PORT: "3306"
+  DB_NAME: "drgueria_notificaciones"
+  NODE_ENV: "production"

@@ -205,13 +205,13 @@ CREATE TABLE IF NOT EXISTS compras (
 CREATE DATABASE IF NOT EXISTS drgueria_notificaciones;
 USE drgueria_notificaciones;
 CREATE TABLE IF NOT EXISTS notificaciones (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  usuario_id INT,
-  tipo VARCHAR(50) NOT NULL,
-  mensaje TEXT NOT NULL,
-  leida BOOLEAN DEFAULT FALSE,
-  estado ENUM('enviada', 'fallida') DEFAULT 'enviada',
-  referencia_id INT,
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id      INT,
+  tipo            VARCHAR(50) NOT NULL,
+  mensaje         TEXT NOT NULL,
+  leida           TINYINT(1) DEFAULT 0,
+  estado          ENUM('enviada','fallida') DEFAULT 'enviada',
+  referencia_id   INT,
   referencia_tipo VARCHAR(50),
-  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  fecha           DATETIME DEFAULT CURRENT_TIMESTAMP
 );

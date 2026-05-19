@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-reportes-config
+  namespace: drgueria
+data:
+  PORT: "3007"
+  NODE_ENV: "production"
+  API_BASE_URL: "http://api-gateway-svc:4000/v1"
+  MS_USUARIOS_URL: "http://api-gateway-svc:4000/v1/usuarios"
+  MS_PRODUCTOS_URL: "http://api-gateway-svc:4000/v1/productos"
+  MS_PROVEEDORES_URL: "http://api-gateway-svc:4000/v1/proveedores"
+  MS_PEDIDOS_URL: "http://api-gateway-svc:4000/v1/pedidos"
+  MS_COMPRAS_URL: "http://api-gateway-svc:4000/v1/compras"
+  MS_PAGOS_URL: "http://api-gateway-svc:4000/v1/pagos"
+  MS_AUDITORIA_URL: "http://api-gateway-svc:4000/v1/auditoria"
+  PYTHON_EXECUTABLE: "python3"
+  PAGOS_SCAN_MAX_ID: "200"

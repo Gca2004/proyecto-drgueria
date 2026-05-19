@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-proveedores-config
+  namespace: drgueria
+data:
+  PORT: "3002"
+  DB_HOST: "mysql-service"
+  DB_PORT: "3306"
+  DB_NAME: "drgueria_proveedores"
+  NODE_ENV: "production"
+  MS_PRODUCTOS_URL: "http://ms-productos-svc:3001"

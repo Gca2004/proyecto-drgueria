@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-auditoria-config
+  namespace: drgueria
+data:
+  PORT: "3006"
+  DB_HOST: "mysql-service"
+  DB_PORT: "3306"
+  DB_NAME: "drgueria_auditoria"
+  NODE_ENV: "production"
