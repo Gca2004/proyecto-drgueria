@@ -209,6 +209,7 @@ services:
       MS_PRODUCTOS_URL: http://api-gateway:4000/v1/productos
       MS_PROVEEDORES_URL: http://api-gateway:4000/v1/proveedores
       MS_PEDIDOS_URL: http://api-gateway:4000/v1/pedidos
+      MS_COMPRAS_URL: http://api-gateway:4000/v1/compras
       MS_PAGOS_URL: http://api-gateway:4000/v1/pagos
       MS_AUDITORIA_URL: http://api-gateway:4000/v1/auditoria
       PAGOS_SCAN_MAX_ID: 200

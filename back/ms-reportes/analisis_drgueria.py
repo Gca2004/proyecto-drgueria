@@ -114,6 +114,12 @@ def generate_pdf(pdf_path, resumen, png_files):
     c.save()
 
 
+def serie_top_o_default(serie, default_label="Ninguna", default_value=0):
+    if serie is None or serie.empty:
+        return default_label, default_value
+    return serie.index[0], serie.iloc[0]
+
+
 def main():
     if len(sys.argv) < 4:
         raise SystemExit("Uso: python analisis_drgueria.py <dataset.csv> <output_dir> <resultados.txt>")
@@ -158,20 +164,43 @@ def main():
         print(f"Analisis completado sin registros. Se generaron archivos vacios en {output_dir}")
         return
 
-    ingresos_aprobados = df[df["estado_pago"] == "aprobado"]["monto_pago"].sum()
+    estados_ingreso = ["aprobado", "pagado", "registrado_auditoria"]
+    ingresos_aprobados = df[df["estado_pago"].isin(estados_ingreso)]["monto_pago"].sum()
     pagos_por_metodo = df["metodo_pago"].fillna("sin_dato").replace("", "sin_dato").value_counts()
     pedidos_por_estado = df["estado_pedido"].fillna("sin_dato").replace("", "sin_dato").value_counts()
-    top_categorias = df.groupby("categoria")["monto_pago"].sum().sort_values(ascending=False).head(5)
+    categorias_limpias = df["categoria"].fillna("").replace("", "Ninguna")
+    top_categorias = df.assign(categoria=categorias_limpias).groupby("categoria")["monto_pago"].sum().sort_values(ascending=False).head(5)
     stock_bajo = df[df["stock_actual"] < df["stock_minimo"]]["producto_nombre"].nunique()
+
+    if not pagos_por_metodo.empty:
+        metodo_top = pagos_por_metodo.index[0]
+        metodo_total = pagos_por_metodo.iloc[0]
+    else:
+        metodo_top = "sin_dato"
+        metodo_total = 0
+
+    if not pedidos_por_estado.empty:
+        estado_top = pedidos_por_estado.index[0]
+        estado_total = pedidos_por_estado.iloc[0]
+    else:
+        estado_top = "Ninguno"
+        estado_total = 0
+
+    if not top_categorias.empty:
+        categoria_top = top_categorias.index[0]
+        categoria_total = top_categorias.iloc[0]
+    else:
+        categoria_top = "Ninguna"
+        categoria_total = 0
 
     resumen = [
         "Resumen general del analisis:",
         f"- Registros analizados: {len(df)}",
         f"- Ingresos aprobados: ${ingresos_aprobados:,.2f}",
         f"- Productos con stock bajo detectados en dataset: {stock_bajo}",
-        f"- Metodo de pago mas usado: {pagos_por_metodo.index[0]} ({pagos_por_metodo.iloc[0]})",
-        f"- Estado de pedido dominante: {pedidos_por_estado.index[0]} ({pedidos_por_estado.iloc[0]})",
-        f"- Categoria con mayor ingreso: {top_categorias.index[0]} (${top_categorias.iloc[0]:,.2f})"
+        f"- Metodo de pago mas usado: {metodo_top} ({metodo_total})",
+        f"- Estado de pedido dominante: {estado_top} ({estado_total})",
+        f"- Categoria con mayor ingreso: {categoria_top} (${categoria_total:,.2f})"
     ]
 
     with open(resultados_path, "w", encoding="utf-8") as fh:
@@ -185,9 +214,9 @@ def main():
     categorias_png = os.path.join(output_dir, "top_categorias_ingresos.png")
     pdf_path = os.path.join(output_dir, "reporte_drgueria.pdf")
 
-    draw_pie_like_chart(list(pagos_por_metodo.items()), "Pagos por metodo", pagos_png)
-    draw_bar_chart(list(pedidos_por_estado.items()), "Pedidos por estado", pedidos_png, "#2ca02c")
-    draw_bar_chart([(str(k), float(v)) for k, v in top_categorias.items()], "Top categorias por ingresos", categorias_png, "#ff7f0e")
+    draw_pie_like_chart(list(pagos_por_metodo.items()) or [("sin_dato", 1)], "Pagos por metodo", pagos_png)
+    draw_bar_chart(list(pedidos_por_estado.items()) or [("sin_dato", 0)], "Pedidos por estado", pedidos_png, "#2ca02c")
+    draw_bar_chart([(str(k), float(v)) for k, v in top_categorias.items()] or [("Ninguna", 0)], "Top categorias por ingresos", categorias_png, "#ff7f0e")
 
     generate_pdf(pdf_path, resumen, [pagos_png, pedidos_png, categorias_png])
 

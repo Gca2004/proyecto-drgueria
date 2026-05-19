@@ -804,8 +804,9 @@ async function cargarDatos() {
 
 async function cargarMicroservicios() {
   try {
-    const [healthAuditoria, logsAuditoria, estadoReportes, resultadosReportes] = await Promise.allSettled([
+    const [healthAuditoria, resumenAuditoria, logsAuditoria, estadoReportes, resultadosReportes] = await Promise.allSettled([
       fetch(`${API_AUDITORIA}/health`).then(r => r.json()),
+      fetch(`${API_AUDITORIA}/resumen`).then(r => r.json()),
       fetch(`${API_AUDITORIA}/logs`).then(r => r.json()),
       fetch(`${API_REPORTES}/estado`).then(r => r.json()),
       fetch(`${API_REPORTES}/resultados`).then(r => r.json())
@@ -830,9 +831,15 @@ async function cargarMicroservicios() {
       badgeReportes.className   = 'badge-estado badge-error';
     }
 
-    const logs = logsAuditoria.status === 'fulfilled' && Array.isArray(logsAuditoria.value)
-      ? logsAuditoria.value : [];
-    document.getElementById('kpiEventosAuditoria').textContent = logs.length;
+    const logs = resumenAuditoria.status === 'fulfilled' && Array.isArray(resumenAuditoria.value.logs_recientes)
+      ? resumenAuditoria.value.logs_recientes
+      : logsAuditoria.status === 'fulfilled' && Array.isArray(logsAuditoria.value)
+        ? logsAuditoria.value
+        : [];
+    document.getElementById('kpiEventosAuditoria').textContent =
+      resumenAuditoria.status === 'fulfilled' && Number.isFinite(Number(resumenAuditoria.value.total_eventos))
+        ? resumenAuditoria.value.total_eventos
+        : logs.length;
     renderLogsRecientes(logs.slice(0, 5));
 
     if (estadoReportes.status === 'fulfilled' && estadoReportes.value.resumen) {

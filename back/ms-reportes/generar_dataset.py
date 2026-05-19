@@ -37,6 +37,18 @@ def parse_detalle(detalle):
         return {}
 
 
+def parse_items(items):
+    if isinstance(items, list):
+        return items
+    if not items:
+        return []
+    try:
+        parsed = json.loads(items)
+        return parsed if isinstance(parsed, list) else []
+    except Exception:
+        return []
+
+
 def main():
     if len(sys.argv) < 3:
         raise SystemExit("Uso: python generar_dataset.py <snapshot.json> <dataset.csv>")
@@ -50,6 +62,7 @@ def main():
     productos = snapshot.get("productos", [])
     proveedores = snapshot.get("proveedores", [])
     pedidos = snapshot.get("pedidos", [])
+    compras = snapshot.get("compras", [])
     pagos = snapshot.get("pagos", [])
     usuarios = snapshot.get("usuarios", [])
     auditoria = snapshot.get("auditoria", [])
@@ -108,36 +121,79 @@ def main():
 
     rows = []
 
-    for pago in pagos:
-        compra_id = pago.get("compra_id")
-        usuario_id = pago.get("usuario_id")
-        pedido = next((item for item in pedidos if item.get("id_pedido") == compra_id), {})
-        producto = productos_by_id.get(pedido.get("id_producto"), {})
-        proveedor = proveedores_by_id.get(pedido.get("id_proveedor"), pedido.get("Proveedor", {}))
+    for compra in compras:
+        compra_id = compra.get("id_compra")
+        usuario_id = compra.get("usuario_id")
         usuario = usuarios_by_id.get(usuario_id, {})
+        pago = next((item for item in pagos if item.get("compra_id") == compra_id), {})
+        items = parse_items(compra.get("items"))
 
-        rows.append({
-            "compra_id": compra_id,
-            "usuario_id": usuario_id,
-            "usuario_rol": usuario.get("rol", ""),
-            "usuario_nombre": usuario.get("nombre", ""),
-            "producto_id": pedido.get("id_producto", ""),
-            "producto_nombre": producto.get("nombre_producto", pedido.get("nombre_producto", "")),
-            "categoria": producto.get("categoria", pedido.get("categoria", "")),
-            "precio": safe_float(producto.get("precio", 0)),
-            "stock_actual": safe_int(producto.get("stock_actual", 0)),
-            "stock_minimo": safe_int(producto.get("stock_minimo", 0)),
-            "proveedor_id": pedido.get("id_proveedor", ""),
-            "proveedor_nombre": proveedor.get("nombre", ""),
-            "cantidad_solicitada": safe_int(pedido.get("cantidad_solicitada", 0)),
-            "estado_pedido": pedido.get("estado_pedido", ""),
-            "monto_pago": safe_float(pago.get("monto", 0)),
-            "estado_pago": pago.get("estado", ""),
-            "metodo_pago": pago.get("metodo_pago", ""),
-            "numero_factura": pago.get("numero_factura", ""),
-            "logs_usuario": auditoria_by_usuario.get(usuario_id, 0),
-            "fecha_referencia": pago.get("createdAt", pedido.get("fecha_pedido", snapshot.get("generado_en", "")))
-        })
+        if not items:
+            items = [{
+                "producto_id": "",
+                "nombre": "",
+                "cantidad": 1,
+                "precio_unitario": safe_float(compra.get("total", 0)),
+                "subtotal": safe_float(compra.get("total", 0))
+            }]
+
+        for item in items:
+            producto_id = item.get("producto_id", "")
+            producto = productos_by_id.get(producto_id, {})
+            rows.append({
+                "compra_id": compra_id,
+                "usuario_id": usuario_id,
+                "usuario_rol": usuario.get("rol", ""),
+                "usuario_nombre": usuario.get("nombre", ""),
+                "producto_id": producto_id,
+                "producto_nombre": item.get("nombre") or producto.get("nombre_producto", ""),
+                "categoria": item.get("categoria") or producto.get("categoria", ""),
+                "precio": safe_float(item.get("precio_unitario", producto.get("precio", 0))),
+                "stock_actual": safe_int(producto.get("stock_actual", 0)),
+                "stock_minimo": safe_int(producto.get("stock_minimo", 0)),
+                "proveedor_id": "",
+                "proveedor_nombre": "",
+                "cantidad_solicitada": safe_int(item.get("cantidad", 0)),
+                "estado_pedido": "compra_directa",
+                "monto_pago": safe_float(item.get("subtotal", compra.get("total", 0))),
+                "estado_pago": pago.get("estado", compra.get("estado", "")),
+                "metodo_pago": compra.get("metodo_pago", pago.get("metodo_pago", "")),
+                "numero_factura": compra.get("numero_factura", pago.get("numero_factura", "")),
+                "logs_usuario": auditoria_by_usuario.get(usuario_id, 0),
+                "fecha_referencia": compra.get("createdAt", snapshot.get("generado_en", ""))
+            })
+
+    if not rows:
+        for pago in pagos:
+            compra_id = pago.get("compra_id")
+            usuario_id = pago.get("usuario_id")
+            pedido = next((item for item in pedidos if item.get("id_pedido") == compra_id), {})
+            producto = productos_by_id.get(pedido.get("id_producto"), {})
+            proveedor = proveedores_by_id.get(pedido.get("id_proveedor"), pedido.get("Proveedor", {}))
+            usuario = usuarios_by_id.get(usuario_id, {})
+
+            rows.append({
+                "compra_id": compra_id,
+                "usuario_id": usuario_id,
+                "usuario_rol": usuario.get("rol", ""),
+                "usuario_nombre": usuario.get("nombre", ""),
+                "producto_id": pedido.get("id_producto", ""),
+                "producto_nombre": producto.get("nombre_producto", pedido.get("nombre_producto", "")),
+                "categoria": producto.get("categoria", pedido.get("categoria", "")),
+                "precio": safe_float(producto.get("precio", 0)),
+                "stock_actual": safe_int(producto.get("stock_actual", 0)),
+                "stock_minimo": safe_int(producto.get("stock_minimo", 0)),
+                "proveedor_id": pedido.get("id_proveedor", ""),
+                "proveedor_nombre": proveedor.get("nombre", ""),
+                "cantidad_solicitada": safe_int(pedido.get("cantidad_solicitada", 0)),
+                "estado_pedido": pedido.get("estado_pedido", ""),
+                "monto_pago": safe_float(pago.get("monto", 0)),
+                "estado_pago": pago.get("estado", ""),
+                "metodo_pago": pago.get("metodo_pago", ""),
+                "numero_factura": pago.get("numero_factura", ""),
+                "logs_usuario": auditoria_by_usuario.get(usuario_id, 0),
+                "fecha_referencia": pago.get("createdAt", pedido.get("fecha_pedido", snapshot.get("generado_en", "")))
+            })
 
     if not rows and compras_auditoria:
         for compra in compras_auditoria:
