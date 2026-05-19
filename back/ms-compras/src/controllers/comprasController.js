@@ -72,6 +72,17 @@ const crearCompra = async (req, res) => {
       console.warn('No se pudo vaciar el carrito:', err.message);
     }
 
+        // Notificar compra exitosa (no crítico)
+    try {
+      await axios.post(`${process.env.MS_NOTIFICACIONES_URL}/notificaciones/compra`, {
+        usuario_id,
+        compra_id: compra.id_compra,
+        total:     Number(total.toFixed(2))
+      });
+    } catch (err) {
+      console.warn('MS Notificaciones no disponible:', err.message);
+    }
+
     res.status(201).json({
       mensaje: '¡Compra realizada exitosamente!',
       compra: {
@@ -90,6 +101,7 @@ const crearCompra = async (req, res) => {
     console.error('Error en checkout:', error.message);
     res.status(500).json({ error: 'Error procesando la compra', detalle: error.message });
   }
+
 };
 
 const obtenerCompras = async (req, res) => {

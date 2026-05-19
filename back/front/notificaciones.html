@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DRGUERIA · Notificaciones</title>
+
+  <!-- ✅ Mismas dependencias que productos.html -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* ══════════════════════════════════════════════════
+       VARIABLES — mismas que productos.html
+    ══════════════════════════════════════════════════ */
+    :root {
+      --verde-oscuro:  #0a5c45;
+      --verde-medio:   #1a8a68;
+      --verde-claro:   #2cbf8e;
+      --verde-suave:   #d6f5ec;
+      --verde-bg:      #f2faf7;
+      --blanco:        #f8fdfb;
+      --gris-texto:    #3d4a44;
+      --gris-borde:    #c4ddd5;
+      --rojo:          #e05252;
+      --rojo-bg:       #fdf2f1;
+      --amarillo:      #f59e0b;
+      --amarillo-bg:   #fdf8ec;
+      --azul:          #3b82f6;
+      --azul-bg:       #eff6ff;
+      --morado:        #7c3aed;
+      --sidebar-w:     240px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--verde-bg);
+      color: var(--gris-texto);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ══ Sidebar — idéntico a productos.html ══ */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--verde-oscuro);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0;
+      height: 100vh; z-index: 200; overflow-y: auto;
+    }
+    .sidebar-logo { padding: 1.6rem 1.4rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo a { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: #fff; text-decoration: none; }
+    .sidebar-logo a span { color: #a8e8d0; }
+    .sidebar-logo .rol-badge { display: inline-block; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 4px; padding: 0.15rem 0.5rem; margin-top: 0.3rem; }
+    .sidebar-nav { flex: 1; padding: 1rem 0; }
+    .nav-section-title { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 0.8rem 1.4rem 0.3rem; }
+    .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.4rem; color: rgba(255,255,255,0.72); text-decoration: none; font-size: 0.9rem; transition: all 0.18s; border-left: 3px solid transparent; }
+    .sidebar-link i { font-size: 1rem; width: 18px; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.07); color: #fff; }
+    .sidebar-link.activo { background: rgba(255,255,255,0.1); color: #fff; border-left-color: var(--verde-claro); }
+    .sidebar-footer { padding: 1rem 1.4rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-usuario { font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-bottom: 0.6rem; }
+    .sidebar-usuario strong { color: #fff; display: block; }
+    .btn-logout-sidebar { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.8); border-radius: 8px; padding: 0.45rem; font-size: 0.82rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.18s; }
+    .btn-logout-sidebar:hover { background: rgba(255,255,255,0.18); }
+
+    /* ══ Main ══ */
+    .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+
+    .topbar { background: #fff; border-bottom: 1px solid var(--gris-borde); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+    .topbar h1 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--verde-oscuro); margin: 0; }
+    .topbar .sub { font-size: 0.82rem; color: #9db8ad; }
+
+    .btn-primary-drg {
+      background: linear-gradient(135deg, var(--verde-oscuro), var(--verde-medio));
+      border: none; border-radius: 9px; color: #fff;
+      padding: 0.55rem 1.2rem; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      box-shadow: 0 4px 14px rgba(10,92,69,0.22);
+      transition: transform 0.15s, opacity 0.18s;
+    }
+    .btn-primary-drg:hover { transform: translateY(-1px); opacity: 0.92; }
+
+    .pagina { padding: 1.8rem 2rem; }
+
+    /* ══ Sección títulos ══ */
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem; color: var(--verde-oscuro);
+      display: flex; align-items: center; gap: 0.5rem;
+      margin: 2rem 0 1rem;
+    }
+    .section-title i { font-size: 1rem; }
+    .section-divider { border: none; border-top: 1px solid var(--gris-borde); margin: 2rem 0 0; }
+
+    /* ══ Stat cards — estilo productos ══ */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 14px;
+      border: 1.5px solid var(--gris-borde);
+      padding: 1.2rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .stat-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .stat-icon.verde   { background: var(--verde-suave); color: var(--verde-oscuro); }
+    .stat-icon.azul    { background: var(--azul-bg);     color: var(--azul); }
+    .stat-icon.amarillo{ background: var(--amarillo-bg); color: var(--amarillo); }
+    .stat-icon.rojo    { background: var(--rojo-bg);     color: var(--rojo); }
+    .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--gris-texto); line-height: 1; }
+    .stat-label { font-size: 0.75rem; color: #9db8ad; margin-top: 0.2rem; font-weight: 500; }
+
+    /* ══ Alertas ══ */
+    .panel-card {
+      background: #fff; border-radius: 14px;
+      border: 1.5px solid var(--gris-borde);
+      padding: 1.2rem; margin-bottom: 0.5rem;
+    }
+    .panel-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .panel-card-header h3 {
+      font-size: 0.95rem; font-weight: 600; color: var(--verde-oscuro);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .badge-count {
+      background: var(--rojo); color: #fff;
+      border-radius: 20px; padding: 0.1rem 0.55rem; font-size: 0.7rem; font-weight: 700;
+    }
+    .btn-sm-drg {
+      background: none; border: 1.5px solid var(--gris-borde); border-radius: 7px;
+      padding: 0.3rem 0.75rem; font-size: 0.78rem; color: var(--gris-texto);
+      cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    }
+    .btn-sm-drg:hover { border-color: var(--verde-medio); color: var(--verde-oscuro); }
+
+    .alerta-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.7rem 0; border-bottom: 1px solid var(--verde-suave);
+    }
+    .alerta-item:last-child { border-bottom: none; }
+    .alerta-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+    .alerta-dot.urgente { background: var(--rojo); }
+    .alerta-dot.aviso   { background: var(--amarillo); }
+    .alerta-dot.info    { background: var(--verde-claro); }
+    .alerta-msg { font-size: 0.82rem; color: var(--gris-texto); flex: 1; }
+    .alerta-tiempo { font-size: 0.72rem; color: #9db8ad; white-space: nowrap; }
+
+    /* ══ Filtros bar ══ */
+    .toolbar {
+      background: #fff; border-radius: 12px;
+      border: 1.5px solid var(--gris-borde);
+      padding: 1rem 1.2rem; margin-bottom: 1rem;
+      display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+    }
+    .toolbar select, .toolbar input {
+      border: 1.5px solid var(--gris-borde); border-radius: 9px;
+      padding: 0.45rem 0.9rem; font-size: 0.85rem; color: var(--gris-texto);
+      font-family: 'DM Sans', sans-serif; background: #fff;
+      outline: none; transition: border 0.15s;
+    }
+    .toolbar select:focus, .toolbar input:focus { border-color: var(--verde-medio); }
+
+    /* ══ Tabla principal ══ */
+    .tabla-wrap {
+      background: #fff; border-radius: 14px;
+      border: 1.5px solid var(--gris-borde); overflow: hidden;
+    }
+    .tabla-wrap table { width: 100%; border-collapse: collapse; }
+    .tabla-wrap thead { background: var(--verde-oscuro); color: #fff; }
+    .tabla-wrap thead th { padding: 0.85rem 1.1rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+    .tabla-wrap tbody tr { border-bottom: 1px solid var(--gris-borde); transition: background 0.15s; }
+    .tabla-wrap tbody tr:last-child { border-bottom: none; }
+    .tabla-wrap tbody tr:hover { background: var(--verde-bg); }
+    .tabla-wrap tbody td { padding: 0.85rem 1.1rem; font-size: 0.85rem; vertical-align: middle; }
+    .tabla-wrap td.empty { text-align: center; padding: 2.5rem; color: #9db8ad; font-size: 0.9rem; }
+
+    /* ══ Badges ══ */
+    .badge-tipo {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+    }
+    .badge-tipo.stock     { background: var(--amarillo-bg); color: var(--amarillo); }
+    .badge-tipo.compra    { background: var(--verde-suave);  color: var(--verde-oscuro); }
+    .badge-tipo.pago_ok   { background: var(--azul-bg);      color: var(--azul); }
+    .badge-tipo.pago_rec  { background: var(--rojo-bg);      color: var(--rojo); }
+    .badge-tipo.pedido    { background: #f3e8ff;              color: var(--morado); }
+    .badge-estado {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+    }
+    .badge-estado.enviada { background: var(--verde-suave); color: var(--verde-oscuro); }
+    .badge-estado.fallida { background: var(--rojo-bg);     color: var(--rojo); }
+    .badge-leida { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+    .badge-leida.no { background: var(--verde-medio); }
+    .badge-leida.si { background: var(--gris-borde); }
+
+    /* ══ Charts ══ */
+    .charts-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .charts-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; }
+    .chart-card {
+      background: #fff; border-radius: 14px; padding: 1.2rem;
+      border: 1.5px solid var(--gris-borde);
+    }
+    .chart-card h4 { font-size: 0.88rem; font-weight: 600; color: var(--verde-oscuro); margin-bottom: 0.2rem; }
+    .chart-card p  { font-size: 0.72rem; color: #9db8ad; margin-bottom: 1rem; }
+    .chart-container { position: relative; height: 220px; }
+
+    /* ══ Tablas analíticas ══ */
+    .analitic-table { width: 100%; border-collapse: collapse; }
+    .analitic-table th { font-size: 0.7rem; color: #9db8ad; font-weight: 600; text-transform: uppercase; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--verde-suave); }
+    .analitic-table td { font-size: 0.82rem; color: var(--gris-texto); padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--verde-suave); }
+    .analitic-table tr:last-child td { border-bottom: none; }
+    .rank-num { width: 22px; height: 22px; border-radius: 6px; background: var(--verde-suave); display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: var(--verde-oscuro); }
+    .bar-mini { height: 5px; border-radius: 3px; background: var(--verde-medio); display: block; transition: width .5s; }
+
+    /* ══ K8s metrics ══ */
+    .k8s-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .k8s-card { background: var(--verde-oscuro); color: #fff; border-radius: 14px; padding: 1.2rem; }
+    .k8s-card.azul-dark  { background: #1e3a8a; }
+    .k8s-card.amber-dark { background: #92400e; }
+    .k8s-card .k8s-label { font-size: 0.68rem; opacity: .55; text-transform: uppercase; letter-spacing: 0.1em; }
+    .k8s-card .k8s-value { font-size: 1.8rem; font-weight: 700; font-family: 'DM Mono', monospace, sans-serif; margin: 0.5rem 0 0.2rem; }
+    .k8s-card .k8s-sub   { font-size: 0.7rem; opacity: .45; }
+    .k8s-card .k8s-na    { font-size: 0.72rem; opacity: .6; margin-top: 0.3rem; font-style: italic; }
+    .gauge-bar { height: 5px; background: rgba(255,255,255,.2); border-radius: 3px; overflow: hidden; margin-top: 0.75rem; }
+    .gauge-fill { height: 100%; border-radius: 3px; background: rgba(255,255,255,.75); transition: width 1s ease; }
+
+    /* ══ Modal ══ */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.35); z-index: 999;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-box {
+      background: #fff; border-radius: 16px; padding: 1.8rem;
+      width: 500px; max-width: 95vw;
+      box-shadow: 0 20px 60px rgba(0,0,0,.15);
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+    .modal-header h3 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--verde-oscuro); }
+    .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #9db8ad; }
+    .modal-row { margin-bottom: 0.9rem; }
+    .modal-row label { font-size: 0.68rem; color: #9db8ad; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 0.25rem; }
+    .modal-row span { font-size: 0.9rem; color: var(--gris-texto); }
+    .modal-row .msg-box { background: var(--verde-bg); border-radius: 8px; padding: 0.75rem; font-size: 0.85rem; color: var(--gris-texto); border: 1px solid var(--gris-borde); }
+
+    /* ══ Loader / Toast ══ */
+    .loader { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--gris-borde); border-top-color: var(--verde-medio); border-radius: 50%; animation: spin .6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-row td { text-align: center; padding: 2rem; }
+
+    .toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      background: var(--verde-oscuro); color: #fff;
+      border-radius: 10px; padding: 0.75rem 1.2rem;
+      font-size: 0.85rem; font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+      display: none; z-index: 9999;
+      animation: slideUp .3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(16px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+
+    /* ══ Sin conexión notice ══ */
+    .no-data-card {
+      background: var(--verde-bg); border: 1.5px dashed var(--gris-borde);
+      border-radius: 12px; padding: 2rem; text-align: center; color: #9db8ad; font-size: 0.85rem;
+    }
+    .no-data-card i { font-size: 2rem; display: block; margin-bottom: 0.5rem; color: var(--gris-borde); }
+
+    @media (max-width: 1100px) {
+      .cards-grid, .k8s-grid { grid-template-columns: repeat(2,1fr); }
+      .charts-grid-2, .charts-grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ Sidebar — estructura idéntica a productos.html ══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <a href="dashboard.html">DR<span>GUERIA</span></a>
+    <div class="rol-badge">Administrador</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Principal</div>
+    <a class="sidebar-link" href="dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a>
+
+    <div class="nav-section-title">Inventario</div>
+    <a class="sidebar-link" href="productos.html"><i class="bi bi-box-seam"></i>Productos</a>
+    <a class="sidebar-link" href="pedidos.html"><i class="bi bi-truck"></i>Pedidos</a>
+
+    <div class="nav-section-title">Gestión</div>
+    <a class="sidebar-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
+    <a class="sidebar-link" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
+    <a class="sidebar-link" href="pagos.html"><i class="bi bi-credit-card"></i>Pagos</a>
+
+    <div class="nav-section-title">MS Compras</div>
+    <a class="sidebar-link" href="ms-compras.html"><i class="bi bi-cart-check"></i>MS Compras</a>
+
+    <div class="nav-section-title">Analítica</div>
+    <a class="sidebar-link" href="auditoria.html"><i class="bi bi-activity"></i>Auditoría</a>
+    <a class="sidebar-link" href="reportes.html"><i class="bi bi-graph-up-arrow"></i>Reportes</a>
+    <!-- ✅ ENLACE AGREGADO — faltaba en todos los demás HTMLs -->
+    <a class="sidebar-link activo" href="notificaciones.html"><i class="bi bi-bell"></i>Notificaciones</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-usuario">Sesión iniciada como<strong id="sidebarNombre">admin</strong></div>
+    <button class="btn-logout-sidebar" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión</button>
+  </div>
+</aside>
+
+<!-- ══ Main ══ -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div>
+      <h1><i class="bi bi-bell-fill" style="color:var(--verde-medio);font-size:1.2rem;margin-right:0.4rem"></i>Notificaciones</h1>
+      <div class="sub" id="fechaHoy"></div>
+    </div>
+    <button class="btn-primary-drg" onclick="cargarTodo()">
+      <i class="bi bi-arrow-clockwise"></i> Actualizar
+    </button>
+  </div>
+
+  <div class="pagina">
+
+    <!-- ══════════════════════════════════════════
+         SECCIÓN 1 — TARJETAS RESUMEN
+    ══════════════════════════════════════════ -->
+    <div class="section-title"><i class="bi bi-grid-1x2"></i> Resumen del día</div>
+    <div class="cards-grid">
+      <div class="stat-card">
+        <div class="stat-icon verde"><i class="bi bi-bell"></i></div>
+        <div><div class="stat-value" id="statTotal">—</div><div class="stat-label">Total notificaciones hoy</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon azul"><i class="bi bi-check-circle"></i></div>
+        <div><div class="stat-value" id="statEnviadas">—</div><div class="stat-label">Notificaciones enviadas</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amarillo"><i class="bi bi-exclamation-triangle"></i></div>
+        <div><div class="stat-value" id="statStock">—</div><div class="stat-label">Alertas stock bajo</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon rojo"><i class="bi bi-cart-check"></i></div>
+        <div><div class="stat-value" id="statCompras">—</div><div class="stat-label">Compras notificadas</div></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECCIÓN 2 — ALERTAS EN TIEMPO REAL
+    ══════════════════════════════════════════ -->
+    <hr class="section-divider"/>
+    <div class="section-title"><i class="bi bi-lightning-charge"></i> Alertas en tiempo real</div>
+    <div class="panel-card">
+      <div class="panel-card-header">
+        <h3><i class="bi bi-bell-fill" style="color:var(--rojo)"></i> Alertas activas <span class="badge-count" id="badgeAlertas">0</span></h3>
+        <button class="btn-sm-drg" onclick="marcarTodasLeidas()">Marcar todas como leídas</button>
+      </div>
+      <div id="alertasLista">
+        <div style="text-align:center;padding:1.5rem;color:#9db8ad;font-size:0.85rem">
+          <span class="loader"></span> Cargando alertas...
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECCIÓN 3 — TABLA DE NOTIFICACIONES
+    ══════════════════════════════════════════ -->
+    <hr class="section-divider"/>
+    <div class="section-title"><i class="bi bi-table"></i> Todas las notificaciones</div>
+
+    <div class="toolbar">
+      <select id="filtroTipo">
+        <option value="">Todos los tipos</option>
+        <option value="stock">⚠️ Stock bajo</option>
+        <option value="compra">🛒 Compra confirmada</option>
+        <option value="pago_aprobado">✅ Pago aprobado</option>
+        <option value="pago_rechazado">❌ Pago rechazado</option>
+        <option value="pedido">📦 Pedido</option>
+      </select>
+      <input type="text" id="filtroUsuario" placeholder="ID de usuario..." style="width:130px"/>
+      <input type="date" id="filtroDesde" title="Desde"/>
+      <input type="date" id="filtroHasta" title="Hasta"/>
+      <button class="btn-primary-drg" onclick="aplicarFiltros()"><i class="bi bi-funnel"></i> Filtrar</button>
+      <button class="btn-sm-drg" onclick="limpiarFiltros()">Limpiar</button>
+    </div>
+
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Tipo</th><th>Usuario</th><th>Mensaje</th>
+            <th>Fecha</th><th>Estado</th><th>Leída</th><th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tablaNotificaciones">
+          <tr class="loading-row"><td colspan="8"><span class="loader"></span> Cargando notificaciones...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECCIÓN 4 — GRÁFICAS DE NOTIFICACIONES
+    ══════════════════════════════════════════ -->
+    <hr class="section-divider"/>
+    <div class="section-title"><i class="bi bi-bar-chart"></i> Análisis de notificaciones</div>
+    <div class="charts-grid-2">
+      <div class="chart-card">
+        <h4>Notificaciones por tipo</h4>
+        <p>Distribución de todas las notificaciones registradas</p>
+        <div class="chart-container"><canvas id="chartTipos"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Tasa de errores HTTP — ms-notificaciones</h4>
+        <!-- ✅ FIX: Ya no usa datos inventados. Muestra datos reales de Prometheus
+             o un aviso claro cuando Prometheus no está disponible -->
+        <p>Peticiones 4xx / 5xx (fuente: Prometheus)</p>
+        <div class="chart-container"><canvas id="chartErrores"></canvas></div>
+        <div id="chartErroresNotice" style="display:none;margin-top:0.5rem;font-size:0.72rem;color:#9db8ad;text-align:center">
+          <i class="bi bi-info-circle"></i> Sin conexión a Prometheus — esperando datos reales
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECCIÓN 5 — TABLAS ANALÍTICAS
+    ══════════════════════════════════════════ -->
+    <hr class="section-divider"/>
+    <div class="section-title"><i class="bi bi-table"></i> Tablas de análisis de negocio</div>
+    <div class="charts-grid-2">
+      <div class="chart-card">
+        <h4>Productos con más alertas de stock bajo</h4>
+        <p>Productos críticos que requieren reabastecimiento urgente</p>
+        <table class="analitic-table">
+          <thead><tr><th>#</th><th>Producto</th><th>Veces alertado</th><th>Barra</th></tr></thead>
+          <tbody id="stockAlertsBody">
+            <tr><td colspan="4" style="text-align:center;color:#9db8ad;padding:1.2rem">Sin datos aún</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="chart-card">
+        <h4>Usuarios con más pagos rechazados</h4>
+        <p>Clientes que pueden tener problemas con su método de pago</p>
+        <table class="analitic-table">
+          <thead><tr><th>#</th><th>Usuario ID</th><th>Rechazos</th><th>Barra</th></tr></thead>
+          <tbody id="pagosRechazadosBody">
+            <tr><td colspan="4" style="text-align:center;color:#9db8ad;padding:1.2rem">Sin datos aún</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECCIÓN 6 — DASHBOARD PRODUCTOS POR CATEGORÍA
+    ══════════════════════════════════════════ -->
+    <hr class="section-divider"/>
+    <div class="section-title"><i class="bi bi-box-seam"></i> Dashboard de productos por categoría</div>
+    <div class="charts-grid-3" id="categoriaCharts">
+      <div class="chart-card">
+        <h4>Cargando categorías...</h4>
+        <p>Conectando con MS Productos</p>
+        <div class="chart-container"><canvas id="chartCat0"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECCIÓN 7 — PEDIDOS A PROVEEDORES
+    ══════════════════════════════════════════ -->
+    <hr class="section-divider"/>
+    <div class="section-title"><i class="bi bi-truck"></i> Pedidos a proveedores por categoría</div>
+    <div class="charts-grid-2">
+      <div class="chart-card">
+        <h4>Pedidos por categoría de proveedor</h4>
+        <p>Distribución de pedidos realizados</p>
+        <div class="chart-container"><canvas id="chartPedidosCategoria"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Estado de pedidos por proveedor</h4>
+        <p>Aceptado / En proceso / Entregado</p>
+        <div class="chart-container"><canvas id="chartPedidosEstado"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECCIÓN 8 — KUBERNETES MÉTRICAS
+    ══════════════════════════════════════════ -->
+    <hr class="section-divider"/>
+    <div class="section-title"><i class="bi bi-cpu"></i> Kubernetes — Métricas del clúster</div>
+
+    <!-- ✅ FIX: aviso visible cuando Prometheus no responde -->
+    <div id="k8sNotice" style="display:none" class="no-data-card" style="margin-bottom:1rem">
+      <i class="bi bi-wifi-off"></i>
+      Prometheus no está disponible desde el navegador. Las métricas se mostrarán cuando haya conexión al clúster.
+    </div>
+
+    <div class="k8s-grid" id="k8sGrid">
+      <div class="k8s-card">
+        <div class="k8s-label">Pods activos</div>
+        <div class="k8s-value" id="k8sPods">—</div>
+        <div class="k8s-sub">namespace drgueria</div>
+        <div class="gauge-bar"><div class="gauge-fill" id="k8sPodsBar" style="width:0%"></div></div>
+      </div>
+      <div class="k8s-card">
+        <div class="k8s-label">CPU Usage</div>
+        <div class="k8s-value" id="k8sCPU">—</div>
+        <div class="k8s-sub">milliCores usados</div>
+        <div class="gauge-bar"><div class="gauge-fill" id="k8sCPUBar" style="width:0%"></div></div>
+      </div>
+      <div class="k8s-card azul-dark">
+        <div class="k8s-label">Memoria RAM</div>
+        <div class="k8s-value" id="k8sMem">—</div>
+        <div class="k8s-sub">MB usados</div>
+        <div class="gauge-bar"><div class="gauge-fill" id="k8sMemBar" style="width:0%"></div></div>
+      </div>
+      <div class="k8s-card amber-dark">
+        <div class="k8s-label">Peticiones/s</div>
+        <div class="k8s-value" id="k8sReq">—</div>
+        <div class="k8s-sub">ms-notificaciones</div>
+        <div class="gauge-bar"><div class="gauge-fill" id="k8sReqBar" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.2rem" class="charts-grid-2">
+      <div class="chart-card">
+        <h4>CPU del clúster en el tiempo</h4>
+        <p>Últimas 20 lecturas (Prometheus)</p>
+        <div class="chart-container"><canvas id="chartK8sCPU"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Memoria RAM del clúster</h4>
+        <p>Últimas 20 lecturas (Prometheus)</p>
+        <div class="chart-container"><canvas id="chartK8sMem"></canvas></div>
+      </div>
+    </div>
+    <div style="margin-top:1.2rem" class="charts-grid-3">
+      <div class="chart-card">
+        <h4>Peticiones HTTP — ms-notificaciones</h4>
+        <p>Últimas 20 lecturas</p>
+        <div class="chart-container"><canvas id="chartK8sReq"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Tiempo de respuesta P95</h4>
+        <p>En milisegundos</p>
+        <div class="chart-container"><canvas id="chartK8sLatency"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Estado de pods</h4>
+        <p>Running / Pending / Failed</p>
+        <div class="chart-container"><canvas id="chartK8sPods"></canvas></div>
+      </div>
+    </div>
+
+  </div><!-- /pagina -->
+</div><!-- /main -->
+
+<!-- Modal detalle -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Detalle de notificación</h3>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-row"><label>ID</label><span id="mId">—</span></div>
+    <div class="modal-row"><label>Tipo</label><span id="mTipo">—</span></div>
+    <div class="modal-row"><label>Usuario ID</label><span id="mUsuario">—</span></div>
+    <div class="modal-row"><label>Mensaje</label><div class="msg-box" id="mMensaje">—</div></div>
+    <div class="modal-row"><label>Fecha</label><span id="mFecha">—</span></div>
+    <div class="modal-row"><label>Estado</label><span id="mEstado">—</span></div>
+    <div class="modal-row"><label>Referencia</label><span id="mRef">—</span></div>
+    <button class="btn-primary-drg" style="width:100%;margin-top:0.5rem;justify-content:center" onclick="marcarLeidaModal()">
+      <i class="bi bi-check-circle"></i> Marcar como leída
+    </button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ════════════════════════════════════════════
+  // CONFIG — ajusta estas URLs a tu entorno
+  // ════════════════════════════════════════════
+  const API  = 'http://localhost:4000/v1';
+  const PROM = 'http://localhost:9090';
+
+  let todasNotif = [];
+  let chartTipos, chartErrores, chartK8sCPU, chartK8sMem, chartK8sReq, chartK8sLatency, chartK8sPods;
+  let cpuHistory = [], memHistory = [], reqHistory = [], latHistory = [], timeLabels = [];
+  let modalNotifId = null;
+  // ✅ FIX: flag para saber si Prometheus respondió alguna vez
+  let promDisponible = false;
+
+  // ════════════════════════════════════════════
+  // UTILS
+  // ════════════════════════════════════════════
+  function formatFecha(f) {
+    const d = new Date(f);
+    return d.toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'})
+           + ' ' + d.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'});
+  }
+  function tiempoRelativo(f) {
+    const diff = (Date.now() - new Date(f)) / 1000;
+    if (diff < 60)   return 'Hace ' + Math.floor(diff) + 's';
+    if (diff < 3600) return 'Hace ' + Math.floor(diff/60) + 'min';
+    return 'Hace ' + Math.floor(diff/3600) + 'h';
+  }
+  function mostrarToast(msg, ok=true) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = ok ? 'var(--verde-oscuro)' : 'var(--rojo)';
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3000);
+  }
+  function tipoBadge(tipo) {
+    const map = {
+      stock_bajo:        ['stock','⚠️ Stock bajo'],
+      compra_confirmada: ['compra','🛒 Compra'],
+      pago_aprobado:     ['pago_ok','✅ Pago ok'],
+      pago_rechazado:    ['pago_rec','❌ Pago rec.'],
+    };
+    if (tipo && tipo.startsWith('pedido')) return `<span class="badge-tipo pedido">📦 Pedido</span>`;
+    const [cls, lbl] = map[tipo] || ['compra', tipo];
+    return `<span class="badge-tipo ${cls}">${lbl}</span>`;
+  }
+
+  // Fecha en topbar
+  document.getElementById('fechaHoy').textContent =
+    new Date().toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // ════════════════════════════════════════════
+  // CARGAR NOTIFICACIONES (datos reales del API)
+  // ════════════════════════════════════════════
+  async function cargarNotificaciones(params='') {
+    const tbody = document.getElementById('tablaNotificaciones');
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="8"><span class="loader"></span> Cargando...</td></tr>';
+    try {
+      const r = await fetch(`${API}/notificaciones${params}`);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      todasNotif = Array.isArray(data) ? data : [];
+      renderTabla(todasNotif);
+      actualizarStats(todasNotif);
+      renderAlertas(todasNotif);
+      renderTablasAnaliticas(todasNotif);
+      renderChartTipos(todasNotif);
+    } catch(e) {
+      tbody.innerHTML = `<tr><td class="empty" colspan="8"><i class="bi bi-wifi-off"></i> No se pudo conectar al API: ${e.message}</td></tr>`;
+      document.getElementById('statTotal').textContent =
+      document.getElementById('statEnviadas').textContent =
+      document.getElementById('statStock').textContent =
+      document.getElementById('statCompras').textContent = '—';
+    }
+  }
+
+  function renderTabla(data) {
+    const tbody = document.getElementById('tablaNotificaciones');
+    if (!data.length) {
+      tbody.innerHTML = '<tr><td class="empty" colspan="8"><i class="bi bi-inbox"></i> No hay notificaciones</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(n => `
+      <tr>
+        <td><code style="font-size:0.72rem;color:#9db8ad">#${n.id}</code></td>
+        <td>${tipoBadge(n.tipo)}</td>
+        <td>${n.usuario_id ? `<code style="font-size:0.78rem">U-${n.usuario_id}</code>` : '<span style="color:#9db8ad">Admin</span>'}</td>
+        <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${n.mensaje}">${n.mensaje}</td>
+        <td style="white-space:nowrap;font-size:0.78rem">${formatFecha(n.fecha)}</td>
+        <td><span class="badge-estado ${n.estado}">${n.estado}</span></td>
+        <td><span class="badge-leida ${n.leida?'si':'no'}" title="${n.leida?'Leída':'Sin leer'}"></span></td>
+        <td><button class="btn-sm-drg" onclick="verDetalle(${n.id})">Ver</button></td>
+      </tr>`).join('');
+  }
+
+  function actualizarStats(data) {
+    const hoy = new Date().toDateString();
+    const hd  = data.filter(n => new Date(n.fecha).toDateString() === hoy);
+    document.getElementById('statTotal').textContent    = hd.length;
+    document.getElementById('statEnviadas').textContent = hd.filter(n=>n.estado==='enviada').length;
+    document.getElementById('statStock').textContent    = hd.filter(n=>n.tipo==='stock_bajo').length;
+    document.getElementById('statCompras').textContent  = hd.filter(n=>n.tipo==='compra_confirmada').length;
+  }
+
+  function renderAlertas(data) {
+    const noLeidas = data.filter(n=>!n.leida).sort((a,b)=>new Date(b.fecha)-new Date(a.fecha)).slice(0,8);
+    document.getElementById('badgeAlertas').textContent = noLeidas.length;
+    if (!noLeidas.length) {
+      document.getElementById('alertasLista').innerHTML =
+        '<div style="text-align:center;padding:1.5rem;color:#9db8ad;font-size:0.85rem"><i class="bi bi-check-circle" style="color:var(--verde-claro)"></i> No hay alertas pendientes</div>';
+      return;
+    }
+    document.getElementById('alertasLista').innerHTML = noLeidas.map(n => {
+      let dot = 'info', label = '🟢 INFO';
+      if (n.tipo === 'stock_bajo')          { dot='urgente'; label='🔴 URGENTE'; }
+      else if (n.tipo.includes('rechazado')){ dot='aviso';   label='🟡 AVISO'; }
+      return `
+        <div class="alerta-item">
+          <div class="alerta-dot ${dot}"></div>
+          <div style="flex:1">
+            <div style="font-size:0.68rem;font-weight:700;color:#9db8ad;margin-bottom:2px">${label}</div>
+            <div class="alerta-msg">${n.mensaje}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+            <span class="alerta-tiempo">${tiempoRelativo(n.fecha)}</span>
+            <button class="btn-sm-drg" onclick="marcarLeida(${n.id})">Leída</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderTablasAnaliticas(data) {
+    // Stock bajo por producto
+    const stockMap = {};
+    data.filter(n=>n.tipo==='stock_bajo').forEach(n => {
+      const key = n.referencia_id || 'desconocido';
+      stockMap[key] = (stockMap[key]||0) + 1;
+    });
+    const stockArr = Object.entries(stockMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const maxStock = stockArr[0]?.[1] || 1;
+    document.getElementById('stockAlertsBody').innerHTML = stockArr.length
+      ? stockArr.map(([id,cnt],i)=>`
+          <tr>
+            <td><span class="rank-num">${i+1}</span></td>
+            <td>Producto #${id}</td>
+            <td><strong>${cnt}</strong> veces</td>
+            <td><span class="bar-mini" style="width:${(cnt/maxStock)*100}%"></span></td>
+          </tr>`).join('')
+      : '<tr><td colspan="4" style="text-align:center;color:#9db8ad;padding:1.2rem">Sin alertas de stock aún</td></tr>';
+
+    // Pagos rechazados por usuario
+    const pagoMap = {};
+    data.filter(n=>n.tipo==='pago_rechazado').forEach(n => {
+      const key = n.usuario_id || 'desconocido';
+      pagoMap[key] = (pagoMap[key]||0) + 1;
+    });
+    const pagoArr = Object.entries(pagoMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const maxPago = pagoArr[0]?.[1] || 1;
+    document.getElementById('pagosRechazadosBody').innerHTML = pagoArr.length
+      ? pagoArr.map(([id,cnt],i)=>`
+          <tr>
+            <td><span class="rank-num">${i+1}</span></td>
+            <td>Usuario #${id}</td>
+            <td><strong style="color:var(--rojo)">${cnt}</strong> rechazos</td>
+            <td><span class="bar-mini" style="width:${(cnt/maxPago)*100}%;background:var(--rojo)"></span></td>
+          </tr>`).join('')
+      : '<tr><td colspan="4" style="text-align:center;color:#9db8ad;padding:1.2rem">Sin pagos rechazados aún</td></tr>';
+  }
+
+  // ════════════════════════════════════════════
+  // FILTROS
+  // ════════════════════════════════════════════
+  function aplicarFiltros() {
+    const tipo    = document.getElementById('filtroTipo').value;
+    const usuario = document.getElementById('filtroUsuario').value;
+    const desde   = document.getElementById('filtroDesde').value;
+    const hasta   = document.getElementById('filtroHasta').value;
+    let params = '?';
+    if (tipo)    params += `tipo=${tipo}&`;
+    if (usuario) params += `usuario_id=${usuario}&`;
+    if (desde)   params += `desde=${desde}&`;
+    if (hasta)   params += `hasta=${hasta}&`;
+    cargarNotificaciones(params !== '?' ? params : '');
+  }
+  function limpiarFiltros() {
+    ['filtroTipo','filtroUsuario','filtroDesde','filtroHasta'].forEach(id => {
+      const el = document.getElementById(id);
+      el.tagName === 'SELECT' ? (el.selectedIndex=0) : (el.value='');
+    });
+    cargarNotificaciones();
+  }
+
+  // ════════════════════════════════════════════
+  // MARCAR LEÍDA
+  // ════════════════════════════════════════════
+  async function marcarLeida(id) {
+    try {
+      await fetch(`${API}/notificaciones/${id}/leer`, {method:'PUT'});
+      mostrarToast('Notificación marcada como leída');
+      cargarNotificaciones();
+    } catch(e) { mostrarToast('Error al marcar', false); }
+  }
+  async function marcarTodasLeidas() {
+    const noLeidas = todasNotif.filter(n=>!n.leida);
+    for (const n of noLeidas) {
+      await fetch(`${API}/notificaciones/${n.id}/leer`, {method:'PUT'}).catch(()=>{});
+    }
+    mostrarToast(`${noLeidas.length} notificaciones marcadas como leídas`);
+    cargarNotificaciones();
+  }
+  async function marcarLeidaModal() {
+    if (modalNotifId) { await marcarLeida(modalNotifId); cerrarModal(); }
+  }
+
+  // ════════════════════════════════════════════
+  // MODAL
+  // ════════════════════════════════════════════
+  function verDetalle(id) {
+    const n = todasNotif.find(x=>x.id===id);
+    if (!n) return;
+    modalNotifId = id;
+    document.getElementById('mId').textContent      = '#' + n.id;
+    document.getElementById('mTipo').innerHTML      = tipoBadge(n.tipo);
+    document.getElementById('mUsuario').textContent = n.usuario_id ? 'Usuario #' + n.usuario_id : 'Administrador';
+    document.getElementById('mMensaje').textContent = n.mensaje;
+    document.getElementById('mFecha').textContent   = formatFecha(n.fecha);
+    document.getElementById('mEstado').textContent  = n.estado;
+    document.getElementById('mRef').textContent     = n.referencia_tipo ? `${n.referencia_tipo} #${n.referencia_id}` : '—';
+    document.getElementById('modalOverlay').classList.add('show');
+  }
+  function cerrarModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+    modalNotifId = null;
+  }
+  document.getElementById('modalOverlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) cerrarModal();
+  });
+
+  // ════════════════════════════════════════════
+  // CHART — TIPOS (datos reales de notificaciones)
+  // ════════════════════════════════════════════
+  function renderChartTipos(data) {
+    const counts = {'Stock bajo':0,'Compra':0,'Pago aprobado':0,'Pago rechazado':0,'Pedido':0};
+    data.forEach(n => {
+      if (n.tipo==='stock_bajo') counts['Stock bajo']++;
+      else if (n.tipo==='compra_confirmada') counts['Compra']++;
+      else if (n.tipo==='pago_aprobado') counts['Pago aprobado']++;
+      else if (n.tipo==='pago_rechazado') counts['Pago rechazado']++;
+      else if (n.tipo && n.tipo.startsWith('pedido')) counts['Pedido']++;
+    });
+    if (chartTipos) chartTipos.destroy();
+    chartTipos = new Chart(document.getElementById('chartTipos'), {
+      type: 'bar',
+      data: {
+        labels: Object.keys(counts),
+        datasets: [{ data: Object.values(counts),
+          backgroundColor: ['#f59e0b44','#0a5c4544','#3b82f644','#e0525244','#7c3aed44'],
+          borderColor:     ['#f59e0b',  '#0a5c45',  '#3b82f6',  '#e05252',  '#7c3aed'],
+          borderWidth: 2, borderRadius: 8
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ display:false } },
+        scales:{ y:{ beginAtZero:true, ticks:{ stepSize:1 } } }
+      }
+    });
+  }
+
+  // ════════════════════════════════════════════
+  // CHART — ERRORES HTTP (Prometheus real, sin inventar)
+  // ════════════════════════════════════════════
+  function initChartErrores() {
+    chartErrores = new Chart(document.getElementById('chartErrores'), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{ label: 'Errores/min', data: [], borderColor: '#e05252',
+          backgroundColor: 'rgba(224,82,82,.1)', fill:true, tension:.4, pointRadius:3 }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ display:false } },
+        scales:{ y:{ beginAtZero:true } }
+      }
+    });
+  }
+
+  // ✅ FIX: actualiza errores sólo con datos reales de Prometheus
+  async function actualizarChartErrores() {
+    try {
+      const r = await fetch(
+        `${PROM}/api/v1/query?query=sum(rate(ms_notificaciones_http_requests_total{status=~"4..|5.."}[1m]))`
+      );
+      const d = await r.json();
+      const val = parseFloat(d?.data?.result?.[0]?.value?.[1] || 0);
+      const now = new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      chartErrores.data.labels.push(now);
+      chartErrores.data.datasets[0].data.push(parseFloat(val.toFixed(3)));
+      if (chartErrores.data.labels.length > 20) {
+        chartErrores.data.labels.shift();
+        chartErrores.data.datasets[0].data.shift();
+      }
+      chartErrores.update('none');
+      document.getElementById('chartErroresNotice').style.display = 'none';
+    } catch {
+      // ✅ SIN datos inventados: sólo muestra aviso
+      document.getElementById('chartErroresNotice').style.display = 'block';
+    }
+  }
+
+  // ════════════════════════════════════════════
+  // PRODUCTOS POR CATEGORÍA (datos reales)
+  // ════════════════════════════════════════════
+  async function cargarProductosPorCategoria() {
+    const wrap = document.getElementById('categoriaCharts');
+    try {
+      const r = await fetch(`${API}/productos`);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const productos = await r.json();
+      const cats = {};
+      productos.forEach(p => {
+        if (!cats[p.categoria]) cats[p.categoria] = [];
+        cats[p.categoria].push(p);
+      });
+      const colors = ['#0a5c45','#3b82f6','#f59e0b','#e05252','#7c3aed','#0891b2'];
+      wrap.innerHTML = Object.entries(cats).map(([cat,prods],i) => {
+        const top5 = [...prods].sort((a,b)=>(b.stock_actual||0)-(a.stock_actual||0)).slice(0,5);
+        return `
+          <div class="chart-card">
+            <h4>${cat}</h4>
+            <p>${prods.length} productos — stock disponible</p>
+            <div class="chart-container"><canvas id="chartCat${i}"></canvas></div>
+          </div>`;
+      }).join('');
+      Object.entries(cats).forEach(([cat,prods],i) => {
+        const top5 = [...prods].sort((a,b)=>(b.stock_actual||0)-(a.stock_actual||0)).slice(0,5);
+        new Chart(document.getElementById(`chartCat${i}`), {
+          type:'bar',
+          data:{
+            labels: top5.map(p=>p.nombre_producto.split(' ').slice(0,2).join(' ')),
+            datasets:[{ label:'Stock actual', data:top5.map(p=>p.stock_actual||0),
+              backgroundColor: colors[i%colors.length]+'55',
+              borderColor: colors[i%colors.length], borderWidth:2, borderRadius:6
+            }]
+          },
+          options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}} }
+        });
+      });
+    } catch(e) {
+      wrap.innerHTML = `<div class="no-data-card"><i class="bi bi-wifi-off"></i>No se pudo conectar con MS Productos</div>`;
+    }
+  }
+
+  // ════════════════════════════════════════════
+  // PEDIDOS POR CATEGORÍA (datos reales)
+  // ════════════════════════════════════════════
+  async function cargarPedidosPorCategoria() {
+    try {
+      const [rPed, rProv] = await Promise.all([
+        fetch(`${API}/pedidos`),
+        fetch(`${API}/proveedores`)
+      ]);
+      if (!rPed.ok || !rProv.ok) throw new Error('API no disponible');
+      const pedidos    = await rPed.json();
+      const proveedores = await rProv.json();
+      const provMap = {};
+      proveedores.forEach(p => provMap[p.id_proveedor] = p);
+      const catMap = {};
+      const estadoMap = {aceptado:0,'en proceso':0,entregado:0};
+      pedidos.forEach(p => {
+        const prov = provMap[p.id_proveedor];
+        const cat  = prov?.categoria || 'Sin categoría';
+        catMap[cat] = (catMap[cat]||0) + 1;
+        if (p.estado_pedido) estadoMap[p.estado_pedido] = (estadoMap[p.estado_pedido]||0)+1;
+      });
+      new Chart(document.getElementById('chartPedidosCategoria'), {
+        type:'doughnut',
+        data:{ labels:Object.keys(catMap),
+          datasets:[{ data:Object.values(catMap),
+            backgroundColor:['#0a5c45','#3b82f6','#f59e0b','#e05252','#7c3aed','#0891b2'],
+            borderWidth:2, borderColor:'#fff'
+          }]
+        },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{font:{size:11}}}} }
+      });
+      new Chart(document.getElementById('chartPedidosEstado'), {
+        type:'bar',
+        data:{
+          labels:['Aceptado','En proceso','Entregado'],
+          datasets:[{ data:Object.values(estadoMap),
+            backgroundColor:['#f59e0b44','#3b82f644','#0a5c4544'],
+            borderColor:['#f59e0b','#3b82f6','#0a5c45'],
+            borderWidth:2, borderRadius:8
+          }]
+        },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{stepSize:1}}} }
+      });
+    } catch(e) {
+      console.warn('No se pudo cargar pedidos:', e.message);
+    }
+  }
+
+  // ════════════════════════════════════════════
+  // KUBERNETES — datos reales de Prometheus
+  // ════════════════════════════════════════════
+  function initK8sCharts() {
+    const opts = () => ({
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{ x:{ticks:{font:{size:10},maxTicksLimit:6}}, y:{beginAtZero:true} },
+      animation:false
+    });
+    const mk = (id, color, label) => new Chart(document.getElementById(id), {
+      type:'line',
+      data:{ labels:[], datasets:[{ label, data:[], borderColor:color,
+        backgroundColor:color+'22', fill:true, tension:.4, pointRadius:2 }] },
+      options:opts()
+    });
+    chartK8sCPU     = mk('chartK8sCPU',    '#3b82f6', 'CPU (m)');
+    chartK8sMem     = mk('chartK8sMem',    '#0a5c45', 'RAM (MB)');
+    chartK8sReq     = mk('chartK8sReq',    '#7c3aed', 'Req/s');
+    chartK8sLatency = mk('chartK8sLatency','#f59e0b', 'P95 (ms)');
+    chartK8sPods = new Chart(document.getElementById('chartK8sPods'), {
+      type:'doughnut',
+      data:{ labels:['Running','Pending','Failed'],
+        datasets:[{ data:[0,0,0], backgroundColor:['#0a5c45','#f59e0b','#e05252'], borderWidth:2, borderColor:'#fff' }] },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{font:{size:11}}}} }
+    });
+  }
+
+  async function actualizarK8s() {
+    const now = new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    try {
+      const [rCPU,rMem,rReq,rLat] = await Promise.all([
+        fetch(`${PROM}/api/v1/query?query=sum(rate(container_cpu_usage_seconds_total{namespace="drgueria"}[1m]))*1000`),
+        fetch(`${PROM}/api/v1/query?query=sum(container_memory_working_set_bytes{namespace="drgueria"})/1024/1024`),
+        fetch(`${PROM}/api/v1/query?query=sum(rate(ms_notificaciones_http_requests_total[1m]))`),
+        fetch(`${PROM}/api/v1/query?query=histogram_quantile(0.95,rate(ms_notificaciones_http_duration_seconds_bucket[1m]))*1000`)
+      ]);
+      if (!rCPU.ok) throw new Error('Prometheus no disponible');
+      const [dCPU,dMem,dReq,dLat] = await Promise.all([rCPU.json(),rMem.json(),rReq.json(),rLat.json()]);
+      const cpu = parseFloat(dCPU?.data?.result?.[0]?.value?.[1]||0).toFixed(1);
+      const mem = parseFloat(dMem?.data?.result?.[0]?.value?.[1]||0).toFixed(0);
+      const req = parseFloat(dReq?.data?.result?.[0]?.value?.[1]||0).toFixed(2);
+      const lat = parseFloat(dLat?.data?.result?.[0]?.value?.[1]||0).toFixed(0);
+
+      promDisponible = true;
+      document.getElementById('k8sNotice').style.display = 'none';
+
+      document.getElementById('k8sPods').textContent = '—'; // pods requiere k8s API, no prom sencillo
+      document.getElementById('k8sCPU').textContent  = cpu + 'm';
+      document.getElementById('k8sMem').textContent  = mem + 'MB';
+      document.getElementById('k8sReq').textContent  = req + '/s';
+      document.getElementById('k8sCPUBar').style.width = Math.min(cpu/200*100,100) + '%';
+      document.getElementById('k8sMemBar').style.width = Math.min(mem/512*100,100) + '%';
+      document.getElementById('k8sReqBar').style.width = Math.min(req/10*100,100)  + '%';
+
+      const maxPoints = 20;
+      timeLabels.push(now);
+      cpuHistory.push(parseFloat(cpu));
+      memHistory.push(parseFloat(mem));
+      reqHistory.push(parseFloat(req));
+      latHistory.push(parseFloat(lat));
+      if (timeLabels.length > maxPoints) {
+        timeLabels.shift(); cpuHistory.shift(); memHistory.shift(); reqHistory.shift(); latHistory.shift();
+      }
+      [[chartK8sCPU,cpuHistory],[chartK8sMem,memHistory],[chartK8sReq,reqHistory],[chartK8sLatency,latHistory]].forEach(([c,h])=>{
+        c.data.labels = [...timeLabels];
+        c.data.datasets[0].data = [...h];
+        c.update('none');
+      });
+    } catch {
+      // ✅ SIN datos inventados: muestra aviso y deja las tarjetas en "—"
+      if (!promDisponible) {
+        document.getElementById('k8sNotice').style.display = 'block';
+      }
+    }
+  }
+
+  // ════════════════════════════════════════════
+  // INIT
+  // ════════════════════════════════════════════
+  async function cargarTodo() {
+    await cargarNotificaciones();
+    await cargarProductosPorCategoria();
+    await cargarPedidosPorCategoria();
+    await actualizarK8s();
+    await actualizarChartErrores();
+  }
+
+  function init() {
+    initChartErrores();
+    initK8sCharts();
+    cargarTodo();
+    setInterval(actualizarK8s,          10000);
+    setInterval(actualizarChartErrores, 10000);
+    setInterval(cargarNotificaciones,   30000);
+  }
+
+  init();
+
+  function cerrarSesion() { localStorage.clear(); window.location.href = 'index.html'; }
+</script>
+</body>
+</html>
