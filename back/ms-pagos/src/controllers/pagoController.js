@@ -9,20 +9,21 @@ const crearPago = async (req, res) => {
     }
 
     const numero_factura = `FAC-${Date.now()}-${usuario_id}-${compra_id}`;
+    const estado = metodo_pago === 'rechazado' ? 'rechazado' : 'aprobado';
 
     const transaccion = await Transaccion.create({
       compra_id, usuario_id, monto,
       metodo_pago: metodo_pago || 'efectivo',
-      numero_factura, estado: 'aprobado'
+      numero_factura, estado
     });
 
-    // Notificar (no bloquea la respuesta si falla)
+    // Notificar según estado
     axios.post(`${process.env.MS_NOTIFICACIONES_URL}/notificaciones/pago`, {
-      usuario_id, estado: 'aprobado', numero_factura
+      usuario_id, estado, numero_factura
     }).catch(err => console.warn('No se pudo notificar pago:', err.message));
 
     res.status(201).json({
-      mensaje: 'Pago procesado exitosamente',
+      mensaje: estado === 'aprobado' ? 'Pago procesado exitosamente' : 'Pago rechazado',
       transaccion: {
         id: transaccion.id,
         numero_factura: transaccion.numero_factura,
