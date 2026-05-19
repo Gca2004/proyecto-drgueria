@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs   = require('fs');
 const axios = require('axios');
 const {
   ensureDirectories,
@@ -13,106 +13,100 @@ const { runPythonScript } = require('./pythonRunner');
 
 const scanMaxPagos = parseInt(process.env.PAGOS_SCAN_MAX_ID || '200', 10);
 
-const api = axios.create({
-  timeout: 10000
-});
+// ── Cliente HTTP con timeout generoso ──────────────────────
+const api = axios.create({ timeout: 8000 });
 
-const persistJson = (filePath, data) => {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+// ── Helper: GET que nunca lanza excepción ──────────────────
+const safeGet = async (url, fallback = []) => {
+  try {
+    const res = await api.get(url);
+    return res.data ?? fallback;
+  } catch {
+    return fallback;
+  }
 };
+
+const persistJson = (filePath, data) =>
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
 
 const parseDetalleAuditoria = (detalle) => {
   if (!detalle) return {};
   if (typeof detalle === 'object') return detalle;
-
-  try {
-    return JSON.parse(detalle);
-  } catch (error) {
-    return { texto: String(detalle) };
-  }
+  try { return JSON.parse(detalle); } catch { return { texto: String(detalle) }; }
 };
 
-const extraerComprasDesdeAuditoria = (logs = []) => {
-  return logs
+const extraerComprasDesdeAuditoria = (logs = []) =>
+  logs
     .filter(log => String(log.accion || '').toLowerCase() === 'compra_realizada')
     .map(log => {
-      const detalle = parseDetalleAuditoria(log.detalle);
+      const d = parseDetalleAuditoria(log.detalle);
       return {
-        id: log.id,
-        usuario_id: log.usuario_id,
-        producto_id: detalle.producto_id || null,
-        producto_nombre: detalle.producto_nombre || '',
-        categoria: detalle.categoria || '',
-        cantidad: Number(detalle.cantidad || 0),
-        precio_unitario: Number(detalle.precio_unitario || 0),
-        monto_total: Number(detalle.monto_total || 0),
-        stock_restante: Number(detalle.stock_restante || 0),
-        fecha: log.fecha || null
+        id:              log.id,
+        usuario_id:      log.usuario_id,
+        producto_id:     d.producto_id     || null,
+        producto_nombre: d.producto_nombre || '',
+        categoria:       d.categoria       || '',
+        cantidad:        Number(d.cantidad        || 0),
+        precio_unitario: Number(d.precio_unitario || 0),
+        monto_total:     Number(d.monto_total     || 0),
+        stock_restante:  Number(d.stock_restante  || 0),
+        fecha:           log.fecha || null
       };
     });
-};
 
+// ── Obtener pagos escaneando IDs (tolerante a 404) ─────────
 const obtenerPagos = async () => {
   const peticiones = [];
-
   for (let id = 1; id <= scanMaxPagos; id++) {
     peticiones.push(
       api.get(`${process.env.MS_PAGOS_URL}/${id}`)
-        .then(res => res.data)
-        .catch(() => null)
+         .then(r => r.data)
+         .catch(() => null)
     );
   }
-
   const resultados = await Promise.all(peticiones);
   return resultados.filter(item => item && item.id);
 };
 
+// ── Obtener auditoría tolerando cualquier error ────────────
 const obtenerAuditoria = async () => {
-  if (!process.env.MS_AUDITORIA_URL) {
-    return [];
-  }
-
+  if (!process.env.MS_AUDITORIA_URL) return [];
   try {
-    const baseUrl = process.env.MS_AUDITORIA_URL.replace(/\/$/, '');
-    const url = baseUrl.endsWith('/auditoria') ? `${baseUrl}/logs` : `${baseUrl}/auditoria/logs`;
-    const res = await api.get(url);
+    const base = process.env.MS_AUDITORIA_URL.replace(/\/$/, '');
+    const url  = base.endsWith('/auditoria') ? `${base}/logs` : `${base}/auditoria/logs`;
+    const res  = await api.get(url);
     return Array.isArray(res.data) ? res.data : [];
-  } catch (error) {
-    return [];
-  }
+  } catch { return []; }
 };
 
+// ── Obtener compras tolerando cualquier error ──────────────
 const obtenerCompras = async () => {
-  if (!process.env.MS_COMPRAS_URL) {
-    return [];
-  }
-
+  if (!process.env.MS_COMPRAS_URL) return [];
   try {
-    const baseUrl = process.env.MS_COMPRAS_URL.replace(/\/$/, '');
-    const url = baseUrl.endsWith('/compras') ? baseUrl : `${baseUrl}/compras`;
-    const res = await api.get(url);
+    const base = process.env.MS_COMPRAS_URL.replace(/\/$/, '');
+    const url  = base.endsWith('/compras') ? base : `${base}/compras`;
+    const res  = await api.get(url);
     return Array.isArray(res.data) ? res.data : [];
-  } catch (error) {
-    return [];
-  }
+  } catch { return []; }
 };
 
+// ── Recolectar datos de todos los MS en paralelo ───────────
 const obtenerDatosEnVivo = async () => {
   const [
-    usuariosRes,
-    productosRes,
-    proveedoresRes,
-    pedidosRes,
-    alertasRes,
+    usuarios,
+    productos,
+    proveedores,
+    pedidos,
+    alertasRaw,
     compras,
     pagos,
     auditoria
   ] = await Promise.all([
-    api.get(process.env.MS_USUARIOS_URL),
-    api.get(process.env.MS_PRODUCTOS_URL),
-    api.get(process.env.MS_PROVEEDORES_URL),
-    api.get(process.env.MS_PEDIDOS_URL),
-    api.get(`${process.env.MS_PRODUCTOS_URL}/alertas`),
+    safeGet(process.env.MS_USUARIOS_URL,    []),
+    safeGet(process.env.MS_PRODUCTOS_URL,   []),
+    safeGet(process.env.MS_PROVEEDORES_URL, []),
+    safeGet(process.env.MS_PEDIDOS_URL,     []),
+    safeGet(`${process.env.MS_PRODUCTOS_URL}/alertas`, {}),
     obtenerCompras(),
     obtenerPagos(),
     obtenerAuditoria()
@@ -120,82 +114,82 @@ const obtenerDatosEnVivo = async () => {
 
   return {
     generado_en: new Date().toISOString(),
-    usuarios: usuariosRes.data,
-    productos: productosRes.data,
-    proveedores: proveedoresRes.data,
-    pedidos: pedidosRes.data,
-    alertas: alertasRes.data,
+    usuarios:    Array.isArray(usuarios)    ? usuarios    : [],
+    productos:   Array.isArray(productos)   ? productos   : [],
+    proveedores: Array.isArray(proveedores) ? proveedores : [],
+    pedidos:     Array.isArray(pedidos)     ? pedidos     : [],
+    alertas:     alertasRaw,
     compras,
     pagos,
     auditoria
   };
 };
 
+// ── Resumen en tiempo real ─────────────────────────────────
 const obtenerResumenTiempoReal = async () => {
   const datos = await obtenerDatosEnVivo();
 
-  const productos = Array.isArray(datos.productos) ? datos.productos : [];
-  const pedidos = Array.isArray(datos.pedidos) ? datos.pedidos : [];
-  const compras = Array.isArray(datos.compras) ? datos.compras : [];
-  const pagos = Array.isArray(datos.pagos) ? datos.pagos : [];
-  const usuarios = Array.isArray(datos.usuarios) ? datos.usuarios : [];
-  const alertas = Array.isArray(datos.alertas?.productos_con_stock_bajo)
-    ? datos.alertas.productos_con_stock_bajo
-    : [];
-  const comprasAuditoria = extraerComprasDesdeAuditoria(Array.isArray(datos.auditoria) ? datos.auditoria : []);
+  const productos  = datos.productos;
+  const pedidos    = datos.pedidos;
+  const compras    = datos.compras;
+  const pagos      = datos.pagos;
+  const usuarios   = datos.usuarios;
+  const alertas    = Array.isArray(datos.alertas?.productos_con_stock_bajo)
+                       ? datos.alertas.productos_con_stock_bajo : [];
 
-  const ingresosDesdeCompras = compras
-    .filter(compra => compra.estado === 'pagado')
-    .reduce((suma, compra) => suma + parseFloat(compra.total || 0), 0);
-  const ventasAprobadas = pagos
-    .filter(pago => pago.estado === 'aprobado')
-    .reduce((suma, pago) => suma + parseFloat(pago.monto || 0), 0);
-  const ingresosDesdeAuditoria = comprasAuditoria
-    .reduce((suma, compra) => suma + Number(compra.monto_total || 0), 0);
-  const totalCompras = compras.length || pagos.length || comprasAuditoria.length;
-  const ingresosTotales = compras.length ? ingresosDesdeCompras : pagos.length ? ventasAprobadas : ingresosDesdeAuditoria;
+  const comprasAuditoria = extraerComprasDesdeAuditoria(datos.auditoria);
 
-  const stockTotal = productos.reduce((suma, producto) => suma + Number(producto.stock_actual || 0), 0);
-  const clientes = usuarios.filter(usuario => usuario.rol === 'cliente').length;
-  const administradores = usuarios.filter(usuario => usuario.rol === 'administrador').length;
-  const pedidosEntregados = pedidos.filter(pedido => pedido.estado_pedido === 'entregado').length;
+  const ingresosCompras   = compras.filter(c => c.estado === 'pagado')
+                                   .reduce((s, c) => s + parseFloat(c.total  || 0), 0);
+  const ingresosPageos    = pagos.filter(p => p.estado === 'aprobado')
+                                  .reduce((s, p) => s + parseFloat(p.monto  || 0), 0);
+  const ingresosAuditoria = comprasAuditoria.reduce((s, c) => s + Number(c.monto_total || 0), 0);
+
+  const totalCompras    = compras.length || pagos.length || comprasAuditoria.length;
+  const ingresosTotales = compras.length ? ingresosCompras
+                         : pagos.length  ? ingresosPageos
+                         : ingresosAuditoria;
+
+  const stockTotal        = productos.reduce((s, p) => s + Number(p.stock_actual || 0), 0);
+  const clientes          = usuarios.filter(u => u.rol === 'cliente').length;
+  const administradores   = usuarios.filter(u => u.rol === 'administrador').length;
+  const pedidosEntregados = pedidos.filter(p => p.estado_pedido === 'entregado').length;
 
   return {
-    generado_en: datos.generado_en,
-    total_usuarios: usuarios.length,
-    total_clientes: clientes,
+    generado_en:          datos.generado_en,
+    total_usuarios:       usuarios.length,
+    total_clientes:       clientes,
     total_administradores: administradores,
-    total_productos: productos.length,
-    stock_total: stockTotal,
+    total_productos:      productos.length,
+    stock_total:          stockTotal,
     productos_stock_bajo: alertas.length,
-    total_proveedores: Array.isArray(datos.proveedores) ? datos.proveedores.length : 0,
-    total_pedidos: pedidos.length,
-    pedidos_entregados: pedidosEntregados,
+    total_proveedores:    datos.proveedores.length,
+    total_pedidos:        pedidos.length,
+    pedidos_entregados:   pedidosEntregados,
     total_pagos_detectados: totalCompras,
-    ingresos_aprobados: Number(ingresosTotales.toFixed(2)),
-    total_logs_auditoria: Array.isArray(datos.auditoria) ? datos.auditoria.length : 0
+    ingresos_aprobados:   Number(ingresosTotales.toFixed(2)),
+    total_logs_auditoria: datos.auditoria.length
   };
 };
 
+// ── Construir dataset CSV ──────────────────────────────────
 const construirDatasetActualizado = async () => {
   ensureDirectories();
-
   const snapshot = await obtenerDatosEnVivo();
   persistJson(snapshotPath, snapshot);
 
   const ejecucion = await runPythonScript(pythonGeneratorPath, [snapshotPath, datasetPath]);
-
-  const lineas = fs.readFileSync(datasetPath, 'utf8').trim().split(/\r?\n/);
-  const totalRegistros = Math.max(lineas.length - 1, 0);
+  const lineas    = fs.readFileSync(datasetPath, 'utf8').trim().split(/\r?\n/);
 
   return {
-    snapshot_path: snapshotPath,
+    snapshot_path:    snapshotPath,
     dataset_csv_path: datasetPath,
-    total_registros: totalRegistros,
-    salida_python: ejecucion.stdout
+    total_registros:  Math.max(lineas.length - 1, 0),
+    salida_python:    ejecucion.stdout
   };
 };
 
+// ── Ejecutar análisis Python/Spark ─────────────────────────
 const ejecutarAnalisisPython = async (datasetCsvPath) => {
   ensureDirectories();
 
@@ -205,13 +199,13 @@ const ejecutarAnalisisPython = async (datasetCsvPath) => {
   );
 
   const archivos = fs.readdirSync(outputDir)
-    .filter(nombre => nombre.endsWith('.png') || nombre.endsWith('.pdf'));
+    .filter(n => n.endsWith('.png') || n.endsWith('.pdf'));
 
   return {
-    resultados_path: resultadosPath,
-    output_dir: outputDir,
+    resultados_path:    resultadosPath,
+    output_dir:         outputDir,
     archivos_generados: archivos,
-    salida_python: ejecucion.stdout
+    salida_python:      ejecucion.stdout
   };
 };
 

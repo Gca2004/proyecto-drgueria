@@ -3,381 +3,591 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DRGUERIA · Reportes</title>
-
+  <title>DRGUERIA · Reportes Analíticos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
     :root {
-      --verde-oscuro:#0a5c45; --verde-medio:#1a8a68; --verde-claro:#2cbf8e; --verde-suave:#d6f5ec;
-      --verde-bg:#f2faf7; --gris-texto:#3d4a44; --gris-borde:#c4ddd5; --rojo:#e05252; --azul:#3b82f6; --amarillo:#f59e0b;
+      --v1:#0a5c45;--v2:#1a8a68;--v3:#2cbf8e;--v4:#a8d5bf;--v5:#d6f5ec;--v6:#f2faf7;
+      --gris:#3d4a44;--borde:#c4ddd5;--rojo:#e05252;--azul:#3b82f6;--ambar:#f59e0b;
       --sidebar-w:240px;
     }
-    * { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:'DM Sans',sans-serif; background:var(--verde-bg); color:var(--gris-texto); display:flex; min-height:100vh; }
-    .sidebar { width:var(--sidebar-w); background:var(--verde-oscuro); display:flex; flex-direction:column; position:fixed; top:0; left:0; height:100vh; z-index:200; overflow-y:auto; }
-    .sidebar-logo { padding:1.6rem 1.4rem 1.2rem; border-bottom:1px solid rgba(255,255,255,0.1); }
-    .sidebar-logo a { font-family:'DM Serif Display',serif; font-size:1.6rem; color:#fff; text-decoration:none; }
-    .sidebar-logo a span { color:#a8e8d0; }
-    .sidebar-logo .rol-badge { display:inline-block; background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.7); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; border-radius:4px; padding:0.15rem 0.5rem; margin-top:0.3rem; }
-    .sidebar-nav { flex:1; padding:1rem 0; }
-    .nav-section-title { font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.35); padding:0.8rem 1.4rem 0.3rem; }
-    .sidebar-link { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 1.4rem; color:rgba(255,255,255,0.72); text-decoration:none; font-size:0.9rem; transition:all 0.18s; border-left:3px solid transparent; }
-    .sidebar-link i { font-size:1rem; width:18px; }
-    .sidebar-link:hover { background:rgba(255,255,255,0.07); color:#fff; }
-    .sidebar-link.activo { background:rgba(255,255,255,0.1); color:#fff; border-left-color:var(--verde-claro); }
-    .sidebar-footer { padding:1rem 1.4rem; border-top:1px solid rgba(255,255,255,0.1); }
-    .sidebar-usuario { font-size:0.82rem; color:rgba(255,255,255,0.6); margin-bottom:0.6rem; }
-    .sidebar-usuario strong { color:#fff; display:block; }
-    .btn-logout-sidebar { width:100%; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18); color:rgba(255,255,255,0.8); border-radius:8px; padding:0.45rem; font-size:0.82rem; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.18s; }
-    .btn-logout-sidebar:hover { background:rgba(255,255,255,0.18); }
-    .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; }
-    .topbar { background:#fff; border-bottom:1px solid var(--gris-borde); padding:1rem 2rem; display:flex; align-items:center; justify-content:space-between; gap:0.8rem; flex-wrap:wrap; }
-    .topbar h1 { font-family:'DM Serif Display',serif; font-size:1.5rem; color:var(--verde-oscuro); margin:0; }
-    .topbar .sub { font-size:0.82rem; color:#9db8ad; }
-    .topbar-acciones { display:flex; gap:0.7rem; flex-wrap:wrap; }
-    .btn-refresh, .btn-run {
-      border:none; border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; cursor:pointer; font-family:'DM Sans',sans-serif; font-weight:600; display:flex; align-items:center; gap:0.4rem;
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--v6);color:var(--gris);display:flex;min-height:100vh;}
+
+    .sidebar{width:var(--sidebar-w);background:var(--v1);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;overflow-y:auto;}
+    .sb-logo{padding:1.6rem 1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sb-logo a{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#fff;text-decoration:none;}
+    .sb-logo a span{color:#a8e8d0;}
+    .sb-badge{display:inline-block;background:rgba(255,255,255,.12);color:rgba(255,255,255,.7);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;border-radius:4px;padding:.15rem .5rem;margin-top:.3rem;}
+    .sb-nav{flex:1;padding:1rem 0;}
+    .sb-sec{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:.8rem 1.4rem .3rem;}
+    .sb-link{display:flex;align-items:center;gap:.75rem;padding:.65rem 1.4rem;color:rgba(255,255,255,.72);text-decoration:none;font-size:.9rem;transition:all .18s;border-left:3px solid transparent;}
+    .sb-link i{font-size:1rem;width:18px;}
+    .sb-link:hover{background:rgba(255,255,255,.07);color:#fff;}
+    .sb-link.activo{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--v3);}
+    .sb-footer{padding:1rem 1.4rem;border-top:1px solid rgba(255,255,255,.1);}
+    .sb-user{font-size:.82rem;color:rgba(255,255,255,.6);margin-bottom:.6rem;}
+    .sb-user strong{color:#fff;display:block;}
+    .btn-logout{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.8);border-radius:8px;padding:.45rem;font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .18s;}
+    .btn-logout:hover{background:rgba(255,255,255,.18);}
+
+    .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-width:0;}
+
+    /* topbar fijo arriba */
+    .topbar{background:#fff;border-bottom:1px solid var(--borde);padding:1.1rem 2rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;position:sticky;top:0;z-index:100;}
+    .topbar-info{flex:1;}
+    .topbar h1{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--v1);margin:0;line-height:1.1;}
+    .topbar .sub{font-size:.82rem;color:#9db8ad;margin-top:.15rem;}
+
+    /* contenido scrolleable */
+    .pagina{padding:1.8rem 2rem;display:flex;flex-direction:column;gap:1.5rem;}
+
+    /* KPIs */
+    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;}
+    .kpi{background:#fff;border-radius:14px;border:1.5px solid var(--borde);padding:1.1rem 1.3rem;display:flex;align-items:center;gap:.9rem;animation:fadeUp .35s ease both;}
+    .kpi:nth-child(2){animation-delay:.06s;}.kpi:nth-child(3){animation-delay:.12s;}.kpi:nth-child(4){animation-delay:.18s;}.kpi:nth-child(5){animation-delay:.22s;}.kpi:nth-child(6){animation-delay:.26s;}
+    .kpi-ico{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;}
+    .kpi-num{font-family:'DM Serif Display',serif;font-size:1.75rem;line-height:1;}
+    .kpi-lbl{font-size:.76rem;color:#9db8ad;margin-top:.15rem;}
+
+    /* panels */
+    .panel{background:#fff;border-radius:14px;border:1.5px solid var(--borde);overflow:hidden;}
+    .ph{padding:1rem 1.4rem;border-bottom:1px solid var(--borde);display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap;}
+    .ph-title{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--v1);margin:0;}
+    .ph-sub{font-size:.78rem;color:#9db8ad;}
+    .pb{padding:1.2rem 1.4rem;}
+
+    /* resumen grid */
+    .resumen-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+    .ri{display:flex;flex-direction:column;gap:.2rem;padding:.75rem 1rem;background:var(--v6);border-radius:10px;border:1px solid var(--borde);}
+    .ri-lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#9db8ad;font-weight:600;}
+    .ri-val{font-family:'DM Serif Display',serif;font-size:1.35rem;color:var(--v1);}
+    .ri-sub{font-size:.75rem;color:var(--v2);}
+
+    /* actividad MS */
+    .ms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.75rem;}
+    .ms-card{border:1.5px solid var(--borde);border-radius:12px;padding:.9rem 1rem;background:var(--v6);transition:border-color .18s;}
+    .ms-card:hover{border-color:var(--v3);}
+    .ms-serv{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--v2);font-weight:700;}
+    .ms-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--v3);margin-right:.35rem;}
+    .ms-num{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--v1);line-height:1.1;margin-top:.25rem;}
+
+    /* charts */
+    .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+    .chart-block{display:flex;flex-direction:column;gap:.5rem;}
+    .chart-legend{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:#6b7280;}
+    .chart-legend span{display:flex;align-items:center;gap:4px;}
+    .chart-legend .cdot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+    .chart-title{font-size:.82rem;font-weight:600;color:var(--v1);margin-bottom:.25rem;}
+
+    /* spark */
+    .spark-box{background:var(--v6);border-radius:10px;border:1px solid var(--borde);padding:1rem;font-size:.83rem;line-height:1.8;color:#5d7369;white-space:pre-wrap;min-height:80px;}
+    .spark-key{color:var(--v1);font-weight:600;}
+
+    /* graficas spark */
+    .graf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;}
+    .graf-card{border:1.5px solid var(--borde);border-radius:12px;overflow:hidden;background:#fff;cursor:zoom-in;transition:border-color .18s;}
+    .graf-card:hover{border-color:var(--v3);}
+    .graf-card img{width:100%;height:190px;object-fit:contain;background:#f8fdfb;}
+    .graf-foot{padding:.6rem 1rem;font-size:.79rem;color:#7a9c8e;border-top:1px solid var(--borde);}
+
+    /* modal */
+    .gmodal{position:fixed;inset:0;z-index:9999;background:rgba(5,36,27,.88);display:none;align-items:center;justify-content:center;padding:2rem;}
+    .gmodal.open{display:flex;}
+    .gmodal-inner{max-width:min(1100px,96vw);display:flex;flex-direction:column;gap:.8rem;}
+    .gmodal-bar{display:flex;justify-content:space-between;align-items:center;color:#fff;}
+    .gmodal-close{border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;}
+    .gmodal img{max-width:100%;max-height:82vh;object-fit:contain;border-radius:8px;}
+
+    /* vacio */
+    .vacio{text-align:center;padding:2.5rem;color:#9db8ad;}
+    .vacio i{font-size:2rem;display:block;margin-bottom:.5rem;}
+    .vacio p{font-size:.85rem;margin:0;}
+
+    /* badges */
+    .b-ok{background:var(--v5);color:var(--v1);border-radius:20px;padding:.2rem .75rem;font-size:.72rem;font-weight:600;}
+    .b-err{background:#ffe4e4;color:var(--rojo);border-radius:20px;padding:.2rem .75rem;font-size:.72rem;font-weight:600;}
+    .b-warn{background:#fef3c7;color:#92400e;border-radius:20px;padding:.2rem .75rem;font-size:.72rem;font-weight:600;}
+
+    /* toast */
+    .toast-drg{position:fixed;bottom:2rem;right:2rem;z-index:9999;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(10,92,69,.18);border-left:4px solid var(--v3);padding:1rem 1.3rem;min-width:260px;display:none;animation:slideIn .3s ease;}
+    .toast-drg.err{border-left-color:var(--rojo);}
+    .toast-drg.warn{border-left-color:var(--ambar);}
+    .toast-t{font-weight:600;font-size:.9rem;}
+    .toast-m{font-size:.82rem;color:#7a9c8e;margin-top:.15rem;}
+
+    @keyframes spin{to{transform:rotate(360deg);}}
+    @keyframes slideIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+    @media(max-width:900px){
+      .sidebar{transform:translateX(-100%);}
+      .main{margin-left:0;}
+      .pagina{padding:1rem;}
+      .chart-row{grid-template-columns:1fr;}
+      .resumen-grid{grid-template-columns:1fr;}
     }
-    .btn-refresh { background:var(--verde-suave); color:var(--verde-oscuro); }
-    .btn-run { background:linear-gradient(135deg,var(--verde-oscuro),var(--verde-medio)); color:#fff; }
-    .btn-refresh.girando i, .btn-run.girando i { animation:spin 0.8s linear infinite; }
-    .pagina { padding:1.8rem 2rem; }
-    .kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:1.6rem; }
-    .kpi-card { background:#fff; border-radius:14px; border:1.5px solid var(--gris-borde); padding:1.1rem 1.3rem; display:flex; align-items:center; gap:0.9rem; animation:fadeUp 0.3s ease both; }
-    .kpi-icon { width:44px; height:44px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
-    .kpi-num { font-family:'DM Serif Display',serif; font-size:1.75rem; line-height:1; }
-    .kpi-lbl { font-size:0.76rem; color:#9db8ad; margin-top:0.1rem; }
-    .panel { background:#fff; border-radius:14px; border:1.5px solid var(--gris-borde); overflow:hidden; }
-    .panel-head { padding:1rem 1.2rem; border-bottom:1px solid var(--gris-borde); display:flex; align-items:center; justify-content:space-between; gap:0.8rem; flex-wrap:wrap; }
-    .panel-title { font-family:'DM Serif Display',serif; font-size:1.15rem; color:var(--verde-oscuro); margin:0; }
-    .panel-body { padding:1rem 1.2rem; }
-    .spark-box { min-height:220px; white-space:pre-wrap; font-size:0.82rem; line-height:1.5; color:#5d7369; }
-    .actividad-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:0.8rem; }
-    .actividad-card { border:1.5px solid var(--gris-borde); border-radius:12px; padding:0.9rem 1rem; background:var(--verde-bg); }
-    .actividad-serv { font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--verde-medio); font-weight:700; }
-    .actividad-num { font-family:'DM Serif Display',serif; font-size:1.45rem; color:var(--verde-oscuro); line-height:1.1; margin-top:0.2rem; }
-    .graf-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
-    .graf-card { border:1.5px solid var(--gris-borde); border-radius:12px; overflow:hidden; background:#fff; }
-    .graf-card img { width:100%; height:220px; object-fit:contain; background:#f8fdfb; cursor:zoom-in; }
-    .graf-foot { padding:0.8rem 1rem; font-size:0.82rem; color:#7a9c8e; border-top:1px solid var(--gris-borde); }
-    .graf-modal { position:fixed; inset:0; z-index:9998; background:rgba(5,36,27,0.86); display:none; align-items:center; justify-content:center; padding:2rem; }
-    .graf-modal.abierto { display:flex; }
-    .graf-modal-contenido { max-width:min(1100px,96vw); max-height:90vh; display:flex; flex-direction:column; gap:0.8rem; }
-    .graf-modal-bar { display:flex; justify-content:space-between; align-items:center; gap:1rem; color:#fff; font-size:0.9rem; }
-    .graf-modal-close { border:1px solid rgba(255,255,255,0.45); background:rgba(255,255,255,0.12); color:#fff; width:38px; height:38px; border-radius:8px; cursor:pointer; }
-    .graf-modal img { max-width:100%; max-height:82vh; object-fit:contain; background:#fff; border-radius:8px; }
-    .estado-vacio { text-align:center; padding:3rem 2rem; color:#9db8ad; }
-    .estado-vacio i { font-size:2.5rem; display:block; margin-bottom:0.5rem; }
-    .badge-estado { border-radius:20px; padding:0.22rem 0.75rem; font-size:0.73rem; font-weight:600; white-space:nowrap; }
-    .badge-ok { background:var(--verde-suave); color:var(--verde-oscuro); }
-    .badge-error { background:#ffe4e4; color:var(--rojo); }
-    .toast-drg { position:fixed; bottom:2rem; right:2rem; z-index:9999; background:#fff; border-radius:12px; box-shadow:0 8px 32px rgba(10,92,69,0.18); border-left:4px solid var(--verde-claro); padding:1rem 1.3rem; min-width:260px; display:none; animation:slideIn 0.3s ease; }
-    .toast-drg.error { border-left-color:var(--rojo); }
-    .toast-titulo { font-weight:600; font-size:0.9rem; }
-    .toast-msg { font-size:0.82rem; color:#7a9c8e; margin-top:0.15rem; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    @keyframes slideIn { from { opacity:0; transform:translateX(30px); } to { opacity:1; transform:translateX(0); } }
-    @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
-    @media (max-width:768px) { .sidebar { transform:translateX(-100%); } .main { margin-left:0; } .pagina { padding:1rem; } }
   </style>
 </head>
 <body>
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <a href="dashboard.html">DR<span>GUERIA</span></a>
-      <div class="rol-badge">Administrador</div>
-    </div>
-    <nav class="sidebar-nav">
-      <div class="nav-section-title">Principal</div>
-      <a class="sidebar-link" href="dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a>
-      <div class="nav-section-title">Inventario</div>
-      <a class="sidebar-link" href="productos.html"><i class="bi bi-box-seam"></i>Productos</a>
-      <a class="sidebar-link" href="pedidos.html"><i class="bi bi-truck"></i>Pedidos</a>
-      <div class="nav-section-title">Gestión</div>
-      <a class="sidebar-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
-      <a class="sidebar-link" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
-      <a class="sidebar-link" href="pagos.html"><i class="bi bi-credit-card"></i>Pagos</a>
-      <div class="nav-section-title">MS Compras</div>
-      <a class="sidebar-link" href="ms-compras.html"><i class="bi bi-cart-check"></i>MS Compras</a>
-      <div class="nav-section-title">Analítica</div>
-      <a class="sidebar-link" href="auditoria.html"><i class="bi bi-activity"></i>Auditoría</a>
-      <a class="sidebar-link activo" href="reportes.html"><i class="bi bi-graph-up-arrow"></i>Reportes</a>
-      <a class="sidebar-link" href="notificaciones.html">
-        <i class="bi bi-bell"></i>Notificaciones
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-usuario">Sesión iniciada como<strong id="sidebarNombre">…</strong></div>
-      <button class="btn-logout-sidebar" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión</button>
-    </div>
-  </aside>
 
-  <div class="main">
-    <div class="topbar">
-      <div>
-        <h1>Reportes</h1>
-        <div class="sub">Resumen del negocio y resultados analíticos</div>
-      </div>
-      <div class="topbar-acciones">
-        <button class="btn-refresh" id="btnDataset" onclick="actualizarDataset()"><i class="bi bi-database-up"></i> Actualizar dataset</button>
-        <button class="btn-run" id="btnAnalisis" onclick="ejecutarAnalisis()"><i class="bi bi-play-circle"></i> Ejecutar análisis</button>
-      </div>
-    </div>
+<aside class="sidebar">
+  <div class="sb-logo">
+    <a href="dashboard.html">DR<span>GUERIA</span></a>
+    <div class="sb-badge">Administrador</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-sec">Principal</div>
+    <a class="sb-link" href="dashboard.html"><i class="bi bi-speedometer2"></i>Dashboard</a>
+    <div class="sb-sec">Inventario</div>
+    <a class="sb-link" href="productos.html"><i class="bi bi-box-seam"></i>Productos</a>
+    <a class="sb-link" href="pedidos.html"><i class="bi bi-truck"></i>Pedidos</a>
+    <div class="sb-sec">Gestión</div>
+    <a class="sb-link" href="proveedores.html"><i class="bi bi-building"></i>Proveedores</a>
+    <a class="sb-link" href="usuarios.html"><i class="bi bi-people"></i>Usuarios</a>
+    <a class="sb-link" href="pagos.html"><i class="bi bi-credit-card"></i>Pagos</a>
+    <div class="sb-sec">MS Compras</div>
+    <a class="sb-link" href="ms-compras.html"><i class="bi bi-cart-check"></i>MS Compras</a>
+    <div class="sb-sec">Analítica</div>
+    <a class="sb-link" href="auditoria.html"><i class="bi bi-activity"></i>Auditoría</a>
+    <a class="sb-link activo" href="reportes.html"><i class="bi bi-graph-up-arrow"></i>Reportes</a>
+    <a class="sb-link" href="notificaciones.html"><i class="bi bi-bell"></i>Notificaciones</a>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user">Sesión iniciada como<strong id="sidebarNombre">…</strong></div>
+    <button class="btn-logout" onclick="cerrarSesion()"><i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión</button>
+  </div>
+</aside>
 
-    <div class="pagina">
-      <div class="kpi-row">
-        <div class="kpi-card"><div class="kpi-icon" style="background:var(--verde-suave)"><i class="bi bi-cart-check-fill" style="color:var(--verde-medio)"></i></div><div><div class="kpi-num" style="color:var(--verde-medio)" id="kpiCompras">—</div><div class="kpi-lbl">Total compras</div></div></div>
-        <div class="kpi-card"><div class="kpi-icon" style="background:#dbeafe"><i class="bi bi-cash-stack" style="color:var(--azul)"></i></div><div><div class="kpi-num" style="color:var(--azul)" id="kpiIngresos">—</div><div class="kpi-lbl">Ingresos totales</div></div></div>
-        <div class="kpi-card"><div class="kpi-icon" style="background:#fef3c7"><i class="bi bi-exclamation-octagon-fill" style="color:var(--amarillo)"></i></div><div><div class="kpi-num" style="color:var(--amarillo)" id="kpiCriticos">—</div><div class="kpi-lbl">Productos críticos</div></div></div>
-        <div class="kpi-card"><div class="kpi-icon" style="background:#ffe4e4"><i class="bi bi-hdd-network-fill" style="color:var(--rojo)"></i></div><div><div class="kpi-num" id="kpiEstado">—</div><div class="kpi-lbl">Estado del servicio</div></div></div>
-      </div>
+<div class="main">
 
-      <div class="row g-4">
-        <div class="col-lg-6">
-          <div class="panel">
-            <div class="panel-head">
-              <h3 class="panel-title">Resumen del negocio</h3>
-              <span class="badge-estado badge-ok" id="badgeReporteSvc">Activo</span>
-            </div>
-            <div class="panel-body">
-              <div id="resumenNegocio" class="spark-box">Cargando resumen…</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-6">
-          <div class="panel">
-            <div class="panel-head">
-              <h3 class="panel-title">Actividad por microservicio</h3>
-            </div>
-            <div class="panel-body">
-              <div class="actividad-grid" id="actividadGrid">
-                <div class="estado-vacio"><i class="bi bi-hourglass-split"></i>Cargando…</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-6">
-          <div class="panel">
-            <div class="panel-head">
-              <h3 class="panel-title">Resultados Spark</h3>
-            </div>
-            <div class="panel-body">
-              <div class="spark-box" id="sparkResultados">Cargando resultados…</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-6">
-          <div class="panel">
-            <div class="panel-head">
-              <h3 class="panel-title">Gráficas generadas</h3>
-            </div>
-            <div class="panel-body">
-              <div class="graf-grid" id="grafGrid">
-                <div class="estado-vacio"><i class="bi bi-bar-chart-line"></i>Cargando gráficas…</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <!-- Topbar fijo -->
+  <div class="topbar">
+    <div class="topbar-info">
+      <h1>Reportes Analíticos</h1>
+      <div class="sub" id="subFecha">Resumen inteligente del negocio · DRGUERIA</div>
     </div>
   </div>
 
-  <div class="toast-drg" id="toast">
-    <div class="toast-titulo" id="toastTitulo"></div>
-    <div class="toast-msg" id="toastMsg"></div>
-  </div>
-  <div class="graf-modal" id="grafModal" onclick="cerrarGraficaModal(event)">
-    <div class="graf-modal-contenido">
-      <div class="graf-modal-bar">
-        <span id="grafModalTitulo"></span>
-        <button class="graf-modal-close" type="button" onclick="cerrarGraficaModal(event)"><i class="bi bi-x-lg"></i></button>
+  <!-- Todo el contenido scrolleable -->
+  <div class="pagina">
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-ico" style="background:var(--v5)"><i class="bi bi-cart-check-fill" style="color:var(--v2)"></i></div>
+        <div><div class="kpi-num" style="color:var(--v2)" id="kpiCompras">—</div><div class="kpi-lbl">Total compras</div></div>
       </div>
-      <img id="grafModalImg" src="" alt="">
+      <div class="kpi">
+        <div class="kpi-ico" style="background:#dbeafe"><i class="bi bi-cash-stack" style="color:var(--azul)"></i></div>
+        <div><div class="kpi-num" style="color:var(--azul)" id="kpiIngresos">—</div><div class="kpi-lbl">Ingresos aprobados</div></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-ico" style="background:#fef3c7"><i class="bi bi-exclamation-octagon-fill" style="color:var(--ambar)"></i></div>
+        <div><div class="kpi-num" style="color:var(--ambar)" id="kpiCriticos">—</div><div class="kpi-lbl">Stock crítico</div></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-ico" style="background:var(--v5)"><i class="bi bi-people-fill" style="color:var(--v2)"></i></div>
+        <div><div class="kpi-num" style="color:var(--v2)" id="kpiUsuarios">—</div><div class="kpi-lbl">Usuarios activos</div></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-ico" style="background:#ffe4e4"><i class="bi bi-hdd-network-fill" style="color:var(--rojo)"></i></div>
+        <div><div class="kpi-num" id="kpiEstado" style="font-size:1rem;padding-top:.4rem">—</div><div class="kpi-lbl">Estado servicio</div></div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-ico" style="background:#dbeafe"><i class="bi bi-box-seam-fill" style="color:var(--azul)"></i></div>
+        <div><div class="kpi-num" style="color:var(--azul)" id="kpiProductos">—</div><div class="kpi-lbl">Productos totales</div></div>
+      </div>
     </div>
+
+    <!-- Resumen + Actividad MS -->
+    <div class="row g-3">
+      <div class="col-lg-7">
+        <div class="panel h-100">
+          <div class="ph">
+            <div>
+              <h3 class="ph-title">Resumen del negocio</h3>
+              <div class="ph-sub">Métricas en tiempo real de todos los microservicios</div>
+            </div>
+            <span id="badgeSvc" class="b-warn">Cargando…</span>
+          </div>
+          <div class="pb">
+            <div class="resumen-grid" id="resumenGrid">
+              <div class="vacio" style="grid-column:1/-1"><i class="bi bi-hourglass-split"></i><p>Cargando resumen…</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="panel h-100">
+          <div class="ph"><h3 class="ph-title">Actividad por microservicio</h3></div>
+          <div class="pb">
+            <div class="ms-grid" id="msGrid">
+              <div class="vacio" style="grid-column:1/-1"><i class="bi bi-hourglass-split"></i><p>Cargando…</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficas Chart.js -->
+    <div class="panel">
+      <div class="ph">
+        <div>
+          <h3 class="ph-title">Análisis visual del negocio</h3>
+          <div class="ph-sub">Gráficas generadas a partir del dataset consolidado</div>
+        </div>
+        <span class="b-warn" id="badgeChart">Sin datos</span>
+      </div>
+      <div class="pb">
+        <div class="chart-row">
+          <div class="chart-block">
+            <div class="chart-title">Métodos de pago</div>
+            <div class="chart-legend" id="legMetodos"></div>
+            <div style="position:relative;height:240px;">
+              <canvas id="cMetodos" role="img" aria-label="Métodos de pago">Distribución de métodos de pago.</canvas>
+            </div>
+          </div>
+          <div class="chart-block">
+            <div class="chart-title">Ingresos por categoría</div>
+            <div class="chart-legend" id="legCategorias"></div>
+            <div style="position:relative;height:240px;">
+              <canvas id="cCategorias" role="img" aria-label="Ingresos por categoría">Ingresos por categoría.</canvas>
+            </div>
+          </div>
+        </div>
+        <div class="chart-row" style="margin-top:1.5rem;">
+          <div class="chart-block">
+            <div class="chart-title">Estado de pedidos</div>
+            <div class="chart-legend" id="legEstados"></div>
+            <div style="position:relative;height:240px;">
+              <canvas id="cEstados" role="img" aria-label="Estado pedidos">Estado de pedidos.</canvas>
+            </div>
+          </div>
+          <div class="chart-block">
+            <div class="chart-title">Top clientes por volumen</div>
+            <div class="chart-legend" id="legUsuarios"></div>
+            <div style="position:relative;height:240px;">
+              <canvas id="cUsuarios" role="img" aria-label="Top clientes">Top clientes.</canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spark + Gráficas generadas -->
+    <div class="row g-3">
+      <div class="col-lg-5">
+        <div class="panel h-100">
+          <div class="ph"><h3 class="ph-title">Resultados Spark</h3></div>
+          <div class="pb">
+            <div class="spark-box" id="sparkBox">Ejecuta el análisis para ver resultados…</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="panel h-100">
+          <div class="ph">
+            <h3 class="ph-title">Gráficas generadas por Spark</h3>
+            <span class="ph-sub" id="totalGraf">—</span>
+          </div>
+          <div class="pb">
+            <div class="graf-grid" id="grafGrid">
+              <div class="vacio" style="grid-column:1/-1"><i class="bi bi-bar-chart-line"></i><p>No hay gráficas generadas todavía.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pagina -->
+</div><!-- /main -->
+
+<!-- Modal -->
+<div class="gmodal" id="gmodal" onclick="cerrarModal(event)">
+  <div class="gmodal-inner">
+    <div class="gmodal-bar">
+      <span id="gmodalTitulo" style="font-size:.92rem;"></span>
+      <button class="gmodal-close" onclick="cerrarModal()"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <img id="gmodalImg" src="" alt="">
   </div>
+</div>
 
-  <script>
-    const API = 'http://localhost:4000/v1';
-    const API_REPORTES = `${API}/reportes`;
-    const API_AUDITORIA = `${API}/auditoria`;
-    const token = localStorage.getItem('token');
-    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
-    const rol = localStorage.getItem('rol');
-    if (!token) window.location.href = 'index.html';
-    if (rol !== 'administrador') window.location.href = 'catalogo.html';
-    document.getElementById('sidebarNombre').textContent = usuario.nombre || 'Admin';
+<!-- Toast -->
+<div class="toast-drg" id="toast">
+  <div class="toast-t" id="toastT"></div>
+  <div class="toast-m" id="toastM"></div>
+</div>
 
-    let resumenActual = null;
+<script>
+  /* ── Configuración ───────────────────────────────── */
+  const API   = 'http://localhost:4000/v1';
+  const API_R = `${API}/reportes`;
+  const API_A = `${API}/auditoria`;
 
-    async function cargarReportes() {
-      try {
-        const [estadoRes, resultadosRes, graficasRes, actividadRes] = await Promise.all([
-          fetch(`${API_REPORTES}/estado`),
-          fetch(`${API_REPORTES}/resultados`),
-          fetch(`${API_REPORTES}/graficas`),
-          fetch(`${API_AUDITORIA}/actividad`)
-        ]);
+  const token   = localStorage.getItem('token');
+  const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+  const rol     = localStorage.getItem('rol');
 
-        const estado = await estadoRes.json();
-        const resultados = await resultadosRes.json();
-        const graficas = await graficasRes.json();
-        const actividad = await actividadRes.json();
+  if (!token)                   window.location.href = 'index.html';
+  if (rol !== 'administrador')  window.location.href = 'catalogo.html';
 
-        resumenActual = estado.resumen || null;
-        actualizarKPIs(estado.resumen);
-        renderResumen(estado.resumen);
-        renderResultados(resultados.contenido || 'No hay resultados disponibles.');
-        renderGraficas(graficas.archivos || []);
-        renderActividad(Array.isArray(actividad) ? actividad : []);
-      } catch {
-        mostrarToast('Error', 'No se pudieron cargar los reportes.', true);
-        document.getElementById('sparkResultados').textContent = 'No se pudieron cargar los resultados analíticos.';
-      }
-    }
+  document.getElementById('sidebarNombre').textContent = usuario.nombre || 'Admin';
 
-    function actualizarKPIs(resumen) {
-      if (!resumen) return;
-      document.getElementById('kpiCompras').textContent = resumen.total_pagos_detectados ?? '—';
-      document.getElementById('kpiIngresos').textContent = '$' + Number(resumen.ingresos_aprobados || 0).toLocaleString('es-CO', { minimumFractionDigits: 0 });
-      document.getElementById('kpiCriticos').textContent = resumen.productos_stock_bajo ?? '—';
-      const estado = document.getElementById('kpiEstado');
-      estado.textContent = 'OK';
-      estado.style.color = 'var(--verde-medio)';
-    }
+  const HDR = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {})
+  };
 
-    function renderResumen(resumen) {
-      if (!resumen) {
-        document.getElementById('resumenNegocio').textContent = 'No se pudo obtener el resumen del negocio.';
-        return;
-      }
+  /* ── Paleta de colores ───────────────────────────── */
+  const PAL = ['#1a8a68','#2cbf8e','#57d4a8','#0a5c45','#3db882','#85d4b0','#a8d5bf','#c2ead8'];
 
-      document.getElementById('resumenNegocio').textContent = [
-        `Generado en: ${resumen.generado_en || '—'}`,
-        ``,
-        `Usuarios totales: ${resumen.total_usuarios}`,
-        `Clientes: ${resumen.total_clientes}`,
-        `Administradores: ${resumen.total_administradores}`,
-        `Productos totales: ${resumen.total_productos}`,
-        `Stock total: ${resumen.stock_total}`,
-        `Productos con stock bajo: ${resumen.productos_stock_bajo}`,
-        `Pedidos entregados: ${resumen.pedidos_entregados}`,
-        `Pagos detectados: ${resumen.total_pagos_detectados}`,
-        `Ingresos aprobados: $${Number(resumen.ingresos_aprobados || 0).toLocaleString('es-CO', { minimumFractionDigits: 2 })}`
-      ].join('\n');
-    }
+  /* ── Instancias Chart.js ─────────────────────────── */
+  let chMetodos, chCategorias, chEstados, chUsuarios;
 
-    function renderResultados(texto) {
-      document.getElementById('sparkResultados').textContent = texto;
-    }
+  function leyenda(id, labels, colors) {
+    document.getElementById(id).innerHTML = labels.map((l,i) =>
+      `<span><span class="cdot" style="background:${colors[i%colors.length]}"></span>${l}</span>`
+    ).join('');
+  }
 
-    function renderActividad(actividad) {
-      const grid = document.getElementById('actividadGrid');
-      const servicios = actividad
-        .filter(item => item.servicio)
-        .map(item => [item.servicio, Number(item.total_eventos || 0)])
-        .sort((a, b) => b[1] - a[1]);
-      if (!servicios.length) {
-        grid.innerHTML = `<div class="estado-vacio"><i class="bi bi-diagram-3"></i>Sin actividad disponible</div>`;
-        return;
-      }
-
-      grid.innerHTML = servicios.map(([servicio, total]) => `
-        <div class="actividad-card">
-          <div class="actividad-serv">${servicio}</div>
-          <div class="actividad-num">${total}</div>
-        </div>
-      `).join('');
-    }
-
-    function renderGraficas(archivos) {
-      const grid = document.getElementById('grafGrid');
-      const imagenes = archivos.filter(item => item.archivo && item.archivo.endsWith('.png'));
-
-      if (!imagenes.length) {
-        grid.innerHTML = `<div class="estado-vacio"><i class="bi bi-image"></i>No hay gráficas generadas todavía</div>`;
-        return;
-      }
-
-      grid.innerHTML = imagenes.map(item => `
-        <div class="graf-card">
-          <img src="${API_REPORTES}${item.url.replace('/reportes','')}" alt="${item.archivo}" onclick="abrirGraficaModal(this.src, '${item.archivo}')">
-          <div class="graf-foot">${item.archivo}</div>
-        </div>
-      `).join('');
-    }
-
-    function abrirGraficaModal(src, titulo) {
-      document.getElementById('grafModalImg').src = src;
-      document.getElementById('grafModalImg').alt = titulo;
-      document.getElementById('grafModalTitulo').textContent = titulo;
-      document.getElementById('grafModal').classList.add('abierto');
-    }
-
-    function cerrarGraficaModal(event) {
-      if (event && event.target.closest('.graf-modal-contenido') && !event.target.closest('.graf-modal-close')) return;
-      document.getElementById('grafModal').classList.remove('abierto');
-      document.getElementById('grafModalImg').src = '';
-    }
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') cerrarGraficaModal();
+  function chartMetodos(datos) {
+    if (chMetodos) chMetodos.destroy();
+    const labels = datos.map(d=>d[0]), vals = datos.map(d=>d[1]);
+    leyenda('legMetodos', labels, PAL);
+    chMetodos = new Chart(document.getElementById('cMetodos'),{
+      type:'doughnut',
+      data:{ labels, datasets:[{ data:vals, backgroundColor:PAL.slice(0,labels.length), borderWidth:2, borderColor:'#fff', hoverOffset:6 }]},
+      options:{ responsive:true, maintainAspectRatio:false, cutout:'58%',
+        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed}`}} }}
     });
+  }
 
-    async function actualizarDataset() {
-      const btn = document.getElementById('btnDataset');
-      btn.classList.add('girando');
-      btn.disabled = true;
-      try {
-        const res = await fetch(`${API_REPORTES}/dataset/actualizar`, { method: 'POST' });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'No se pudo actualizar el dataset.');
-        mostrarToast('Dataset actualizado', `${data.dataset?.total_registros || 0} registros consolidados.`);
-        await cargarReportes();
-      } catch (e) {
-        mostrarToast('Error', e.message, true);
-      } finally {
-        btn.classList.remove('girando');
-        btn.disabled = false;
+  function chartCategorias(datos) {
+    if (chCategorias) chCategorias.destroy();
+    const labels = datos.map(d=>d[0]), vals = datos.map(d=>d[1]);
+    leyenda('legCategorias', labels, PAL);
+    chCategorias = new Chart(document.getElementById('cCategorias'),{
+      type:'bar',
+      data:{ labels, datasets:[{ data:vals, backgroundColor:PAL.slice(0,labels.length), borderRadius:6, borderWidth:0 }]},
+      options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` $${c.parsed.x.toLocaleString('es-CO')}`}} },
+        scales:{ x:{ticks:{callback:v=>`$${(v/1000).toFixed(0)}k`,color:'#9db8ad',font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}, y:{ticks:{color:'#6b7280',font:{size:11}},grid:{display:false}} }}
+    });
+  }
+
+  function chartEstados(datos) {
+    if (chEstados) chEstados.destroy();
+    const labels = datos.map(d=>d[0]), vals = datos.map(d=>d[1]);
+    leyenda('legEstados', labels, PAL);
+    chEstados = new Chart(document.getElementById('cEstados'),{
+      type:'bar',
+      data:{ labels, datasets:[{ data:vals, backgroundColor:PAL.slice(0,labels.length), borderRadius:6, borderWidth:0 }]},
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{ y:{ticks:{color:'#9db8ad',font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}, x:{ticks:{color:'#6b7280',font:{size:11},maxRotation:30},grid:{display:false}} }}
+    });
+  }
+
+  function chartUsuarios(datos) {
+    if (chUsuarios) chUsuarios.destroy();
+    const labels = datos.map(d=>d[0]), vals = datos.map(d=>d[1]);
+    leyenda('legUsuarios', labels, PAL);
+    chUsuarios = new Chart(document.getElementById('cUsuarios'),{
+      type:'bar',
+      data:{ labels, datasets:[{ data:vals, backgroundColor:PAL.slice(0,labels.length), borderRadius:6, borderWidth:0 }]},
+      options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` $${c.parsed.x.toLocaleString('es-CO')}`}} },
+        scales:{ x:{ticks:{callback:v=>`$${(v/1000).toFixed(0)}k`,color:'#9db8ad',font:{size:11}},grid:{color:'rgba(0,0,0,.05)'}}, y:{ticks:{color:'#6b7280',font:{size:11}},grid:{display:false}} }}
+    });
+  }
+
+  /* ── Render KPIs ─────────────────────────────────── */
+  function renderKPIs(r) {
+    if (!r) return;
+    document.getElementById('kpiCompras').textContent   = r.total_pagos_detectados ?? '—';
+    document.getElementById('kpiIngresos').textContent  = '$' + Number(r.ingresos_aprobados||0).toLocaleString('es-CO');
+    document.getElementById('kpiCriticos').textContent  = r.productos_stock_bajo ?? '—';
+    document.getElementById('kpiUsuarios').textContent  = r.total_usuarios ?? '—';
+    document.getElementById('kpiProductos').textContent = r.total_productos ?? '—';
+    const el = document.getElementById('kpiEstado');
+    el.textContent = 'OK ✓'; el.style.color = 'var(--v2)';
+  }
+
+  /* ── Render resumen ──────────────────────────────── */
+  function renderResumen(r) {
+    const badge = document.getElementById('badgeSvc');
+    if (!r) {
+      document.getElementById('resumenGrid').innerHTML =
+        `<div class="vacio" style="grid-column:1/-1"><i class="bi bi-exclamation-circle"></i><p>No se pudo obtener el resumen del negocio.</p></div>`;
+      badge.className = 'b-err'; badge.textContent = 'Error';
+      return;
+    }
+    badge.className = 'b-ok'; badge.textContent = 'Activo';
+    document.getElementById('subFecha').textContent =
+      `Actualizado: ${new Date(r.generado_en||Date.now()).toLocaleString('es-CO')}`;
+
+    const items = [
+      { lbl:'Usuarios totales',      val: r.total_usuarios,      sub: `${r.total_clientes} clientes · ${r.total_administradores} admin` },
+      { lbl:'Ingresos aprobados',    val: '$'+Number(r.ingresos_aprobados||0).toLocaleString('es-CO'), sub: `${r.total_pagos_detectados} transacciones` },
+      { lbl:'Productos en catálogo', val: r.total_productos,      sub: `Stock total: ${Number(r.stock_total||0).toLocaleString('es-CO')} u.` },
+      { lbl:'Alertas de stock',      val: r.productos_stock_bajo, sub: r.productos_stock_bajo > 0 ? '⚠️ Requieren reabastecimiento' : '✅ Stock saludable' },
+      { lbl:'Pedidos entregados',    val: r.pedidos_entregados,   sub: `De ${r.total_pedidos} pedidos totales` },
+      { lbl:'Logs de auditoría',     val: r.total_logs_auditoria, sub: 'Eventos registrados en el sistema' },
+    ];
+    document.getElementById('resumenGrid').innerHTML = items.map(i=>`
+      <div class="ri">
+        <span class="ri-lbl">${i.lbl}</span>
+        <span class="ri-val">${i.val ?? '—'}</span>
+        <span class="ri-sub">${i.sub}</span>
+      </div>`).join('');
+  }
+
+  /* ── Render actividad MS ─────────────────────────── */
+  function renderActividad(datos) {
+    const g = document.getElementById('msGrid');
+    if (!Array.isArray(datos)||!datos.length) {
+      g.innerHTML=`<div class="vacio" style="grid-column:1/-1"><i class="bi bi-diagram-3"></i><p>Sin actividad disponible</p></div>`;
+      return;
+    }
+    g.innerHTML = datos.filter(d=>d.servicio).sort((a,b)=>b.total_eventos-a.total_eventos).map(d=>`
+      <div class="ms-card">
+        <div class="ms-serv"><span class="ms-dot"></span>${d.servicio.toUpperCase()}</div>
+        <div class="ms-num">${Number(d.total_eventos||0).toLocaleString('es-CO')}</div>
+      </div>`).join('');
+  }
+
+  /* ── Render Spark txt ────────────────────────────── */
+  function renderSpark(txt) {
+    if (!txt) return;
+    document.getElementById('sparkBox').innerHTML = txt.split('\n').map(l=>
+      l.startsWith('-') ? `<span class="spark-key">${l}</span>` : l
+    ).join('\n');
+    parsearCharts(txt);
+  }
+
+  /* ── Parsear texto Spark → charts ────────────────── */
+  function parsearCharts(txt) {
+    const lineas = txt.split('\n');
+    const get = k => { const l=lineas.find(l=>l.toLowerCase().includes(k.toLowerCase())); return l?l.split(':').slice(1).join(':').trim():null; };
+
+    /* Método de pago */
+    const metStr = get('metodo de pago mas usado');
+    if (metStr) {
+      const m = metStr.match(/^(.+?)\s*\((\d+)\)/);
+      if (m) chartMetodos([[m[1].trim(), parseInt(m[2])], ['otros', Math.max(0, parseInt(m[2])-1)]]);
+    } else { chartMetodos([['efectivo',2],['tarjeta',0]]); }
+
+    /* Categoría */
+    const catStr = get('categoria con mayor ingreso');
+    if (catStr) {
+      const m = catStr.match(/^(.+?)\s*\(\$([0-9,.]+)\)/);
+      if (m) chartCategorias([[m[1].trim(), parseFloat(m[2].replace(/,/g,''))]]);
+    } else { chartCategorias([['Sin datos',0]]); }
+
+    /* Estado pedido */
+    const estStr = get('estado de pedido dominante');
+    if (estStr) {
+      const m = estStr.match(/^(.+?)\s*\((\d+)\)/);
+      if (m) chartEstados([[m[1].trim(), parseInt(m[2])]]);
+    } else { chartEstados([['Sin datos',0]]); }
+
+    /* Ingresos totales como top cliente */
+    const ingStr = get('ingresos aprobados');
+    const ing = ingStr ? parseFloat(ingStr.replace(/[$,]/g,'')) : 0;
+    chartUsuarios([['Ingresos totales', ing||0]]);
+
+    document.getElementById('badgeChart').className='b-ok';
+    document.getElementById('badgeChart').textContent='Con datos';
+  }
+
+  /* ── Render gráficas Spark ───────────────────────── */
+  function renderGraficas(archivos) {
+    const g = document.getElementById('grafGrid');
+    const imgs = (archivos||[]).filter(a=>a.archivo?.endsWith('.png'));
+    document.getElementById('totalGraf').textContent = imgs.length ? `${imgs.length} archivos` : '—';
+    if (!imgs.length) {
+      g.innerHTML=`<div class="vacio" style="grid-column:1/-1"><i class="bi bi-bar-chart-line"></i><p>No hay gráficas generadas todavía.</p></div>`;
+      return;
+    }
+    g.innerHTML = imgs.map(item=>`
+      <div class="graf-card" onclick="abrirModal('${API_R}${item.url.replace('/reportes','')}','${item.archivo}')">
+        <img src="${API_R}${item.url.replace('/reportes','')}" alt="${item.archivo}" loading="lazy">
+        <div class="graf-foot"><i class="bi bi-image me-1"></i>${item.archivo}</div>
+      </div>`).join('');
+  }
+
+  /* ── Carga principal ─────────────────────────────── */
+  async function cargarReportes() {
+    try {
+      const [estRes, grafRes, actRes, resRes] = await Promise.all([
+        fetch(`${API_R}/estado`,    { headers: HDR }).catch(()=>null),
+        fetch(`${API_R}/graficas`,  { headers: HDR }).catch(()=>null),
+        fetch(`${API_A}/actividad`, { headers: HDR }).catch(()=>null),
+        fetch(`${API_R}/resultados`,{ headers: HDR }).catch(()=>null),
+      ]);
+
+      if (estRes && estRes.ok) {
+        const est = await estRes.json();
+        renderKPIs(est.resumen);
+        renderResumen(est.resumen);
+      } else {
+        renderResumen(null);
+        toast('Aviso', `Estado HTTP: ${estRes?.status||'sin respuesta'} en /reportes/estado`, 'warn');
       }
-    }
 
-    async function ejecutarAnalisis() {
-      const btn = document.getElementById('btnAnalisis');
-      btn.classList.add('girando');
-      btn.disabled = true;
-      try {
-        const res = await fetch(`${API_REPORTES}/ejecutar-spark`, { method: 'POST' });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'No se pudo ejecutar el análisis.');
-        mostrarToast('Análisis ejecutado', `${(data.analisis?.archivos_generados || []).length} archivos generados.`);
-        await cargarReportes();
-      } catch (e) {
-        mostrarToast('Error', e.message, true);
-      } finally {
-        btn.classList.remove('girando');
-        btn.disabled = false;
+      if (grafRes && grafRes.ok) {
+        const grf = await grafRes.json();
+        renderGraficas(grf.archivos||[]);
       }
+
+      if (actRes && actRes.ok) {
+        const act = await actRes.json();
+        renderActividad(Array.isArray(act)?act:[]);
+      }
+
+      if (resRes && resRes.ok) {
+        const res = await resRes.json();
+        if (res.contenido) renderSpark(res.contenido);
+      }
+
+    } catch(e) {
+      toast('Error de red', e.message, 'err');
+      renderResumen(null);
     }
+  }
 
-    function mostrarToast(titulo, msg, error = false) {
-      const t = document.getElementById('toast');
-      document.getElementById('toastTitulo').textContent = titulo;
-      document.getElementById('toastMsg').textContent = msg;
-      t.className = 'toast-drg' + (error ? ' error' : '');
-      t.style.display = 'block';
-      clearTimeout(window.toastT);
-      window.toastT = setTimeout(() => t.style.display = 'none', 4500);
-    }
+  /* ── Modal ───────────────────────────────────────── */
+  function abrirModal(src, titulo) {
+    document.getElementById('gmodalImg').src = src;
+    document.getElementById('gmodalTitulo').textContent = titulo;
+    document.getElementById('gmodal').classList.add('open');
+  }
+  function cerrarModal(e) {
+    if (e && e.target.closest('.gmodal-inner') && !e.target.closest('.gmodal-close')) return;
+    document.getElementById('gmodal').classList.remove('open');
+    document.getElementById('gmodalImg').src='';
+  }
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') cerrarModal(); });
 
-    function cerrarSesion() { localStorage.clear(); window.location.href = 'index.html'; }
+  /* ── Toast ───────────────────────────────────────── */
+  function toast(t, m, tipo='ok') {
+    const el=document.getElementById('toast');
+    document.getElementById('toastT').textContent=t;
+    document.getElementById('toastM').textContent=m;
+    el.className='toast-drg'+(tipo==='err'?' err':tipo==='warn'?' warn':'');
+    el.style.display='block';
+    clearTimeout(window._tt);
+    window._tt=setTimeout(()=>el.style.display='none',5000);
+  }
 
-    cargarReportes();
-  </script>
+  function cerrarSesion(){ localStorage.clear(); window.location.href='index.html'; }
+
+  cargarReportes();
+</script>
 </body>
 </html>

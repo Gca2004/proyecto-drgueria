@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: ms-pagos
-          image: drgueria/ms-pagos:latest
+          image: gustavocoque/ms-pagos:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 3004

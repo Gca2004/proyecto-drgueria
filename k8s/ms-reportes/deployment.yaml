@@ -17,7 +17,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: ms-reportes
-          image: drgueria/ms-reportes:latest
+          image: gustavocoque/ms-reportes:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 3007

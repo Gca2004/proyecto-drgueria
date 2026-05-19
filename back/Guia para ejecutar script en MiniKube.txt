@@ -1,0 +1,29 @@
+
+primero tener todo funcionando:
+
+
+el archivo seed.ps1, guarda los datos de las bases, para ejecutar el script se hace los siguientes pasos
+
+
+pirmero desde el cmd o powershell creamos los usuarios clientes y admin, asi toca para saber cual es la contraseña para ingresar
+
+clientes:
+
+Invoke-RestMethod -Uri "http://localhost:4000/v1/usuarios" -Method POST -ContentType "application/json" -Body '{"nombre":"Cliente 1","correo":"cliente@gmail.com","contrasena":"cliente","rol":"cliente"}'
+
+Invoke-RestMethod -Uri "http://localhost:4000/v1/usuarios" -Method POST -ContentType "application/json" -Body '{"nombre":"Cliente 2","correo":"cliente2@gmail.com","contrasena":"cliente","rol":"cliente"}'
+
+Cliente@gmail.com   clave : cliente 
+
+Cliente1@gmail.com  clave : cliente
+
+admin:
+
+Invoke-RestMethod -Uri "http://localhost:4000/v1/usuarios" -Method POST -ContentType "application/json" -Body '{"nombre":"Admin","correo":"admin@gmail.com","contrasena":"admin","rol":"administrador"}'
+
+admin@gmail.com   clave : admin
+para verificar que si se crearon los 3 usuarios para hacer pruebas, se ejecuta:
+
+kubectl exec -it mysql-0 -n drgueria -- mysql -u root -pdrgueria2024 -e "USE drgueria_usuarios; SELECT id_usuario, nombre, correo, rol FROM usuarios;"
+
+

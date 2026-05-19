@@ -1,162 +1,123 @@
-Primero abrir PowerShell y ir a la ruta de la carpeta del proyecto
+╔══════════════════════════════════════════════════════╗
+║         DRGUERIA — Instrucciones de despliegue       ║
+╚══════════════════════════════════════════════════════╝
 
-proyecto-drgueria/
+REQUISITOS PREVIOS:
+  - Docker Desktop instalado y corriendo
+  - Minikube instalado
+  - kubectl instalado
+  - Tener la carpeta del proyecto completa
 
-después poner estos comandos por orden
+══════════════════════════════════════════════
+PASO 1 — Abrir PowerShell como Administrador
+          e ir a la carpeta del proyecto
+══════════════════════════════════════════════
 
-(verificar que Docker escritorio esta funcionando)
+  cd ruta\a\Proyecto-drgueria
 
-iniciar minikube
+══════════════════════════════════════════════
+PASO 2 — Iniciar Minikube
+══════════════════════════════════════════════
 
-1)	minikube start --memory=4096 --cpus=4 --driver=Docker
+  minikube start
 
-verificar
+══════════════════════════════════════════════
+PASO 3 — Crear el namespace (PRIMERO que todo)
+══════════════════════════════════════════════
 
-2)	minikube status
+  kubectl create namespace drgueria
 
-activar los addons
+══════════════════════════════════════════════
+PASO 4 — Aplicar todos los manifiestos
+══════════════════════════════════════════════
 
-3)	minikube addons enable ingress
+  kubectl apply -f back/k8s/ -n drgueria
 
-4)	minikube addons enable metrics-server
+  (Kubernetes descarga automáticamente las imágenes
+   desde Docker Hub: gustavocoque/...)
 
-construir las imágenes de Docker en minikube:
+══════════════════════════════════════════════
+PASO 5 — Esperar que todos los pods estén Running
+══════════════════════════════════════════════
 
-5)	minikube -p minikube docker-env | Invoke-Expression
+  kubectl get pods -n drgueria
 
-6) pegar todo junto y esperar
+  Ejecuta ese comando varias veces hasta que TODOS
+  los pods digan 1/1 Running. Puede tardar 3-5 minutos
+  la primera vez porque baja las imágenes de internet.
 
-docker build -t drgueria/ms-usuarios:latest    ./ms-usuarios
-docker build -t drgueria/ms-productos:latest   ./ms-productos
-docker build -t drgueria/ms-proveedores:latest ./ms-proveedores
-docker build -t drgueria/ms-compras:latest     ./ms-compras
-docker build -t drgueria/ms-pagos:latest       ./ms-pagos
-docker build -t drgueria/ms-notificaciones:latest ./ms-notificaciones
-docker build -t drgueria/ms-auditoria:latest   ./ms-auditoria
-docker build -t drgueria/ms-reportes:latest    ./ms-reportes
-docker build -t drgueria/api-gateway:latest    ./api-gateway
-docker build -t drgueria/frontend:latest       ./front
+  Si algún pod dice ImagePullBackOff o ErrImagePull,
+  espera 1 minuto y vuelve a verificar.
 
-verificamos las imágenes esten disponibles
+══════════════════════════════════════════════
+PASO 6 — Cargar los datos iniciales (seed)
+══════════════════════════════════════════════
 
-7)	minikube image ls | findstr drgueria
+  .\seed-completo.ps1
 
-Manifiestos por Orden:
+  Si PowerShell lo bloquea, ejecuta primero:
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
-desde la raíz de la carpeta /back
+  Luego sí:
+  .\seed-completo.ps1
 
+══════════════════════════════════════════════
+PASO 7 — Abrir DOS terminales PowerShell nuevas
+══════════════════════════════════════════════
 
-# Namespace primero (siempre)
+  Terminal 1:
+    kubectl port-forward svc/frontend-svc 80:80 -n drgueria
 
-		kubectl apply -f k8s/namespace.yaml
+  Terminal 2:
+    kubectl port-forward svc/api-gateway-svc 4000:4000 -n drgueria
 
+  (Dejar ambas terminales abiertas mientras se usa)
 
-# Secret global
+══════════════════════════════════════════════
+PASO 8 — Abrir el navegador
+══════════════════════════════════════════════
 
-		kubectl apply -f k8s/global-secret.yaml
+  Frontend:  http://localhost
+  API Health: http://localhost:4000/health
 
+  Credenciales:
+    Admin:    admin@gmail.com   / admin
+    Cliente:  cliente@gmail.com / password123
 
-# MySQL (base de todo)
+══════════════════════════════════════════════
+PARA APAGAR
+══════════════════════════════════════════════
 
-		kubectl apply -f k8s/mysql/
-	
+  1. En cada terminal: Ctrl + C
+  2. minikube stop
 
-# Esperar a que MySQL esté listo antes de continuar
+══════════════════════════════════════════════
+PARA VOLVER A ENCENDER (próximas veces)
+══════════════════════════════════════════════
 
-		kubectl wait --for=condition=ready pod -l app=mysql -n drgueria --timeout=120s
+  minikube start
+  (los pods vuelven solos, no hay que hacer apply ni seed de nuevo)
 
+  Luego abrir 2 terminales con los port-forward del Paso 7.
 
-# Microservicios (el orden importa)
+══════════════════════════════════════════════
+PARA SUSTENTAR
+══════════════════════════════════════════════
 
+  # Ver todos los pods corriendo
+  kubectl get pods -n drgueria
 
-	kubectl apply -f k8s/ms-usuarios/
+  # Ver servicios
+  kubectl get svc -n drgueria
 
-	kubectl apply -f k8s/ms-productos/
+  # Ver logs de un microservicio (ejemplo)
+  kubectl logs deployment/ms-usuarios -n drgueria
 
-	kubectl apply -f k8s/ms-proveedores/
+  # Ver el namespace
+  kubectl get namespace drgueria
 
-	kubectl apply -f k8s/ms-compras/
+  # Frontend
+  http://localhost
 
-	kubectl apply -f k8s/ms-pagos/
-
-	kubectl apply -f k8s/ms-notificaciones/
-
-	kubectl apply -f k8s/ms-auditoria/
-
-	kubectl apply -f k8s/ms-reportes/
-
-
-# API Gateway y Frontend
-
-	kubectl apply -f k8s/api-Gateway/
-
-	kubectl apply -f k8s/frontend/
-
-
-# Ingress (al final)
-	
-	kubectl apply -f k8s/ingress.yaml
-
-
-Verificamos que todo este corriendo
-	
-	kubectl get pods -n drgueria
-
-ahora abrimos 2 terminales:
-
-en la primera ponemos :
-
-		kubectl port-forward svc/frontend-svc 80:80 -n drgueria
-
-en la segunda ponemos:
-
-		kubectl port-forward svc/api-gateway-svc 4000:4000 -n drgueria
-
-
-
-
-y entramos a esta dirección			http://localhost
-
-
-
-
-
-	Para apagar
-
-pausar las 2 terminales:
-	
-	ctrl + c
-
-	minikube stop
-
-
-
-para sustentar:
-
-
-
-
-# 1. Levantar cluster
-
-	minikube start
-
-# 2. Verificar pods
-
-	kubectl get pods -n drgueria
-
-# 3. Port-forward (2 terminales)
-
-	kubectl port-forward svc/frontend-svc 80:80 -n drgueria
-
-
-	kubectl port-forward svc/api-gateway-svc 4000:4000 -n drgueria
-
-
-# 4. Abrir navegador en
-
-				http://localhost  (front)
-
-				http://localhost:4000/health	(health del Gateway, para ver si el 								back esta funcionando)
-
-
-	
+  # Health del API Gateway
+  http://localhost:4000/health
